@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:www.writethedocs.org)"
+      "WebFetch(domain:www.writethedocs.org)",
+      "Bash(chmod:*)",
+      "Bash(ls:*)",
+      "Bash(python3:*)"
     ]
   }
 }

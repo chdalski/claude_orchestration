@@ -5,6 +5,7 @@ model: opus
 color: cyan
 tools:
   - Read
+  - Write
   - Glob
   - Grep
   - WebSearch
