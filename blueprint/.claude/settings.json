@@ -2,5 +2,17 @@
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
-  "teammateMode": "in-process"
+  "teammateMode": "in-process",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Before you do anything, make sure you completely understood your role – as written down in the markdown files – and strictly follow its instructions.'"
+          }
+        ]
+      }
+    ]
+  }
 }
