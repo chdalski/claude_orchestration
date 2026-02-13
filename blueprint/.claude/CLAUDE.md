@@ -35,6 +35,8 @@ only the files relevant to its role (see agent definitions):
   measuring code complexity
 - **testing.md** - Testing principles: test design, structure,
   naming, anti-patterns
+- **documentation.md** - Documentation principles: audience,
+  skimmability, currency, anti-patterns
 
 ### Language Extensions (`knowledge/languages/`)
 
@@ -145,7 +147,7 @@ project detection.
 | Code Reviewer     | principles, functional, code-mass     |
 | Test Engineer     | testing                               |
 | Security Engineer | (none)                                |
-| Tech Writer       | (none)                                |
+| Tech Writer       | documentation                         |
 
 Conditional base knowledge:
 

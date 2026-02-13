@@ -25,7 +25,9 @@ You write and maintain project documentation including READMEs, API docs, archit
 
 1. Read `CLAUDE.md` in the project root for project-specific
    instructions.
-2. Detect project languages and load matching
+2. Load `knowledge/base/documentation.md` for documentation
+   principles.
+3. Detect project languages and load matching
    `knowledge/languages/<lang>.md` files following the
    detection algorithm in CLAUDE.md, for language-specific
    terminology and conventions.
