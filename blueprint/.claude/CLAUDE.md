@@ -33,7 +33,8 @@ only the files relevant to its role (see agent definitions):
 - **data.md** - Single Source of Truth (SSOT) guidelines
 - **code-mass.md** - Absolute Priority Premise (APP) for
   measuring code complexity
-- **testing.md** - TDD principles and best practices
+- **testing.md** - Testing principles: test design, structure,
+  naming, anti-patterns
 
 ### Language Extensions (`knowledge/languages/`)
 
@@ -72,7 +73,8 @@ files (polyglot projects get multiple):
 
 Workflow practices in `practices/`:
 
-- **tdd.md** - Test-Driven Development process
+- **tdd.md** - TDD execution workflow: red-green-refactor
+  cycle, guessing game, baby steps
 - **hitl.md** - Human-in-the-loop checkpoints for TDD
 
 ## Workflow Patterns
@@ -94,11 +96,11 @@ Architect -> Developer + Test Engineer
 ### Bug Fix
 
 ```text
-Developer -> Test Engineer
+Test Engineer -> Developer
 ```
 
-1. Developer investigates and fixes the bug
-2. Test Engineer writes regression test and verifies
+1. Test Engineer writes a failing test that reproduces the bug
+2. Developer implements the minimal fix to make it pass
 
 ### Security Audit
 
@@ -129,22 +131,123 @@ agent file. The general pattern is:
    algorithm above)
 4. Load practices files as needed for the task
 
-Agents load knowledge selectively to conserve context:
+Agents load knowledge selectively to conserve context.
+All agents also load language-specific files based on
+project detection.
 
-| Agent | Base Knowledge | Practices |
-|-------|---------------|-----------|
-| Orchestrator | principles | - |
-| Architect | principles, functional, data | - |
-| Developer | principles, functional, code-mass (when refactoring) | tdd, hitl (on demand) |
-| Code Reviewer | principles, functional, code-mass | - |
-| Test Engineer | testing, code-mass | tdd, hitl (on demand) |
-| Security Engineer | - | - |
-| Tech Writer | - | - |
+**Base knowledge** (`knowledge/base/`):
+
+| Agent             | Files loaded                          |
+|-------------------|---------------------------------------|
+| Orchestrator      | principles                            |
+| Architect         | principles, functional, data          |
+| Developer         | principles, functional                |
+| Code Reviewer     | principles, functional, code-mass     |
+| Test Engineer     | testing                               |
+| Security Engineer | (none)                                |
+| Tech Writer       | (none)                                |
+
+Conditional base knowledge:
+
+- **Developer** loads `code-mass` when refactoring
+- **Test Engineer** loads `code-mass` during the refactor
+  phase of TDD
+
+**Practices** (`practices/`):
+
+| Agent         | Files loaded         |
+|---------------|----------------------|
+| Developer     | tdd, hitl (on demand)|
+| Test Engineer | tdd, hitl (on demand)|
+
+Only Developer and Test Engineer load practice files.
+The `hitl` practice is loaded when the user requests
+human-in-the-loop checkpoints; otherwise agents use
+`tdd` autonomously.
+
+## Agent Teams Setup
+
+Agent teams are experimental and require explicit opt-in.
+The `settings.json` in this directory enables them with
+`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` and sets
+`teammateMode` to `in-process`.
+
+### Delegate Mode
+
+The Orchestrator is designed as a coordination-only lead — it
+reads code and manages tasks but never edits files. After
+creating a team, press **Shift+Tab** to enable delegate mode.
+This restricts the lead to coordination tools only (spawning,
+messaging, task management), preventing it from implementing
+work itself. This matches the Orchestrator's intended role.
+
+### Permissions
+
+All teammates inherit the lead session's permission settings
+at spawn time. Read-only tools (Read, Glob, Grep) require no
+approval by default. File modifications (Edit, Write) and
+shell commands (Bash) will prompt the user for approval
+through the lead's session.
+
+This means the user stays in control: when a Developer or
+Test Engineer teammate first tries to edit a file or run a
+command, the prompt bubbles up to the lead where the user
+approves or denies it.
+
+To reduce friction for trusted workflows, users can create
+a `.claude/settings.local.json` (not checked into version
+control) with allow-rules:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Edit",
+      "Write",
+      "Bash(npm run *)",
+      "Bash(cargo *)"
+    ]
+  }
+}
+```
+
+Other options:
+
+- Use `--dangerously-skip-permissions` for fully trusted
+  local-only workflows. All teammates inherit this setting.
+- You cannot set per-teammate permissions at spawn time.
+  Adjust individual teammate modes after they are running if
+  needed.
+
+### Limitations
+
+Agent teams have known limitations to be aware of:
+
+- **No session resumption** — `/resume` and `/rewind` do not
+  restore in-process teammates. After resuming, the lead may
+  try to message teammates that no longer exist. Tell it to
+  spawn new ones.
+- **One team per session** — A lead can only manage one team
+  at a time. Clean up the current team before starting
+  another.
+- **No nested teams** — Teammates cannot spawn their own
+  teams. Only the lead manages the team.
+- **Lead is fixed** — The session that creates the team stays
+  the lead for its lifetime. Leadership cannot transfer.
+- **Task status can lag** — Teammates sometimes fail to mark
+  tasks completed, blocking dependent tasks. Check manually
+  and update if stuck.
+- **Shutdown can be slow** — Teammates finish their current
+  tool call before shutting down.
+- **File conflicts** — Two teammates editing the same file
+  causes overwrites. The Orchestrator must ensure each
+  teammate owns different files.
 
 ## Rules
 
 - **Orchestrator coordinates, doesn't implement** - It reads
-  code and assigns work but never edits files
+  code and assigns work but never edits files. Use delegate
+  mode (Shift+Tab) to enforce this.
 - **Agents follow knowledge principles** - All agents should
   reference and apply the knowledge base
 - **Not every task needs every agent** - The orchestrator

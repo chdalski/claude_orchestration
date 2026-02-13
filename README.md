@@ -3,9 +3,9 @@
 A drop-in orchestration kit for Claude Code multi-agent
 workflows. Copy the `blueprint/.claude/` directory into any
 project to get a team of specialized agents (Orchestrator,
-Architect, Developer, Test Engineer, Security Engineer, Tech
-Writer) that coordinate automatically, guided by a shared
-knowledge base of software engineering principles.
+Architect, Developer, Test Engineer, Code Reviewer, Security
+Engineer, Tech Writer) that coordinate automatically, guided
+by a shared knowledge base of software engineering principles.
 
 ## Why This Exists
 
@@ -31,6 +31,17 @@ The goal is to encode good engineering judgment once and reuse
 it across projects, rather than relying on each conversation to
 rediscover the same principles.
 
+## Prerequisites
+
+Agent teams are an experimental Claude Code feature, disabled
+by default. The included `settings.json` enables them
+automatically when you copy the blueprint. You can also set
+the environment variable directly:
+
+```bash
+export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+```
+
 ## Quick Start
 
 Copy the blueprint into your project:
@@ -43,11 +54,17 @@ Then use the Orchestrator agent to handle complex tasks. It
 will automatically spawn the right specialist agents, assign
 work, and coordinate execution.
 
+After creating a team, press **Shift+Tab** to enable delegate
+mode. This restricts the lead to coordination-only tools,
+matching the Orchestrator's design of never editing code
+directly.
+
 ## What's Included
 
 ```text
 blueprint/.claude/
 ├── CLAUDE.md              # Orchestration instructions
+├── settings.json          # Enables agent teams + config
 ├── agents/                # 7 agent definitions
 │   ├── orchestrator.md    # Team lead (opus)
 │   ├── architect.md       # Solution design (opus)
@@ -87,8 +104,8 @@ matching language files.
 - **New feature**: Architect designs, Developer implements,
   Test Engineer tests, Code Reviewer and Security Engineer
   review in parallel, Tech Writer documents
-- **Bug fix**: Developer fixes, Test Engineer adds regression
-  test
+- **Bug fix**: Test Engineer writes failing test first,
+  Developer implements the fix
 - **Security audit**: Security Engineer reviews codebase
 - **Documentation**: Tech Writer updates docs
 
@@ -102,6 +119,34 @@ following the pattern of existing language files. Include:
 3. Testing frameworks and patterns
 4. Common pitfalls
 5. Recommended tools and libraries
+
+## Known Limitations
+
+Agent teams are experimental. Be aware of:
+
+- **No session resumption** — `/resume` and `/rewind` do not
+  restore in-process teammates. After resuming, tell the lead
+  to spawn new ones.
+- **One team per session** — Clean up the current team before
+  starting another.
+- **No nested teams** — Only the lead can manage the team.
+  Teammates cannot spawn their own teams.
+- **Lead is fixed** — The session that creates the team stays
+  the lead. Leadership cannot transfer.
+- **Task status can lag** — Teammates sometimes fail to mark
+  tasks completed, blocking dependent tasks. Check and update
+  manually if stuck.
+- **Shutdown can be slow** — Teammates finish their current
+  tool call before shutting down.
+- **File conflicts** — Two teammates editing the same file
+  causes overwrites. The Orchestrator assigns file ownership
+  to prevent this.
+- **Permissions inherit** — All teammates inherit the lead's
+  permission settings. Read-only tools need no approval.
+  Edit, Write, and Bash prompts bubble up to the lead where
+  the user approves them. Create `.claude/settings.local.json`
+  with allow-rules to pre-approve common operations for
+  trusted workflows.
 
 ## Customization
 

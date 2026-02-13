@@ -1,140 +1,126 @@
-# Test-Driven Development (TDD)
+# TDD Workflow
 
-## TDD Discipline
+This practice defines the step-by-step execution workflow
+for Test-Driven Development. For test design principles
+(structure, naming, anti-patterns), see
+`knowledge/base/testing.md`.
+
+## Mindset
 
 TDD will feel counterintuitive:
 
-- **Hardcoded returns feel wasteful** -- but they are the
+- **Hardcoded returns feel wasteful** — but they are the
   correct minimal step
-- **The urge to implement ahead is strong** -- resist it
-- **Minimal steps feel slow** -- but they accelerate
+- **The urge to implement ahead is strong** — resist it
+- **Minimal steps feel slow** — but they accelerate
   development
-- **Refactoring feels optional** -- it is mandatory
-
-Common violations:
-
-- Multiple active tests at once
-- Implementing beyond what tests demand
-- Skipping the refactor phase
-- Premature abstraction
+- **Refactoring feels optional** — it is mandatory
 
 **Remember**: Discomfort signals you are doing it right.
 Trust the process.
 
-## Core TDD Process
+## Step 1: Create the Test List
 
-### 1. Test List First
-
-Before writing any implementation, create a list of test
-cases marked as skipped/pending/ignored:
+Before writing any implementation, create all test cases
+marked as skipped:
 
 - Include the full scope: happy paths, edge cases,
-  boundary conditions, and error conditions
-- Order tests from simple to complex to guide incremental
-  development
-- This helps understand the complete behavior expected
-  from the code
+  boundary conditions, error conditions
+- Order from simple to complex
+- This is the roadmap for the entire implementation
 
 ```pseudocode
-test suite "Calculator":
-
-    // Happy path tests
-    [skip] test should_return_zero_for_empty_input
-    [skip] test should_return_number_for_single_input
-    [skip] test should_return_sum_for_two_numbers
-
-    // Edge cases and error conditions
-    [skip] test should_handle_negative_numbers
-    [skip] test should_reject_non_numeric_input
+tests:
+    [skip] should_return_zero_for_empty_input
+    [skip] should_return_number_for_single_input
+    [skip] should_return_sum_for_two_numbers
+    [skip] should_handle_negative_numbers
+    [skip] should_reject_non_numeric_input
 ```
 
-### 2. One Test at a Time
+## Step 2: Activate One Test
 
 - Activate exactly ONE test at a time
 - All other tests remain skipped
-- Never have more than one failing test in red phase
-- Implement only what is needed to make that single test
-  pass
+- Never have more than one failing test
 - Do not think ahead or implement features for future tests
 
-### 3. Red-Green-Refactor Cycle
+## Step 3: Red-Green-Refactor
 
-#### Red Phase (Compilation/Syntax Error)
+### Red Phase
 
-- Start with a non-existent function
-- Test should fail because the function does not exist
-- This ensures we are truly starting from scratch
+Two sub-steps, each producing a different failure:
+
+**Compilation/type error** — Start with a non-existent
+function. The test fails because nothing exists yet.
 
 ```pseudocode
 test should_return_zero_for_empty_input:
-    // Function does not exist yet
-    result = calculate([])
-    assert result equals 0
+    result = calculate([])  // function does not exist yet
+    assert result == 0
 ```
 
-#### Red Phase (Runtime Error)
-
-- Create an empty function that returns a wrong value
-  or throws
-- Test should fail with an assertion error
-- This verifies our test is working as expected
+**Runtime/assertion error** — Create an empty function that
+returns a wrong value. The test fails with an assertion
+error, confirming the test actually checks something.
 
 ```pseudocode
-function calculate(numbers: list of int) -> int:
-    throw NotImplementedError
-    // or: return -1 (wrong value)
+function calculate(numbers):
+    throw "not implemented"
 ```
 
-#### Green Phase
+### Green Phase
 
-- Implement minimal code to make the test pass
+- Implement the minimal code to make the test pass
 - Do not add features for future tests
 - Do not optimize or refactor yet
 
 ```pseudocode
-function calculate(numbers: list of int) -> int:
-    return 0  // Simplest possible implementation
+function calculate(numbers):
+    return 0  // simplest possible implementation
 ```
 
-#### Refactor Phase
+### Refactor Phase
 
 MUST attempt at least one refactoring. If no improvement
 is possible, document why.
 
-**Naming Evaluation (First Priority)**:
+**Naming evaluation (first priority)**:
 
 - Ask: "Does this name clearly describe what the function
-  actually does based on all tests so far?"
-- Ask: "Has the function's purpose become clearer or more
-  specific through the latest test?"
-- Rename if the name does not capture the current full
-  intent
+  does based on all tests so far?"
+- Ask: "Has the function's purpose become clearer through
+  the latest test?"
+- Rename if the name does not capture the current intent
 
-**Apply Four Rules of Simple Design**:
+**Apply APP (Absolute Priority Premise)**:
+
+- Calculate mass before and after refactoring
+- Aim for lower mass where possible
+- Document mass changes
+- See `knowledge/base/code-mass.md` for details
+
+**Apply 4 Rules of Simple Design**:
 
 - Tests must pass (Rule 1)
 - Reveals intent (Rule 2)
 - No duplication (Rule 3)
 - Fewest elements (Rule 4)
-- See [principles.md](../knowledge/base/principles.md)
-  for details
+- See `knowledge/base/principles.md` for details
 
 **If no refactoring improves the code**:
 
 - Document why no refactoring was possible
-- Explain why current state is optimal
-- Move to next test
+- Move to the next test
 
-### 4. Guessing Game
+## Step 4: Guessing Game
 
-Before running tests, explicitly state:
+Before running tests, explicitly predict:
 
 - Which test will fail
-- Type of error (compilation/assertion/runtime)
+- Type of error (compilation, assertion, runtime)
 - Expected vs actual values
-- Expected error message or assertion output
-
-Example prediction:
+- Expected error message
 
 ```text
 Prediction:
@@ -145,11 +131,10 @@ Prediction:
 - Reason: Current implementation always returns 0
 ```
 
-Run the test, then compare actual result with prediction.
-This builds understanding of the code and catches
-misconceptions early.
+Run the test, then compare. This builds understanding and
+catches misconceptions early.
 
-### 5. Baby Steps
+## Step 5: Baby Steps
 
 - Make the smallest possible change to get to green
 - If a test fails, make it pass with the simplest
@@ -157,77 +142,38 @@ misconceptions early.
 - Do not try to solve multiple problems at once
 - Each step should be clear and verifiable
 
-## Best Practices
+## Common Violations
 
-### 1. Test Structure
-
-- One assertion per test when possible
-- Clear, descriptive test names
-- Tests should be independent
-- No test should depend on another test's state
-- Use the Arrange-Act-Assert pattern
-
-### 2. Implementation
-
-- Start with the simplest possible implementation
-- Do not add features until there is a test for them
-- Do not optimize until all tests are green
-- Keep the code clean and maintainable
-- Use language idioms appropriately
-
-### 3. Documentation
-
-- Tests serve as documentation
-- Test names should describe the behavior
-- Document refactoring decisions
-- Document when no refactoring is possible
-
-## Common Pitfalls to Avoid
-
-### 1. Writing Too Many Tests at Once
-
-- Stick to one test at a time
-- Do not implement multiple features simultaneously
-- Activate only one skipped test at a time
-
-### 2. Skipping the Red Phase
-
-- Always start with a failing test
-- Do not write implementation before test
-- Verify the test fails for the right reason
-
-### 3. Over-Engineering
-
-- Do not add features without tests
-- Do not optimize prematurely
-- Avoid unnecessary abstractions
-- See [principles.md](../knowledge/base/principles.md)
-  for YAGNI (Rule 4)
-
-### 4. Not Refactoring
-
-- Take time to clean up code
-- Remove duplication
-- Improve readability
-- Always attempt refactoring after green phase
+- **Multiple active tests** — only one test should be
+  unskipped at a time
+- **Implementing beyond what tests demand** — write only
+  enough code to pass the current test
+- **Skipping the refactor phase** — refactoring is mandatory,
+  not optional
+- **Premature abstraction** — do not generalize until
+  duplication forces it
 
 ## Example Workflow
 
 ```pseudocode
 // 1. Create test list (all skipped)
-test suite "Sum":
-    [skip] test should_return_zero_for_empty_list
-    [skip] test should_return_number_for_single_element
-    [skip] test should_return_sum_of_two_numbers
+tests:
+    [skip] should_return_zero_for_empty_list
+    [skip] should_return_value_for_single_element
+    [skip] should_return_sum_for_multiple_elements
 
 // 2. Activate first test
 test should_return_zero_for_empty_list:
-    assert sum([]) equals 0
+    assert sum([]) == 0
 
-// 3. Implement minimal solution
-function sum(numbers: list of int) -> int:
-    return 0  // Hardcoded -- passes first test only
+// 3. Predict: compilation error (sum does not exist)
+// 4. Run test — confirm prediction
+// 5. Implement minimal solution
+function sum(numbers):
+    return 0  // hardcoded — passes first test only
 
-// 4. Refactor (if applicable)
-// 5. Activate next test and repeat
+// 6. Predict: test passes
+// 7. Run test — confirm prediction
+// 8. Refactor (if applicable)
+// 9. Activate next test and repeat
 ```

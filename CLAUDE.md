@@ -17,12 +17,12 @@ claude_orchestration/
 ├── blueprint/             # The copyable kit
 │   └── .claude/           # Copied into target project
 │       ├── CLAUDE.md      # Orchestration instructions
+│       ├── settings.json  # Enables agent teams + config
 │       ├── agents/        # 7 agent definitions
 │       ├── knowledge/
 │       │   ├── base/      # Language-agnostic principles
 │       │   └── languages/ # Language-specific extensions
 │       └── practices/     # TDD, human-in-the-loop
-└── starting_rules/        # Legacy source material (archived)
 ```
 
 ## Key Distinction
@@ -58,8 +58,3 @@ claude_orchestration/
 
 - `practices/` files are language-agnostic workflow guidance.
 
-## Legacy
-
-`starting_rules/` contains the original Rust-specific rules
-this project was refactored from. It is kept for reference
-but is not part of the blueprint.

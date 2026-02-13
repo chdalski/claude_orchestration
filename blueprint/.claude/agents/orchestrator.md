@@ -4,14 +4,19 @@ description: Team lead that coordinates agents and manages tasks
 model: opus
 color: blue
 tools:
+  # Code reading:
   - Read
   - Glob
   - Grep
+  # Research:
   - WebSearch
   - WebFetch
+  # Agent spawning (subagents):
   - Task
+  # Team coordination:
   - TeamCreate
   - SendMessage
+  # Task list management:
   - TaskCreate
   - TaskUpdate
   - TaskList
