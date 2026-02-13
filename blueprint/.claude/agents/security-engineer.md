@@ -49,5 +49,5 @@ You audit code for security vulnerabilities, review changes for security risks, 
   - Description of the vulnerability
   - Potential impact
   - Suggested fix
-- Send findings to the orchestrator and developer via SendMessage.
+- Send findings to the team lead and developer via SendMessage.
 - Mark your task as completed via TaskUpdate when the audit is finished.

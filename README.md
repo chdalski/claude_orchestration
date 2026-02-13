@@ -2,9 +2,9 @@
 
 A drop-in orchestration kit for Claude Code multi-agent
 workflows. Copy the `blueprint/.claude/` directory into any
-project to get a team of specialized agents (Orchestrator,
-Architect, Developer, Test Engineer, Code Reviewer, Security
-Engineer, Tech Writer) that coordinate automatically, guided
+project to get a team of specialized agents (Architect,
+Developer, Test Engineer, Code Reviewer, Security Engineer,
+Tech Writer) coordinated by your Claude Code session, guided
 by a shared knowledge base of software engineering principles.
 
 ## Why This Exists
@@ -24,8 +24,8 @@ providing:
    based on the project's file types.
 3. **Standardized workflows** for common tasks (feature
    implementation, bug fixes, security audits, documentation)
-   so the Orchestrator knows how to sequence work and set up
-   dependencies between agents.
+   with sequencing and dependency management built into the
+   CLAUDE.md that drives your session.
 
 The goal is to encode good engineering judgment once and reuse
 it across projects, rather than relying on each conversation to
@@ -50,14 +50,15 @@ Copy the blueprint into your project:
 cp -r blueprint/.claude/ /path/to/your/project/.claude/
 ```
 
-Then use the Orchestrator agent to handle complex tasks. It
-will automatically spawn the right specialist agents, assign
-work, and coordinate execution.
+Start Claude Code in your project directory. The CLAUDE.md
+loads automatically and configures your session as the team
+coordinator. Describe what you want to build, and it will
+decompose the work, spawn the right specialist agents as
+teammates, and coordinate their execution.
 
 After creating a team, press **Shift+Tab** to enable delegate
-mode. This restricts the lead to coordination-only tools,
-matching the Orchestrator's design of never editing code
-directly.
+mode. This restricts your session to coordination-only tools,
+preventing it from implementing work directly.
 
 ## What's Included
 
@@ -65,8 +66,7 @@ directly.
 blueprint/.claude/
 ├── CLAUDE.md              # Orchestration instructions
 ├── settings.json          # Enables agent teams + config
-├── agents/                # 7 agent definitions
-│   ├── orchestrator.md    # Team lead (opus)
+├── agents/                # 6 agent definitions
 │   ├── architect.md       # Solution design (opus)
 │   ├── developer.md       # Implementation (sonnet)
 │   ├── code-reviewer.md   # Code quality review (sonnet)
@@ -92,12 +92,13 @@ blueprint/.claude/
 
 ## How It Works
 
-The Orchestrator agent receives a request, breaks it into
-tasks, and spawns specialist agents as needed. Each agent
-loads only the knowledge files relevant to its role.
-Language-specific extensions are detected automatically from
-the project's code files - polyglot projects load all
-matching language files.
+Your Claude Code session acts as the team coordinator. It
+receives your request, breaks it into tasks, and spawns
+specialist agents as teammates. Each agent loads only the
+knowledge files relevant to its role. Language-specific
+extensions are detected automatically from the project's
+code files — polyglot projects load all matching language
+files.
 
 ### Workflow Examples
 
@@ -139,7 +140,7 @@ Agent teams are experimental. Be aware of:
 - **Shutdown can be slow** — Teammates finish their current
   tool call before shutting down.
 - **File conflicts** — Two teammates editing the same file
-  causes overwrites. The Orchestrator assigns file ownership
+  causes overwrites. The coordinator assigns file ownership
   to prevent this.
 - **Permissions inherit** — All teammates inherit the lead's
   permission settings. Read-only tools need no approval.

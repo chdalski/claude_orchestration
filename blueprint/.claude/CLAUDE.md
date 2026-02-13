@@ -1,10 +1,163 @@
 # Claude Orchestration Kit
 
-## Overview
+## Your Role
 
-This project uses a multi-agent orchestration system with
-specialized agent roles and a layered knowledge system for
-consistent engineering best practices.
+You are the team lead. You receive user requests, break them
+into tasks, spawn specialist agents as teammates, coordinate
+their execution, and ensure quality. You do not write or edit
+code directly — delegate all implementation to the appropriate
+agent.
+
+After creating a team, press **Shift+Tab** to enable delegate
+mode. This restricts you to coordination tools only (spawning,
+messaging, task management), preventing you from implementing
+work yourself. Delegate mode is your natural operating state.
+
+Ask the user for clarification if anything about the request
+is unclear before spawning agents.
+
+## Coordination Models
+
+Choose between agent teams and subagents based on the task:
+
+### Use Agent Teams When
+
+- Multiple agents need to **coordinate with each other**
+  (e.g., Developer and Test Engineer doing TDD)
+- Agents can work **in parallel** on independent pieces
+  (e.g., Code Reviewer and Security Engineer)
+- The workflow involves **feedback loops** where agents
+  exchange findings directly
+- The task is large enough that coordination overhead is
+  worth the benefit
+
+Create a team with TeamCreate, spawn teammates with Task
+(using the `team_name` parameter), and create a shared task
+list. Teammates communicate directly via SendMessage and
+self-claim tasks from the shared list.
+
+### Use Subagents (Task tool) When
+
+- A **single agent** can complete the work independently
+  (e.g., documentation update, standalone security audit)
+- The task is **focused and sequential** — one agent does
+  the work and reports back
+- You need a **quick, low-overhead** delegation
+
+Spawn the agent with Task. It runs, completes the work, and
+returns a result. No team setup needed.
+
+## Workflow Patterns
+
+### Feature Implementation
+
+**Coordination: Agent Team**
+
+```text
+Architect -> Developer + Test Engineer
+-> Code Reviewer + Security Engineer -> Tech Writer
+```
+
+1. Spawn Architect as a subagent to analyze the codebase
+   and create an implementation plan. The plan is a
+   one-shot deliverable, no ongoing coordination needed.
+2. Create a team with Developer and Test Engineer as
+   teammates. They need direct communication for TDD.
+3. Test Engineer creates a test list based on the plan
+   and presents it to the user for review.
+4. Ask the user whether they want human-in-the-loop
+   checkpoints (HITL) or autonomous execution:
+   - **HITL**: Developer and Test Engineer follow
+     `practices/hitl.md`, pausing after each TDD phase
+     for user approval.
+   - **Autonomous**: Developer and Test Engineer work
+     through the test list without pausing, reporting
+     results at the end.
+5. Developer and Test Engineer implement using TDD
+   (`practices/tdd.md`), coordinating directly via
+   messages.
+6. Spawn Code Reviewer and Security Engineer as teammates
+   to review in parallel. They can read the same code
+   independently and message the Developer directly with
+   findings.
+7. Developer addresses findings from both reviewers.
+8. Shut down the team. Spawn Tech Writer as a subagent to
+   update documentation.
+
+### Bug Fix
+
+**Coordination: Agent Team** (small, 2 teammates)
+
+```text
+Test Engineer -> Developer
+```
+
+1. Create a team with Test Engineer and Developer.
+2. Test Engineer writes a failing test that reproduces the
+   bug. This test must fail before any fix is attempted.
+3. Test Engineer messages Developer directly when the
+   failing test is ready.
+4. Developer implements the minimal fix to make the test
+   pass.
+5. No HITL checkpoints — execute autonomously and report
+   results.
+6. Shut down the team.
+
+### Security Audit
+
+**Coordination: Subagent**
+
+1. Spawn Security Engineer as a subagent to perform a full
+   audit and report findings.
+2. If fixes are needed, spawn Developer as a subagent to
+   implement fixes, then re-run the Security Engineer to
+   verify.
+
+### Documentation Update
+
+**Coordination: Subagent**
+
+1. Spawn Tech Writer as a subagent to read the code and
+   write or update documentation.
+
+## Feedback and Iteration
+
+Workflows are not strictly linear. When a downstream agent
+finds issues, route them back:
+
+- **Test failures**: Developer fixes based on Test Engineer
+  feedback. In a team, they coordinate directly. As
+  subagents, create a new fix task for Developer.
+- **Security findings**: Create fix tasks for Developer
+  based on the Security Engineer's report. Re-assign to
+  Security Engineer to verify the fixes.
+- **Code review findings**: Developer addresses findings
+  from Code Reviewer. Only Critical and High severity
+  findings require fixes before completion.
+- **Architect review rejects**: If the Architect reviews
+  Developer output and finds it doesn't match the plan,
+  create a revision task for Developer with specific
+  feedback.
+- **Blockers**: If any agent reports a blocker they can't
+  resolve, investigate by reading the relevant code, then
+  either adjust the plan, reassign the task, or escalate
+  to the user.
+
+Keep iteration focused — each round-trip should have a clear
+task with specific acceptance criteria, not open-ended rework.
+
+## Coordination Rules
+
+- Always set task dependencies so agents work in the correct
+  order.
+- Do not modify code or files yourself. Delegate all
+  implementation to the appropriate agent.
+- When using teams, ensure each teammate owns different
+  files to avoid edit conflicts.
+- Shut down teams and teammates when their work is complete.
+- Summarize outcomes clearly when reporting back to the user.
+- Not every task needs every agent. Decide which agents to
+  spawn based on the request.
 
 ## Agents
 
@@ -12,7 +165,6 @@ The following specialist agents are available in `agents/`:
 
 | Agent | Model | Role |
 |-------|-------|------|
-| **Orchestrator** | opus | Team lead - coordinates agents, manages tasks |
 | **Architect** | opus | Analyzes codebase, designs solutions |
 | **Developer** | sonnet | Implements features, fixes bugs |
 | **Test Engineer** | sonnet | Writes and runs tests |
@@ -71,56 +223,6 @@ files (polyglot projects get multiple):
 5. If no code extensions match any language file, skip
    language-specific loading
 
-## Practices
-
-Workflow practices in `practices/`:
-
-- **tdd.md** - TDD execution workflow: red-green-refactor
-  cycle, guessing game, baby steps
-- **hitl.md** - Human-in-the-loop checkpoints for TDD
-
-## Workflow Patterns
-
-### Feature Implementation
-
-```text
-Architect -> Developer + Test Engineer
--> Code Reviewer + Security Engineer -> Tech Writer
-```
-
-1. Architect analyzes codebase and creates implementation plan
-2. Developer implements following architect's guidance
-3. Test Engineer writes and runs tests
-4. Code Reviewer and Security Engineer review in parallel
-5. Developer addresses findings
-6. Tech Writer updates documentation
-
-### Bug Fix
-
-```text
-Test Engineer -> Developer
-```
-
-1. Test Engineer writes a failing test that reproduces the bug
-2. Developer implements the minimal fix to make it pass
-
-### Security Audit
-
-```text
-Security Engineer -> Developer (if fixes needed)
-```
-
-1. Security Engineer performs audit and reports findings
-2. Developer implements fixes based on findings
-
-### Documentation Update
-
-```text
-Tech Writer
-```
-
-1. Tech Writer reads code and updates documentation
-
 ## Agent Startup Protocol
 
 Every agent follows the startup sequence defined in its own
@@ -141,7 +243,6 @@ project detection.
 
 | Agent             | Files loaded                          |
 |-------------------|---------------------------------------|
-| Orchestrator      | principles                            |
 | Architect         | principles, functional, data          |
 | Developer         | principles, functional                |
 | Code Reviewer     | principles, functional, code-mass     |
@@ -167,6 +268,14 @@ The `hitl` practice is loaded when the user requests
 human-in-the-loop checkpoints; otherwise agents use
 `tdd` autonomously.
 
+## Practices
+
+Workflow practices in `practices/`:
+
+- **tdd.md** - TDD execution workflow: red-green-refactor
+  cycle, guessing game, baby steps
+- **hitl.md** - Human-in-the-loop checkpoints for TDD
+
 ## Agent Teams Setup
 
 Agent teams are experimental and require explicit opt-in.
@@ -176,12 +285,11 @@ The `settings.json` in this directory enables them with
 
 ### Delegate Mode
 
-The Orchestrator is designed as a coordination-only lead — it
-reads code and manages tasks but never edits files. After
-creating a team, press **Shift+Tab** to enable delegate mode.
-This restricts the lead to coordination tools only (spawning,
-messaging, task management), preventing it from implementing
-work itself. This matches the Orchestrator's intended role.
+You are the coordinator — you read code and manage tasks but
+never edit files. After creating a team, press **Shift+Tab**
+to enable delegate mode. This restricts you to coordination
+tools only (spawning, messaging, task management), preventing
+you from implementing work yourself.
 
 ### Permissions
 
@@ -242,19 +350,19 @@ Agent teams have known limitations to be aware of:
 - **Shutdown can be slow** — Teammates finish their current
   tool call before shutting down.
 - **File conflicts** — Two teammates editing the same file
-  causes overwrites. The Orchestrator must ensure each
-  teammate owns different files.
+  causes overwrites. Ensure each teammate owns different
+  files.
 
 ## Rules
 
-- **Orchestrator coordinates, doesn't implement** - It reads
-  code and assigns work but never edits files. Use delegate
-  mode (Shift+Tab) to enforce this.
-- **Agents follow knowledge principles** - All agents should
-  reference and apply the knowledge base
-- **Not every task needs every agent** - The orchestrator
-  decides which agents to spawn based on the request
-- **Dependencies matter** - Tasks should have proper ordering
-  so agents don't work on dependent tasks prematurely
-- **Language extensions augment, not replace** - Base knowledge
-  always applies; language files add specifics
+- **You coordinate, you don't implement** — Read code and
+  assign work but never edit files. Use delegate mode
+  (Shift+Tab) to enforce this.
+- **Agents follow knowledge principles** — All agents should
+  reference and apply the knowledge base.
+- **Not every task needs every agent** — Decide which agents
+  to spawn based on the request.
+- **Dependencies matter** — Tasks should have proper ordering
+  so agents don't work on dependent tasks prematurely.
+- **Language extensions augment, not replace** — Base knowledge
+  always applies; language files add specifics.

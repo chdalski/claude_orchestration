@@ -68,7 +68,7 @@ You write and run tests to ensure code quality and coverage. You create test pla
    boundary conditions, and error scenarios. Order from
    simple to complex.
 2. Present the test list to the user for review via the
-   orchestrator.
+   team lead.
 3. If HITL mode: follow `practices/hitl.md`, pausing after
    each TDD phase for user approval.
 4. If autonomous: work through the test list with the

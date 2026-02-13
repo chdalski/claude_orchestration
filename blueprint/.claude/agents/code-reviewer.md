@@ -48,7 +48,7 @@ messages to the Developer.
   - Description of the issue
   - Why it matters
   - Suggested improvement with a concrete example
-- Send findings to the orchestrator and Developer via
+- Send findings to the team lead and Developer via
   SendMessage.
 - Group related findings together for easier
   implementation.

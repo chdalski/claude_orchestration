@@ -18,7 +18,7 @@ claude_orchestration/
 │   └── .claude/           # Copied into target project
 │       ├── CLAUDE.md      # Orchestration instructions
 │       ├── settings.json  # Enables agent teams + config
-│       ├── agents/        # 7 agent definitions
+│       ├── agents/        # 6 agent definitions
 │       ├── knowledge/
 │       │   ├── base/      # Language-agnostic principles
 │       │   └── languages/ # Language-specific extensions
