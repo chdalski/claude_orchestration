@@ -9,7 +9,27 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'Before you do anything, make sure you completely understood your role – as written down in the markdown files – and strictly follow its instructions.'"
+            "command": "echo '## SessionStart Checklist\n\nBefore creating ANY tasks or spawning ANY agents:\n1. Read the Feature Implementation workflow in CLAUDE.md (Phase 2: Increment Cycle)\n2. For EACH increment, you MUST create tasks for ALL phases: TDD Setup → TDD Execution → Code Review + Security Review → Address Findings → Documentation → Commit\n3. Do NOT create tasks for increment N+1 until increment N is committed\n4. \"Autonomous mode\" only removes TDD micro-approvals — it does NOT remove: test list approval (Step 5), Code Review (Step 7), Security Review (Step 7), Documentation (Step 9), or Commits (Step 10)\n5. Spawn FRESH teammates for each new increment — shut down previous teammates first\n\nIf your task plan does not include Code Reviewer, Security Engineer, and Tech Writer for each increment, you are violating the workflow. STOP and restructure.'"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "TaskCreate",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'TASK CREATION CHECKPOINT: Before creating this task, verify:\n1. Is this task for the CURRENT increment only? (Do not batch multiple increments)\n2. Does your task plan for this increment include ALL required phases?\n   - [ ] TDD Setup (Test Engineer writes test list)\n   - [ ] TDD Execution (tests FIRST, then implementation)\n   - [ ] Code Review (Code Reviewer spawned)\n   - [ ] Security Review (Security Engineer spawned)\n   - [ ] Address Findings (Developer fixes Critical/High)\n   - [ ] Documentation (Tech Writer spawned)\n   - [ ] Commit (conventional commit)\n3. If any phase is missing, STOP and add it before proceeding.'"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash(git commit*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'COMMIT GATE: Before committing this increment, confirm ALL phases are complete:\n1. Code Reviewer findings are written in the increment file Review section\n2. Security Engineer findings are written in the increment file Review section\n3. Critical/High findings have been addressed by the Developer\n4. Tech Writer has updated documentation\n5. All phase checkboxes in the increment file Phases section are checked\n\nIf any phase is incomplete, ABORT this commit and complete the missing phases first.'"
           }
         ]
       }

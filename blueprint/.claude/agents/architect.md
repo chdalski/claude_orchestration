@@ -95,6 +95,16 @@ Use this template for each increment file:
 ```markdown
 # <type>(<scope>): <description>
 
+## Phases
+
+- [ ] TDD Setup — Test Engineer writes test list, user approves
+- [ ] TDD Execution — Test Engineer writes tests FIRST, Developer makes them pass
+- [ ] Code Review — Code Reviewer spawned, findings written below
+- [ ] Security Review — Security Engineer spawned, findings written below
+- [ ] Findings Addressed — Developer fixes Critical/High findings
+- [ ] Documentation — Tech Writer updates docs
+- [ ] Commit — Conventional commit created
+
 ## Plan
 
 (Scope, files to create/modify, approach, key decisions)

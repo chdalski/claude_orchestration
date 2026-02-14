@@ -161,10 +161,12 @@ starts.
 
 **e) Next Increment**
 
-11. Move to the next increment file and repeat from step 5.
-    Reuse existing teammates if they are still running.
-    Spawn fresh ones if context pressure is high or if
-    teammates have been shut down.
+11. Shut down ALL teammates from the current increment.
+    Then move to the next increment file and repeat from
+    step 4 with fresh teammates. Do not reuse teammates
+    across increments — their context from the previous
+    increment adds noise and increases the risk of
+    compaction losing critical information.
 
 **--- PHASE 3: Cleanup ---**
 
@@ -292,7 +294,11 @@ task with specific acceptance criteria, not open-ended rework.
   on. Message the team lead with: (1) what you tried, (2) why
   it failed, (3) what you think would unblock it. Silent
   failure wastes more time than asking for help.
-- Shut down teams and teammates when their work is complete.
+- **Shut down teammates between increments** — After each
+  increment is committed, shut down all teammates and spawn
+  fresh ones for the next increment. Do not carry teammates
+  across increment boundaries. Shut down the team entirely
+  when all work is complete.
 - Summarize outcomes clearly when reporting back to the user.
 - Not every task needs every agent — but Feature
   Implementation ALWAYS needs at minimum: Architect,
@@ -604,5 +610,10 @@ workflow failure.
   complete. Do not start review before TDD is complete.
   Do not start the next increment before the current one
   is committed.
+- **Fresh teammates per increment** — Shut down all
+  teammates after each increment is committed. Spawn new
+  teammates for the next increment. Reusing teammates
+  across increments risks context bloat and compaction
+  losing critical information from the current increment.
 - **Language extensions augment, not replace** — Base
   knowledge always applies; language files add specifics.

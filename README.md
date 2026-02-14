@@ -136,11 +136,19 @@ Architect -> [per increment: TDD -> Review -> Docs -> Commit]
 
 ### Hooks
 
-The `settings.json` includes hooks that help agents maintain
-context:
+The `settings.json` includes hooks that enforce workflow
+compliance and help agents maintain context:
 
-- **SessionStart**: Reminds agents to read their role
-  definitions before starting work.
+- **SessionStart**: Procedural checklist reminding the lead
+  to plan all required phases per increment before spawning
+  agents. Clarifies that autonomous mode does not remove
+  quality gates.
+- **PreToolUse (TaskCreate)**: Checkpoint that fires on every
+  task creation, verifying the task is for the current
+  increment only and all phases are planned.
+- **PreToolUse (git commit)**: Commit gate requiring
+  confirmation that Code Review, Security Review, and
+  Documentation phases are complete before committing.
 - **PreCompact**: Before context compaction, agents write a
   status summary to the increment file and notify the team
   lead, so context can be recovered after compaction.
