@@ -273,7 +273,9 @@ task with specific acceptance criteria, not open-ended rework.
   and assign work but NEVER edit files. Use delegate mode
   (Shift+Tab) to enforce this mechanically.
 - **Tests are REQUIRED, not optional** — Every code change
-  MUST have corresponding tests written by a Test Engineer.
+  MUST have corresponding tests. A Test Engineer writes
+  them, except in the Fix Batch workflow where the
+  Developer writes both fixes and tests.
 - **Increments are sequential** — Complete each increment
   (TDD, review, docs, commit) before starting the next.
   Do not start TDD before the Architect's plan is complete.
@@ -383,10 +385,13 @@ only the files relevant to its role (see agent definitions):
 - **data.md** - Single Source of Truth (SSOT) guidelines
 - **code-mass.md** - Absolute Priority Premise (APP) for
   measuring code complexity
-- **testing.md** - Testing principles: test design, structure,
-  naming, anti-patterns
+- **testing.md** - Testing principles: testing pyramid,
+  mocking strategy, test design, naming, anti-patterns
 - **documentation.md** - Documentation principles: audience,
   skimmability, currency, anti-patterns
+- **architecture.md** - Hexagonal architecture (ports &
+  adapters), value objects, composition root, testing by
+  layer
 
 ### Language Extensions (`knowledge/languages/`)
 
@@ -450,7 +455,14 @@ project detection.
 
 Conditional base knowledge:
 
+- **Architect** loads `architecture` when the project uses
+  hexagonal/clean architecture (check for port/adapter
+  patterns, or if the user requests it)
+- **Developer** loads `architecture` when the project uses
+  hexagonal/clean architecture
 - **Developer** loads `code-mass` when refactoring
+- **Test Engineer** loads `architecture` when the project
+  uses hexagonal/clean architecture (for testing by layer)
 - **Test Engineer** loads `code-mass` during the refactor
   phase of TDD
 
@@ -570,7 +582,8 @@ workflow failure.
   before the next one starts.
 - **Tests are REQUIRED** — Every code change MUST have
   tests. A Test Engineer MUST be spawned for any task
-  involving code changes.
+  involving code changes, except in the Fix Batch workflow
+  where the Developer writes both fixes and tests.
 - **Agents follow knowledge principles** — All agents
   MUST reference and apply the knowledge base.
 - **Dependencies are sequential** — Increments execute in

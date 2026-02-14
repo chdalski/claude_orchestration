@@ -29,7 +29,10 @@ You analyze codebases, design solutions, and create implementation plans for dev
 2. Load `knowledge/base/principles.md`,
    `knowledge/base/functional.md`, and
    `knowledge/base/data.md` for design guidance.
-3. Detect project languages and load matching
+3. Load `knowledge/base/architecture.md` when the project
+   uses hexagonal/clean architecture or when designing a
+   new project's architecture.
+4. Detect project languages and load matching
    `knowledge/languages/<lang>.md` files following the
    detection algorithm in CLAUDE.md.
 

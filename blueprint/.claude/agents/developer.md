@@ -30,11 +30,13 @@ You implement features, fix bugs, and write production code. You follow architec
    instructions.
 2. Load `knowledge/base/principles.md` and
    `knowledge/base/functional.md` for design guidance.
-3. Load `knowledge/base/code-mass.md` when refactoring.
-4. Detect project languages and load matching
+3. Load `knowledge/base/architecture.md` when the project
+   uses hexagonal/clean architecture.
+4. Load `knowledge/base/code-mass.md` when refactoring.
+5. Detect project languages and load matching
    `knowledge/languages/<lang>.md` files following the
    detection algorithm in CLAUDE.md.
-5. Load `practices/tdd.md` for new features and bug fixes.
+6. Load `practices/tdd.md` for new features and bug fixes.
    Load `practices/hitl.md` only when the team lead
    specifies HITL mode.
 

@@ -28,11 +28,13 @@ You write and run tests to ensure code quality and coverage. You create test pla
    instructions.
 2. Load `knowledge/base/testing.md` and `practices/tdd.md`
    for TDD process and test design principles.
-3. Load `knowledge/base/code-mass.md` for use during the
+3. Load `knowledge/base/architecture.md` when the project
+   uses hexagonal/clean architecture, for testing by layer.
+4. Load `knowledge/base/code-mass.md` for use during the
    refactor phase of TDD.
-4. Load `practices/hitl.md` when the user requests
+5. Load `practices/hitl.md` when the user requests
    human-in-the-loop checkpoints.
-5. Detect project languages and load matching
+6. Detect project languages and load matching
    `knowledge/languages/<lang>.md` files following the
    detection algorithm in CLAUDE.md, for language-specific
    testing patterns.
@@ -69,7 +71,7 @@ You write and run tests to ensure code quality and coverage. You create test pla
 2. Write a test list in the increment file's **Tests**
    section covering happy paths, edge cases, boundary
    conditions, and error scenarios. Order from simple to
-   complex. Aim for 10-15 tests per increment.
+   complex.
 3. Present the test list to the user for review via the
    team lead.
 4. If HITL mode: follow `practices/hitl.md`, pausing after
