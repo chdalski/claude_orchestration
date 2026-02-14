@@ -70,68 +70,109 @@ completed in order. Do not skip steps. Do not combine steps.
 Do not optimize by removing agents.**
 
 ```text
-Architect -> Developer + Test Engineer (TDD)
--> Code Reviewer + Security Engineer -> Tech Writer
+Architect -> [per increment: TDD -> Review -> Docs -> Commit]
 ```
 
 **--- PHASE 1: Architecture ---**
 
 1. Spawn Architect as a subagent to analyze the codebase
-   and create an implementation plan.
+   and create an implementation plan. The Architect also
+   slices the work into ordered increments (see the
+   Architect agent definition for details). Each increment
+   gets its own file in `.claude/temp/increments/`.
 
    STOP — Do not proceed until the Architect's plan is
-   delivered. Read the plan and verify it is complete.
+   delivered and increment files are created. Read the plan
+   and verify it is complete.
 
-**--- PHASE 2: TDD Setup ---**
+2. Present the increment list to the user for review.
 
-2. Create a team. Spawn BOTH a Developer AND a Test
-   Engineer as teammates. Both are REQUIRED — do not spawn
-   only Developers without a Test Engineer.
+   STOP — Do not proceed until the user has approved the
+   increment list.
 
-3. Test Engineer creates a test list based on the
-   Architect's plan and presents it to the user for review.
-
-   STOP — Do not proceed until the user has reviewed and
-   approved the test list.
-
-4. Ask the user whether they want human-in-the-loop
+3. Ask the user whether they want human-in-the-loop
    checkpoints (HITL) or autonomous execution:
    - **HITL**: Developer and Test Engineer follow
      `practices/hitl.md`, pausing after each TDD phase
      for user approval.
    - **Autonomous**: Developer and Test Engineer work
-     through the test list without pausing, reporting
+     through increments without pausing, reporting
      results at the end.
 
-**--- PHASE 3: TDD Execution ---**
+**--- PHASE 2: Increment Cycle ---**
 
-5. Developer and Test Engineer implement using TDD
+Repeat the following for each increment in order. Each
+increment goes through the full cycle before the next one
+starts.
+
+**a) TDD Setup**
+
+4. Create a team (if not already created). Spawn BOTH a
+   Developer AND a Test Engineer as teammates. Both are
+   REQUIRED — do not spawn only Developers without a Test
+   Engineer.
+
+5. Tell the Test Engineer to read the current increment
+   file and write a test list in its Tests section. The
+   Test Engineer presents it to the user for review.
+
+   STOP — Do not proceed until the user has reviewed and
+   approved the test list.
+
+**b) TDD Execution**
+
+6. Developer and Test Engineer implement using TDD
    (`practices/tdd.md`), coordinating directly via
    messages. The Test Engineer writes tests FIRST. The
    Developer writes code to make them pass.
 
+   Both agents update the increment file as they work:
+   - Test Engineer updates the Tests section (marking
+     tests done, noting consolidations or additions)
+   - Any agent records blockers, decisions, or deviations
+     in the Notes section
+
    STOP — Do not proceed to review until:
-   - All tests in the test list are implemented
+   - All tests in the increment are implemented
    - All tests pass
    - The Developer has run the completion checklist
 
-**--- PHASE 4: Review ---**
+**c) Review**
 
-6. Spawn Code Reviewer and Security Engineer as teammates
+7. Spawn Code Reviewer and Security Engineer as teammates
    to review in parallel. Both are REQUIRED for feature
-   work. They read the code independently and message the
-   Developer directly with findings.
+   work. They read the code independently and write their
+   findings in the Review section of the increment file.
+   They also message the Developer directly.
 
-7. Developer addresses findings from both reviewers.
+8. Developer addresses findings from both reviewers.
    Critical and High severity findings MUST be resolved.
+   If findings require deviating from the plan, the
+   Developer updates the Notes section with what changed
+   and why.
 
-**--- PHASE 5: Documentation ---**
+**d) Documentation and Commit**
 
-8. Shut down the team. Spawn Tech Writer as a subagent to
-   update documentation.
+9. Spawn Tech Writer as a subagent to update documentation
+   for this increment.
 
-**If you are tempted to skip steps 2-8 and "just implement
-it quickly" — that is the exact failure mode this workflow
+10. Create a conventional commit for this increment using
+    the type and scope from the increment file title.
+
+**e) Next Increment**
+
+11. Move to the next increment file and repeat from step 5.
+    Reuse existing teammates if they are still running.
+    Spawn fresh ones if context pressure is high or if
+    teammates have been shut down.
+
+**--- PHASE 3: Cleanup ---**
+
+12. After all increments are committed, shut down the team.
+    Delete the `.claude/temp/increments/` directory.
+
+**If you are tempted to skip steps and "just implement it
+quickly" — that is the exact failure mode this workflow
 prevents. Speed without quality is not a valid trade-off.**
 
 ### Bug Fix
@@ -152,6 +193,36 @@ Test Engineer -> Developer
 5. No HITL checkpoints — execute autonomously and report
    results.
 6. Shut down the team.
+
+### Fix Batch
+
+**Coordination: Subagent**
+
+For a list of well-defined fixes with specific acceptance
+criteria — typically from a code review or security audit
+report. Each fix must have a file reference, a description
+of the issue, and a suggested approach.
+
+```text
+Developer (writes fixes + tests)
+```
+
+1. Spawn Developer as a subagent with the list of findings.
+   The Developer implements each fix and writes a test for
+   each one.
+2. The Developer runs all tests (new and existing) before
+   reporting back.
+
+Use this workflow ONLY when:
+
+- Fixes come from a review or audit with **specific,
+  actionable findings** (file, issue, suggested fix)
+- Each fix is **small and low-ambiguity** (bounds checks,
+  input validation, configuration changes)
+- The list is **well-bounded** — not open-ended
+
+If fixes are large, ambiguous, or require design decisions,
+use the Bug Fix workflow with a full team instead.
 
 ### Security Audit
 
@@ -203,12 +274,22 @@ task with specific acceptance criteria, not open-ended rework.
   (Shift+Tab) to enforce this mechanically.
 - **Tests are REQUIRED, not optional** — Every code change
   MUST have corresponding tests written by a Test Engineer.
-- Always set task dependencies so agents work in the correct
-  order. Phases are sequential — do not start TDD before the
-  Architect's plan is complete, do not start Review before
-  TDD is complete.
+- **Increments are sequential** — Complete each increment
+  (TDD, review, docs, commit) before starting the next.
+  Do not start TDD before the Architect's plan is complete.
+  Do not start review before TDD is complete.
+- **The increment file is the contract** — All agents read
+  and update the current increment file in
+  `.claude/temp/increments/`. If you deviate from the plan,
+  record what changed and why in the Notes section.
 - When using teams, ensure each teammate owns different
   files to avoid edit conflicts.
+- **Report blockers immediately** — If you cannot implement
+  a requirement with the available tools or APIs, STOP. Do
+  not skip it, do not mark it complete, do not silently move
+  on. Message the team lead with: (1) what you tried, (2) why
+  it failed, (3) what you think would unblock it. Silent
+  failure wastes more time than asking for help.
 - Shut down teams and teammates when their work is complete.
 - Summarize outcomes clearly when reporting back to the user.
 - Not every task needs every agent — but Feature
@@ -234,20 +315,21 @@ testing as optional overhead.
 the Developer. The Test Engineer writes the test list and
 tests FIRST (TDD). Code without tests is incomplete.
 
-### Decomposing by File Instead of Workflow Phase
+### Decomposing by File Instead of by Increment
 
 **Violation**: Creating tasks like "implement file A",
 "implement file B", "implement file C" and assigning them
 all to Developers working in parallel.
 
 **Why it happens**: The lead decomposes by deliverable
-(files) instead of by workflow phase (architect, then TDD,
-then review).
+(files) instead of by increment (each going through the
+full TDD-review-docs-commit cycle).
 
-**Correct behavior**: Follow the workflow phases in order.
-The Architect produces a plan. Then Developer + Test
-Engineer implement via TDD. Then reviewers review. Tasks
-within a phase can parallelize, but phases are sequential.
+**Correct behavior**: The Architect slices work into
+ordered increments. Each increment goes through the full
+cycle sequentially. Tasks within an increment can
+parallelize (e.g., Code Reviewer and Security Engineer),
+but increments are sequential.
 
 ### Lead Editing Files Directly
 
@@ -282,7 +364,7 @@ The following specialist agents are available in `agents/`:
 | Agent | Model | Role |
 |-------|-------|------|
 | **Architect** | opus | Analyzes codebase, designs solutions |
-| **Developer** | sonnet | Implements features, fixes bugs |
+| **Developer** | opus | Implements features, fixes bugs |
 | **Test Engineer** | sonnet | Writes and runs tests |
 | **Code Reviewer** | sonnet | Reviews code for quality and best practices |
 | **Security Engineer** | sonnet | Audits code for vulnerabilities |
@@ -479,16 +561,22 @@ workflow failure.
   and assign work but NEVER edit files. Use delegate mode
   (Shift+Tab) after creating a team. This is not optional.
 - **Feature Implementation requires ALL phases** — You
-  MUST complete Architecture, TDD, Review, and Documentation
-  phases. Skipping phases is not an optimization, it is a
-  failure.
+  MUST complete Architecture, then the full increment cycle
+  (TDD, Review, Documentation, Commit) for each increment.
+  Skipping phases is not an optimization, it is a failure.
+- **Each increment is a complete cycle** — Do not batch
+  multiple increments into one TDD or review pass. Each
+  increment goes through TDD, review, docs, and commit
+  before the next one starts.
 - **Tests are REQUIRED** — Every code change MUST have
   tests. A Test Engineer MUST be spawned for any task
   involving code changes.
 - **Agents follow knowledge principles** — All agents
   MUST reference and apply the knowledge base.
-- **Dependencies are sequential** — Phases execute in
+- **Dependencies are sequential** — Increments execute in
   order. Do not start TDD before the Architect's plan is
-  complete. Do not start Review before TDD is complete.
+  complete. Do not start review before TDD is complete.
+  Do not start the next increment before the current one
+  is committed.
 - **Language extensions augment, not replace** — Base
   knowledge always applies; language files add specifics.

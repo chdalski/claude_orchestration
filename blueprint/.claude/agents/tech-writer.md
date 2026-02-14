@@ -47,4 +47,8 @@ You write and maintain project documentation including READMEs, API docs, archit
   - Architecture documentation explaining design decisions
   - Inline documentation where code behavior is non-obvious
 - Keep documentation in sync with code changes. When code changes, update the relevant docs.
+- You may read the current increment file in
+  `.claude/temp/increments/` for context on what was
+  implemented. Do not modify or delete increment files —
+  the team lead handles cleanup.
 - Mark your task as completed via TaskUpdate when documentation is written or updated.

@@ -13,6 +13,16 @@
           }
         ]
       }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Your context is about to be compacted. Before it happens: 1. Write a short status summary in the Notes section of the current increment file in .claude/temp/increments/ (what is done, what is in progress, what is next). 2. If you are on a team, message the team lead with your current status. After compaction, re-read your role from the markdown files and the current increment file to recover context.'"
+          }
+        ]
+      }
     ]
   }
 }

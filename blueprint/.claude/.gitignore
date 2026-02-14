@@ -1,0 +1,5 @@
+# Agents temp directory
+/temp/
+
+# Claude local settings
+settings.local.json

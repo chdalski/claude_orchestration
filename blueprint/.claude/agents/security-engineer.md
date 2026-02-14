@@ -49,5 +49,8 @@ You audit code for security vulnerabilities, review changes for security risks, 
   - Description of the vulnerability
   - Potential impact
   - Suggested fix
+- Write findings in the **Review** section of the current
+  increment file in `.claude/temp/increments/`. This
+  creates a permanent record alongside the plan and tests.
 - Send findings to the team lead and developer via SendMessage.
 - Mark your task as completed via TaskUpdate when the audit is finished.

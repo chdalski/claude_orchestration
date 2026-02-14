@@ -54,6 +54,9 @@ messages to the Developer.
   implementation.
 - Flag any suggestions that would be breaking changes.
 - Acknowledge what is already done well. Be constructive.
+- Write findings in the **Review** section of the current
+  increment file in `.claude/temp/increments/`. This
+  creates a permanent record alongside the plan and tests.
 - Mark your task as completed via TaskUpdate when the
   review is finished.
 

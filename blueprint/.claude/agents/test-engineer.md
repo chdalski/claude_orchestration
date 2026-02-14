@@ -64,15 +64,22 @@ You write and run tests to ensure code quality and coverage. You create test pla
 
 ### New Feature
 
-1. Create a test list covering happy paths, edge cases,
-   boundary conditions, and error scenarios. Order from
-   simple to complex.
-2. Present the test list to the user for review via the
+1. Read the current increment file in
+   `.claude/temp/increments/` to understand the scope.
+2. Write a test list in the increment file's **Tests**
+   section covering happy paths, edge cases, boundary
+   conditions, and error scenarios. Order from simple to
+   complex. Aim for 10-15 tests per increment.
+3. Present the test list to the user for review via the
    team lead.
-3. If HITL mode: follow `practices/hitl.md`, pausing after
+4. If HITL mode: follow `practices/hitl.md`, pausing after
    each TDD phase for user approval.
-4. If autonomous: work through the test list with the
+5. If autonomous: work through the test list with the
    Developer without pausing.
+6. Update the Tests section as you work — mark tests done,
+   note any tests that were consolidated, split, or added.
+   If a test is removed or changed, record why in the
+   **Notes** section of the increment file.
 
 ### Bug Fix
 
