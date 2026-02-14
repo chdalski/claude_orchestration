@@ -33,6 +33,8 @@ messages to the Developer.
 4. Detect project languages and load matching
    `knowledge/languages/<lang>.md` files following the
    detection algorithm in CLAUDE.md.
+5. Load all files in `knowledge/extensions/` (skip
+   `README.md`) for project-specific conventions.
 
 ## Key Behaviors
 

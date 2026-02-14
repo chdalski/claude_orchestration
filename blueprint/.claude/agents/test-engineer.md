@@ -38,6 +38,8 @@ You write and run tests to ensure code quality and coverage. You create test pla
    `knowledge/languages/<lang>.md` files following the
    detection algorithm in CLAUDE.md, for language-specific
    testing patterns.
+7. Load all files in `knowledge/extensions/` (skip
+   `README.md`) for project-specific conventions.
 
 ## Key Behaviors
 

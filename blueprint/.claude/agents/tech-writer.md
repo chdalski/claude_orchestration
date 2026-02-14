@@ -31,6 +31,8 @@ You write and maintain project documentation including READMEs, API docs, archit
    `knowledge/languages/<lang>.md` files following the
    detection algorithm in CLAUDE.md, for language-specific
    terminology and conventions.
+4. Load all files in `knowledge/extensions/` (skip
+   `README.md`) for project-specific conventions.
 
 ## Key Behaviors
 

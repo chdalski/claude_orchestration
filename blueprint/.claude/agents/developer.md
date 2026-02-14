@@ -36,7 +36,9 @@ You implement features, fix bugs, and write production code. You follow architec
 5. Detect project languages and load matching
    `knowledge/languages/<lang>.md` files following the
    detection algorithm in CLAUDE.md.
-6. Load `practices/tdd.md` for new features and bug fixes.
+6. Load all files in `knowledge/extensions/` (skip
+   `README.md`) for project-specific conventions.
+7. Load `practices/tdd.md` for new features and bug fixes.
    Load `practices/hitl.md` only when the team lead
    specifies HITL mode.
 

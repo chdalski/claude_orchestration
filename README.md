@@ -19,13 +19,13 @@ providing:
    don't do security audits).
 2. **A layered knowledge system** that gives every agent a
    common foundation of design principles (SOLID, TDD, FP,
-   SSOT, code mass) while automatically loading
-   language-specific guidance (Rust, TypeScript, Python, Go)
-   based on the project's file types.
-3. **Standardized workflows** for common tasks (feature
-   implementation, bug fixes, security audits, documentation)
-   with sequencing and dependency management built into the
-   CLAUDE.md that drives your session.
+   SSOT, code mass, hexagonal architecture) while automatically
+   loading language-specific guidance (Rust, TypeScript, Python,
+   Go) based on the project's file types.
+3. **Increment-based workflows** that slice large tasks into
+   small, committable units — each going through the full cycle
+   of TDD, review, documentation, and conventional commit
+   before the next one starts.
 
 The goal is to encode good engineering judgment once and reuse
 it across projects, rather than relying on each conversation to
@@ -65,10 +65,10 @@ preventing it from implementing work directly.
 ```text
 blueprint/.claude/
 ├── CLAUDE.md              # Orchestration instructions
-├── settings.json          # Enables agent teams + config
+├── settings.json          # Enables agent teams + hooks
 ├── agents/                # 6 agent definitions
 │   ├── architect.md       # Solution design (opus)
-│   ├── developer.md       # Implementation (sonnet)
+│   ├── developer.md       # Implementation (opus)
 │   ├── code-reviewer.md   # Code quality review (sonnet)
 │   ├── test-engineer.md   # Testing (sonnet)
 │   ├── security-engineer.md # Security audit (sonnet)
@@ -79,12 +79,16 @@ blueprint/.claude/
 │   │   ├── functional.md  # FP principles
 │   │   ├── data.md        # SSOT guidelines
 │   │   ├── code-mass.md   # APP complexity metric
-│   │   └── testing.md     # TDD principles
-│   └── languages/         # Language-specific extensions
-│       ├── rust.md
-│       ├── typescript.md
-│       ├── python.md
-│       └── go.md
+│   │   ├── testing.md     # Testing pyramid, TDD principles
+│   │   ├── documentation.md # Documentation principles
+│   │   └── architecture.md  # Hexagonal architecture
+│   ├── languages/         # Language-specific extensions
+│   │   ├── rust.md
+│   │   ├── typescript.md
+│   │   ├── python.md
+│   │   └── go.md
+│   └── extensions/        # Project-specific conventions
+│       └── README.md      # Guide for adding extensions
 └── practices/
     ├── tdd.md             # TDD workflow
     └── hitl.md            # Human-in-the-loop checkpoints
@@ -100,15 +104,73 @@ extensions are detected automatically from the project's
 code files — polyglot projects load all matching language
 files.
 
-### Workflow Examples
+### Feature Implementation
 
-- **New feature**: Architect designs, Developer implements,
-  Test Engineer tests, Code Reviewer and Security Engineer
-  review in parallel, Tech Writer documents
+Large features are broken into **increments** — each one a
+meaningful, encapsulated improvement with a conventional
+commit type (e.g., `chore(scaffold)`, `feat(parser)`).
+
+```text
+Architect -> [per increment: TDD -> Review -> Docs -> Commit]
+```
+
+1. **Architecture**: Architect designs the solution and slices
+   it into ordered increments. Each increment gets a file in
+   `.claude/temp/increments/` that serves as the working
+   contract for that cycle.
+2. **Per increment**: Test Engineer writes a test list,
+   Developer implements via TDD, Code Reviewer and Security
+   Engineer review in parallel, Tech Writer updates docs,
+   then a conventional commit is created.
+3. **Cleanup**: After all increments are committed, temp files
+   are deleted. The git log tells the full story.
+
+### Other Workflows
+
 - **Bug fix**: Test Engineer writes failing test first,
   Developer implements the fix
+- **Fix batch**: For well-defined fixes from a review or audit,
+  a single Developer subagent implements fixes and tests
 - **Security audit**: Security Engineer reviews codebase
 - **Documentation**: Tech Writer updates docs
+
+### Hooks
+
+The `settings.json` includes hooks that help agents maintain
+context:
+
+- **SessionStart**: Reminds agents to read their role
+  definitions before starting work.
+- **PreCompact**: Before context compaction, agents write a
+  status summary to the increment file and notify the team
+  lead, so context can be recovered after compaction.
+
+## Project Extensions
+
+After copying the blueprint, add project-specific conventions
+in `knowledge/extensions/`. All agents load all files in this
+directory during startup.
+
+Example — create `knowledge/extensions/rust-conventions.md`:
+
+```markdown
+# Rust Conventions
+
+**Agents**: Developer, Test Engineer, Code Reviewer
+
+## Module Structure
+
+- Use `module_name.rs` files, not `mod.rs` for modules.
+
+## Test Placement
+
+- Write unit tests as inline `#[cfg(test)]` modules.
+- Use `/tests/` only for integration tests.
+```
+
+See `knowledge/extensions/README.md` for format details and
+guidance on what belongs in extensions vs. in the project's
+`CLAUDE.md`.
 
 ## Adding Languages
 
@@ -127,7 +189,8 @@ Agent teams are experimental. Be aware of:
 
 - **No session resumption** — `/resume` and `/rewind` do not
   restore in-process teammates. After resuming, tell the lead
-  to spawn new ones.
+  to spawn new ones. The increment file preserves context so
+  fresh agents can pick up where previous ones left off.
 - **One team per session** — Clean up the current team before
   starting another.
 - **No nested teams** — Only the lead can manage the team.
@@ -153,9 +216,12 @@ Agent teams are experimental. Be aware of:
 
 After copying into your project:
 
-- Edit `.claude/CLAUDE.md` to add project-specific
-  instructions
+- Add project-specific conventions in
+  `.claude/knowledge/extensions/` (preferred)
+- Edit your project's root `CLAUDE.md` for build commands,
+  repo structure, and setup instructions
 - Modify agent definitions in `.claude/agents/` to adjust
-  roles or tool access
-- Add new knowledge files for additional principles
-- Extend language support as needed
+  roles, models, or tool access
+- Add new knowledge files in `.claude/knowledge/base/` for
+  additional principles
+- Extend language support in `.claude/knowledge/languages/`

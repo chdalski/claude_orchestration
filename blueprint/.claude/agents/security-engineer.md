@@ -28,6 +28,8 @@ You audit code for security vulnerabilities, review changes for security risks, 
    `knowledge/languages/<lang>.md` files following the
    detection algorithm in CLAUDE.md, for language-specific
    security patterns and common vulnerabilities.
+3. Load all files in `knowledge/extensions/` (skip
+   `README.md`) for project-specific conventions.
 
 ## Key Behaviors
 

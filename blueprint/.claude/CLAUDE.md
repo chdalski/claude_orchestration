@@ -426,6 +426,17 @@ files (polyglot projects get multiple):
 5. If no code extensions match any language file, skip
    language-specific loading
 
+### Project Extensions (`knowledge/extensions/`)
+
+Project-specific conventions that extend the blueprint's
+knowledge. Users create these files for their project.
+See `knowledge/extensions/README.md` for format and
+examples.
+
+All agents load all files in this directory during startup.
+Extension files can optionally specify which agents they
+are most relevant to.
+
 ## Agent Startup Protocol
 
 Every agent follows the startup sequence defined in its own
@@ -436,11 +447,13 @@ agent file. The general pattern is:
 3. Detect project languages and load all matching
    `knowledge/languages/<lang>.md` files (see detection
    algorithm above)
-4. Load practices files as needed for the task
+4. Load all files in `knowledge/extensions/` (skip
+   `README.md`)
+5. Load practices files as needed for the task
 
-Agents load knowledge selectively to conserve context.
-All agents also load language-specific files based on
-project detection.
+Agents load knowledge selectively for base and language
+files. Extension files are always loaded in full — keep
+them concise.
 
 **Base knowledge** (`knowledge/base/`):
 

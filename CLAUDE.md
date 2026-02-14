@@ -17,11 +17,12 @@ claude_orchestration/
 ├── blueprint/             # The copyable kit
 │   └── .claude/           # Copied into target project
 │       ├── CLAUDE.md      # Orchestration instructions
-│       ├── settings.json  # Enables agent teams + config
+│       ├── settings.json  # Enables agent teams + hooks
 │       ├── agents/        # 6 agent definitions
 │       ├── knowledge/
 │       │   ├── base/      # Language-agnostic principles
-│       │   └── languages/ # Language-specific extensions
+│       │   ├── languages/ # Language-specific extensions
+│       │   └── extensions/# Project-specific conventions
 │       └── practices/     # TDD, human-in-the-loop
 ```
 
@@ -42,6 +43,9 @@ claude_orchestration/
 - `languages/` files contain language-specific guidance that
   extends the base principles. Each file references the base
   principles it builds on.
+- `extensions/` is for project-specific conventions added
+  after copying the blueprint. Contains a `README.md` with
+  format guidance. All agents load all extension files.
 
 ### Agent files (`blueprint/.claude/agents/`)
 
