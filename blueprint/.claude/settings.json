@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'Your context is about to be compacted. Before it happens: 1. If an increment file exists in .claude/temp/increments/, write a short status summary in its Notes section (what is done, what is in progress, what is next). 2. If you are on a team, message the team lead with your current status. After compaction, re-read your role from the markdown files and the current increment file (if any) to recover context.'"
+            "command": "echo 'Your context is about to be compacted. Before it happens: 1. If an increment file exists in .claude_temp/increments/, write a short status summary in its Notes section (what is done, what is in progress, what is next). 2. If you are on a team, message the team lead with your current status. After compaction, re-read your role from the markdown files and the current increment file (if any) to recover context.'"
           }
         ]
       }

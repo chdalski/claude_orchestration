@@ -116,7 +116,7 @@ Architect -> [per increment: TDD -> Review -> Docs -> Commit]
 
 1. **Architecture**: Architect designs the solution and slices
    it into ordered increments. Each increment gets a file in
-   `.claude/temp/increments/` that serves as the working
+   `.claude_temp/increments/` that serves as the working
    contract for that cycle.
 2. **Per increment**: Test Engineer writes a test list,
    Developer implements via TDD, Code Reviewer and Security

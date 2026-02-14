@@ -79,7 +79,7 @@ Architect -> [per increment: TDD -> Review -> Docs -> Commit]
    and create an implementation plan. The Architect also
    slices the work into ordered increments (see the
    Architect agent definition for details). Each increment
-   gets its own file in `.claude/temp/increments/`.
+   gets its own file in `.claude_temp/increments/`.
 
    STOP — Do not proceed until the Architect's plan is
    delivered and increment files are created. Read the plan
@@ -169,7 +169,7 @@ starts.
 **--- PHASE 3: Cleanup ---**
 
 12. After all increments are committed, shut down the team.
-    Delete the `.claude/temp/increments/` directory.
+    Delete the `.claude_temp/increments/` directory.
 
 **If you are tempted to skip steps and "just implement it
 quickly" — that is the exact failure mode this workflow
@@ -282,7 +282,7 @@ task with specific acceptance criteria, not open-ended rework.
   Do not start review before TDD is complete.
 - **The increment file is the contract** — All agents read
   and update the current increment file in
-  `.claude/temp/increments/`. If you deviate from the plan,
+  `.claude_temp/increments/`. If you deviate from the plan,
   record what changed and why in the Notes section.
 - When using teams, ensure each teammate owns different
   files to avoid edit conflicts.

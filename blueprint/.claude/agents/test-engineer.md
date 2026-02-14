@@ -69,7 +69,7 @@ You write and run tests to ensure code quality and coverage. You create test pla
 ### New Feature
 
 1. Read the current increment file in
-   `.claude/temp/increments/` to understand the scope.
+   `.claude_temp/increments/` to understand the scope.
 2. Write a test list in the increment file's **Tests**
    section covering happy paths, edge cases, boundary
    conditions, and error scenarios. Order from simple to

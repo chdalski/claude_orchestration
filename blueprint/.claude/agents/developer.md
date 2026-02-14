@@ -90,7 +90,7 @@ targets, CI config, pre-commit hooks, or the project's
 ### New Feature (with or without HITL)
 
 Read the current increment file in
-`.claude/temp/increments/` to understand the scope and
+`.claude_temp/increments/` to understand the scope and
 the Architect's plan. Work through the test list in the
 increment file's Tests section. Follow `practices/tdd.md`
 for the red-green-refactor cycle. If the team lead

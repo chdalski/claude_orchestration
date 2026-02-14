@@ -81,13 +81,13 @@ on top. Each increment should be a meaningful, committable
 unit — not an arbitrary slice.
 
 Create one increment file per increment in
-`.claude/temp/increments/`, numbered and named after the
+`.claude_temp/increments/`, numbered and named after the
 commit scope:
 
 ```
-.claude/temp/increments/01-chore-scaffold.md
-.claude/temp/increments/02-feat-parser.md
-.claude/temp/increments/03-feat-schema.md
+.claude_temp/increments/01-chore-scaffold.md
+.claude_temp/increments/02-feat-parser.md
+.claude_temp/increments/03-feat-schema.md
 ```
 
 Use this template for each increment file:
