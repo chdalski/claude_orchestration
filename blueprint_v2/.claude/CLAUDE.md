@@ -42,9 +42,9 @@ good engineering principles loaded produce good work. The
 knowledge base does the heavy lifting — not mandatory
 checklists and phase gates.
 
-**Review when it matters.** Spawn a reviewer for complex
-logic, security-sensitive code, or architectural decisions.
-Don't mandate review for every change.
+**Review when it matters.** Spawn a Reviewer when the code
+warrants a second opinion. Don't mandate review for every
+change, but don't skip it to move faster either.
 
 ## Agents
 
@@ -70,14 +70,25 @@ Agents load knowledge from `knowledge/` and practices from
 3. Spawn Developer agents to work on tasks. For independent
    tasks, run agents in parallel. For dependent tasks, run
    them sequentially.
-4. When a Developer completes a task, review the output. If
-   the change is complex or security-sensitive, spawn a
-   Reviewer.
-5. Commit completed work with conventional commit messages.
-6. Repeat until done.
+4. When a Developer reports completion, verify the work
+   (see After Task Completion below).
+5. Repeat until done.
 
 For large features, present the task decomposition to the
 user before spawning agents. For small features, just do it.
+
+### After Task Completion
+
+When a Developer reports a task is done:
+
+1. Read the changed files and verify the work is correct.
+2. Verify the Developer committed (check `git log`). If
+   not, have them commit before proceeding.
+3. Decide if a Reviewer is needed (see When to Review).
+4. Only then spawn the next agent or assign the next task.
+
+Do not skip verification to move faster. Do not spawn the
+next agent before the previous task is committed.
 
 ### Bug Fix
 
@@ -111,6 +122,33 @@ Each task should include enough context for the agent to work
 independently: what to build, where it fits, what "done"
 looks like.
 
+## Spawning Agents
+
+When spawning agents, provide:
+
+- **What to build** — the outcome, not the implementation
+- **Where it fits** — relevant existing code and modules
+- **What "done" looks like** — acceptance criteria
+
+Do NOT provide:
+
+- Code templates or struct definitions
+- Step-by-step file creation orders
+- Implementation decisions the agent should make
+
+The agent loads the knowledge base and makes design
+decisions based on the project's conventions and the
+engineering principles. If you pre-decide the
+implementation, the knowledge base is bypassed and the
+agent is just transcribing your code.
+
+**Agent startup takes 1-2 turns.** Agents loading knowledge
+files during startup is normal and expected — do not
+suppress it. Do not tell agents to skip knowledge loading
+or "start writing code immediately." The knowledge files
+are the primary quality mechanism. Skipping them produces
+worse results.
+
 ## Coordination
 
 - **File ownership** — when multiple agents run in parallel,
@@ -121,6 +159,11 @@ looks like.
 - **Keep teammates alive** — don't shut down and respawn
   agents between tasks unless context is genuinely too large.
   Agents that continue working build on what they learned.
+- **Agents go idle between turns** — this is normal, not
+  failure. Wait for their SendMessage before concluding
+  they're stuck. If an agent has been idle for 3+ cycles
+  with no file changes or messages, send them a message
+  before shutting down and respawning.
 
 ## Quality Gates
 
@@ -142,9 +185,20 @@ which files to check by editing `config.json`:
 }
 ```
 
-Use Reviewers for judgment calls: design quality, security
-implications, architectural fit. These are spawned by the
-lead when needed — not mandated for every change.
+### When to Review
+
+Spawn a Reviewer when the code:
+
+- Handles external input (HTTP requests, user data, file
+  parsing, deserialization)
+- Touches authentication or authorization logic
+- Implements cryptographic operations
+- Makes architectural decisions that affect future work
+- Is complex enough that you aren't confident in its
+  correctness from reading it
+
+"Review when it matters" means using judgment — not
+skipping review to move faster. If in doubt, review.
 
 Tests are expected for code changes. This is enforced by
 the knowledge base principles that agents load, not by

@@ -83,7 +83,10 @@ Run these checks in order:
 2. **Lint** — run the project's linter. Fix any errors.
 3. **Test** — run the tests you created or modified, plus
    any tests directly affected by your changes.
-4. If any step fails, fix and re-run from that step.
+4. **Commit** — commit your work using the template in
+   `templates/commit-message.md`. Each increment gets its
+   own commit. Do not leave uncommitted work for the lead.
+5. If any step fails, fix and re-run from that step.
 
 ## Guidelines
 
