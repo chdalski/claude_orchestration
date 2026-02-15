@@ -1,7 +1,7 @@
 ---
 name: Reviewer
 description: Reviews code for quality, security, and correctness
-model: sonnet
+model: opus
 color: purple
 tools:
   - Read
