@@ -1,0 +1,39 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "teammateMode": "in-process",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '## Startup Checklist\n\nBefore doing anything else, load your context:\n\n1. Read the project root CLAUDE.md for build commands, repo structure, and conventions.\n2. Read .claude/CLAUDE.md for orchestration instructions and the knowledge system.\n3. If you are an agent (Developer, Reviewer), read your agent file in .claude/agents/ and follow its Startup section — it tells you which knowledge files to load for your role.\n4. Detect project languages (scan for code file extensions) and load all matching .claude/knowledge/languages/<lang>.md files.\n5. Load all files in .claude/knowledge/extensions/ (skip README.md).\n6. If you are the team lead, read .claude/CLAUDE.md fully — especially Workflows, Task Decomposition, and Coordination.\n\nDo NOT start working until you have completed this checklist. The knowledge files are what make your output good — skipping them produces worse results.'"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash(git commit*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CONFIG=.claude/config.json; if [ -f \"$CONFIG\" ]; then FILES=$(python3 -c \"import json,sys; d=json.load(open('$CONFIG')); print('\\n'.join(d.get('documentation',[])))\" 2>/dev/null || echo ''); if [ -n \"$FILES\" ]; then echo \"DOCUMENTATION CHECK: Before committing, verify these files are still accurate given your changes:\n\n$FILES\n\nIf any of these files need updating, update them before committing. If none are affected by your changes, proceed.\"; fi; fi"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Your context is about to be compacted. If you are on a team, message the team lead with your current status (what is done, what is in progress, what is next). After compaction, re-read your agent file and the project CLAUDE.md to recover context.'"
+          }
+        ]
+      }
+    ]
+  }
+}

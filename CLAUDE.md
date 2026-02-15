@@ -2,10 +2,10 @@
 
 ## What This Is
 
-This repository contains a **blueprint** for Claude Code
+This repository contains a blueprint for Claude Code
 multi-agent orchestration. It is not a runnable application.
-The `blueprint/` directory contains a `.claude/` setup that
-gets copied into target projects to enable coordinated
+The `blueprint_v2/` directory contains a `.claude/` setup
+that gets copied into target projects to enable coordinated
 multi-agent workflows.
 
 ## Project Structure
@@ -14,27 +14,29 @@ multi-agent workflows.
 claude_orchestration/
 ├── CLAUDE.md              # This file (project context)
 ├── README.md              # User-facing documentation
-├── blueprint/             # The copyable kit
-│   └── .claude/           # Copied into target project
+├── blueprint/             # v1 blueprint (archived)
+├── blueprint_v2/          # Current blueprint
+│   └── .claude/
 │       ├── CLAUDE.md      # Orchestration instructions
 │       ├── settings.json  # Enables agent teams + hooks
-│       ├── agents/        # 6 agent definitions
+│       ├── agents/        # Developer, Reviewer
 │       ├── knowledge/
 │       │   ├── base/      # Language-agnostic principles
 │       │   ├── languages/ # Language-specific extensions
 │       │   └── extensions/# Project-specific conventions
-│       └── practices/     # TDD, human-in-the-loop
+│       ├── practices/     # TDD, conventional commits
+│       └── templates/     # Commit message template
 ```
 
-## Key Distinction
+## Key Directories
 
-- **This `CLAUDE.md`** is for working on the blueprint itself.
-- **`blueprint/.claude/CLAUDE.md`** is the template that gets
-  copied into target projects and loaded by agents there.
+- **`blueprint/`** — v1 blueprint, archived for reference.
+- **`blueprint_v2/`** — current orchestration design, in
+  active development.
 
 ## Conventions
 
-### Knowledge files (`blueprint/.claude/knowledge/`)
+### Knowledge files (`blueprint_v2/.claude/knowledge/`)
 
 - `base/` files are **language-agnostic**. No code examples
   in any specific language. Use pseudocode or prose
@@ -47,18 +49,6 @@ claude_orchestration/
   after copying the blueprint. Contains a `README.md` with
   format guidance. All agents load all extension files.
 
-### Agent files (`blueprint/.claude/agents/`)
-
-- Each agent has YAML frontmatter: name, description, model,
-  color, tools.
-- Agents load knowledge **selectively** based on their role,
-  not everything.
-- Language detection algorithm is defined once in
-  `blueprint/.claude/CLAUDE.md`. Agent files reference it
-  rather than duplicating it.
-- Polyglot projects load all matching language files.
-
 ### Practices
 
 - `practices/` files are language-agnostic workflow guidance.
-
