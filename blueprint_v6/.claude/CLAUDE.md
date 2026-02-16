@@ -165,9 +165,10 @@ Do NOT provide:
 ## Coordination
 
 - **File ownership** — Developer owns source files, Test
-  Engineer owns test files. For inline tests (e.g., Rust
-  `#[cfg(test)]`), Test Engineer creates the file and test
-  module first, Developer implements above it.
+  Engineer owns test files. For inline test modules (when
+  the language supports them), Test Engineer creates the
+  file and test module first, Developer implements above
+  it.
 - **Test Engineer goes first** — tests are written before
   implementation. This enforces TDD and prevents file
   conflicts. The Developer must wait for the Test
@@ -206,6 +207,22 @@ Do NOT provide:
   Engineer sends post-implementation sign-off to the
   dev-team. The dev-team reports completion to the lead
   only after receiving it.
+- **Research before implementing** — when a task involves
+  a library the dev-team has not used before, spend one
+  turn consulting external resources before writing code:
+  1. Published API documentation — trait/interface
+     signatures, method semantics. Especially valuable
+     when source uses macros or code generation.
+  2. The library's package registry — check the latest
+     stable version. Use it unless an existing project
+     dependency constrains the version.
+  3. The library's repository — known issues, migration
+     guides, examples, and test patterns.
+  This applies to all agents: Test Engineer researches
+  testing patterns, Developer researches API usage,
+  Security Engineer researches known vulnerabilities.
+  Do not read vendored or cached source as a substitute
+  for published documentation.
 - **Wiring code** — for thin framework glue where the
   core logic is already well-tested, the Test Engineer
   may write tests in parallel with the Developer's wiring

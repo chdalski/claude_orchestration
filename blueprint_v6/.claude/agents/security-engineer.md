@@ -50,7 +50,10 @@ When the dev-team receives a task:
    Engineer should cover, and what the Developer should
    watch for. End with a clear statement that this is your
    pre-implementation sign-off.
-4. Do not block progress unnecessarily — if a task has no
+4. For unfamiliar libraries: check the library's
+   repository for reported security issues and advisory
+   history before signing off.
+5. Do not block progress unnecessarily — if a task has no
    meaningful security implications, say so quickly and
    let the team proceed. For low-risk tasks, send your
    assessment based on the task description alone.

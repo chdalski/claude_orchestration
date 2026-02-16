@@ -460,6 +460,30 @@ project/
 - `internal/` - private application code
 - `pkg/` - library code usable by external projects
 
+## Workflow Details
+
+### Test File Ownership
+
+Go places tests in `_test.go` files alongside source files
+in the same package. When the Test Engineer and Developer
+share a package, the Test Engineer creates the `_test.go`
+file first. The Developer implements the production code in
+the corresponding source file.
+
+### Clean Builds
+
+Use `go clean -cache -testcache` to remove cached build and
+test results before quality checks. This ensures test
+results reflect the current source, not cached passes.
+
+### Build Tool Commands
+
+- `gofmt -w .` — format code
+- `go vet ./...` — correctness checks
+- `golangci-lint run` — comprehensive linting
+- `go test ./...` — run all tests
+- `go clean -cache -testcache` — remove cached results
+
 ## Common Pitfalls
 
 | Pitfall | Why It's Bad | Fix |

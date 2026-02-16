@@ -53,10 +53,15 @@ When the dev-team receives a task:
    I should address in my implementation?"
 4. Ask the Test Engineer: "What are you planning to test?
    Is there anything I should know about the test design?"
-5. Once all three agree on the approach, wait for the Test
+5. For unfamiliar libraries: consult published API
+   documentation and the library's repository for
+   examples and known issues before implementing. Use
+   the latest stable version unless constrained by
+   existing project dependencies.
+6. Once all three agree on the approach, wait for the Test
    Engineer's "tests ready" message before writing any
    code. Do not start implementation without tests.
-6. If the implementation requires a library or dependency
+7. If the implementation requires a library or dependency
    not already in the project, tell the lead before
    adding it. The lead will confirm with the user.
 

@@ -56,7 +56,11 @@ When the dev-team receives a task:
    features (e.g., read the framework's own test suite).
    This reveals the correct testing patterns and avoids
    fighting the framework.
-5. Once all three agree on the approach, write tests first
+5. For unfamiliar libraries: consult published API
+   documentation and the library's repository for test
+   examples before choosing a test approach. Check the
+   package registry for the latest stable version.
+6. Once all three agree on the approach, write tests first
    before the Developer starts implementation.
 
 ### Writing Tests
@@ -78,9 +82,9 @@ When the dev-team receives a task:
   delivered. The Developer waits for this message.
 - You own all test files. The Developer does not write or
   modify test code.
-- For inline test modules (e.g., Rust `#[cfg(test)]`),
-  create the file and write the test module first. The
-  Developer implements the production code above it.
+- For inline test modules (when the language supports
+  them), create the file and write the test module first.
+  The Developer implements the production code above it.
 - Include security test cases the Security Engineer
   identifies — input validation, boundary checks, error
   handling, auth verification.

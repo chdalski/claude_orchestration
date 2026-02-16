@@ -424,6 +424,23 @@ project/
 - Keep functions focused and short
 - Use docstrings for public APIs (Google style)
 
+## Workflow Details
+
+### Clean Builds
+
+Remove `__pycache__/`, `.pyc` files, and `.mypy_cache/`
+before quality checks to avoid stale bytecode or cached
+type-checking results.
+
+### Build Tool Commands
+
+- `ruff format .` — format code
+- `ruff check .` — lint
+- `mypy .` / `pyright` — type check
+- `pytest` — run tests
+- `find . -type d -name __pycache__ -exec rm -rf {} +` —
+  remove cached bytecode
+
 ## Common Pitfalls
 
 | Pitfall | Why It's Bad | Fix |

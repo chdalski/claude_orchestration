@@ -57,9 +57,9 @@ When the dev-team reports a task is complete:
    by the dev-team. If the lead's message does not
    mention the sign-off, ask the lead to confirm.
 2. Run a clean build before quality checks — remove
-   cached build artifacts (e.g., `cargo clean`, `rm -rf
-   dist`) to avoid reacting to stale state. Then run all
-   tests to verify they pass.
+   cached build artifacts using the project's build
+   tool clean command to avoid reacting to stale state.
+   Then run all tests to verify they pass.
 3. Run the housekeeping checklist (see below).
 4. Commit the work following `templates/commit-message.md`
    and `practices/conventional-commits.md`.

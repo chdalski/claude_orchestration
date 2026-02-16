@@ -388,6 +388,21 @@ src/
     index.ts
 ```
 
+## Workflow Details
+
+### Clean Builds
+
+Remove `node_modules/.cache`, `dist/`, or framework-specific
+build directories before quality checks. For projects using
+a bundler, run the clean script if defined in `package.json`.
+
+### Build Tool Commands
+
+- `npm run format` / `npx prettier --write .` — format code
+- `npm run lint` / `npx eslint .` — lint
+- `npm test` / `npx vitest` / `npx jest` — run tests
+- `rm -rf dist node_modules/.cache` — remove build artifacts
+
 ## Common Pitfalls
 
 | Pitfall | Why It's Bad | Fix |

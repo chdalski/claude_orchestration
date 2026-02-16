@@ -437,6 +437,28 @@ proptest! {
 | Premature `unsafe` | Undermines safety | Profile first |
 | Ignoring warnings | Hides design issues | Fix all clippy warnings |
 
+## Workflow Details
+
+### Inline Test Modules
+
+Rust uses `#[cfg(test)] mod tests` for inline unit tests.
+When the Test Engineer and Developer share a file, the Test
+Engineer creates the file with the `#[cfg(test)]` module
+first. The Developer implements the production code above it.
+
+### Clean Builds
+
+Use `cargo clean` to remove cached build artifacts before
+quality checks. This ensures clippy and test results reflect
+the current source, not stale incremental compilation state.
+
+### Build Tool Commands
+
+- `cargo fmt` — format code
+- `cargo clippy` — lint (run with zero warnings)
+- `cargo test` — run all tests
+- `cargo clean` — remove build artifacts
+
 ## Recommended Crates
 
 | Category | Crate | Purpose |
