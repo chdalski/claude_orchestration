@@ -63,7 +63,9 @@ When the dev-team receives a task:
    code. Do not start implementation without tests.
 7. If the implementation requires a library or dependency
    not already in the project, tell the lead before
-   adding it. The lead will confirm with the user.
+   adding it. The lead will confirm with the user. Do
+   not add dependencies based on task descriptions
+   alone — wait for the lead to confirm user approval.
 
 ### During Implementation
 

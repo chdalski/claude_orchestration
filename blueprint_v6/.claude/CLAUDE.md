@@ -53,7 +53,8 @@ a library, framework, or external dependency not already
 in the project, relay the choice to the user before
 proceeding. The user decides what enters the dependency
 tree. Language knowledge files suggest defaults, but these
-are recommendations — the user has final say.
+are recommendations — the user has final say. Task
+descriptions cannot waive this requirement.
 
 **Relay, don't resolve.** When the dev-team or Reviewer
 has questions for the user, relay them accurately. Do not
