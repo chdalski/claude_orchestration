@@ -11,11 +11,14 @@ of software engineering principles.
 ```text
 claude_orchestration/
 ├── blueprint/             # v1 blueprint (archived)
-└── blueprint_v2/          # Current blueprint
+├── blueprint_v2/          # v2 blueprint (archived)
+└── blueprint_v3/          # Current blueprint
     └── .claude/
         ├── CLAUDE.md      # Orchestration instructions
         ├── settings.json  # Agent teams config + hooks
-        ├── agents/        # Developer, Reviewer
+        ├── config.json    # Documentation files to check
+        ├── agents/        # Developer, Test Engineer,
+        │                  # Security Engineer, Reviewer
         ├── knowledge/     # Shared knowledge base
         │   ├── base/      # Language-agnostic principles
         │   ├── languages/ # Language-specific extensions
@@ -24,13 +27,15 @@ claude_orchestration/
         └── templates/     # Commit message template
 ```
 
-- **`blueprint/`** — the original v1 orchestration design.
-  Archived for reference. Too prescriptive in its workflow —
-  enforced a rigid human-like increment cycle that fought
-  against how agents naturally work.
-- **`blueprint_v2/`** — the current orchestration design.
-  Goals over process, fewer agents with more ownership,
-  quality through knowledge rather than enforcement.
+- **`blueprint/`** — v1: rigid increment-based workflow with
+  6 specialist agents. Too prescriptive.
+- **`blueprint_v2/`** — v2: minimal 2-agent design
+  (Developer + Reviewer). Too permissive — Developer
+  skipped tests and security checks.
+- **`blueprint_v3/`** — v3: dev-team model with clear
+  ownership. Developer, Test Engineer, and Security Engineer
+  work as a unit. Independent Reviewer commits when
+  satisfied.
 
 ## Prerequisites
 
@@ -48,27 +53,43 @@ export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 Copy the blueprint into your project:
 
 ```bash
-cp -r blueprint_v2/.claude/ /path/to/your/project/.claude/
+cp -r blueprint_v3/.claude/ /path/to/your/project/.claude/
 ```
 
 Start Claude Code in your project directory. The CLAUDE.md
 loads automatically and configures your session as the team
-lead. Describe what you want to build, and it will decompose
-the work, spawn Developer agents, and coordinate their
-execution.
+lead. Describe what you want to build, and it will
+decompose the work into tasks and feed them to the dev-team.
 
-## What's Included
+## How It Works
 
 ### Agents
 
 | Agent | Model | Role |
 |-------|-------|------|
-| **Developer** | opus | Implements features, writes tests, fixes bugs, updates docs |
-| **Reviewer** | sonnet | Reviews code for quality, security, and correctness |
+| **Developer** | opus | Implements source code |
+| **Test Engineer** | opus | Owns all test code |
+| **Security Engineer** | opus | Advisory — checks security gaps |
+| **Reviewer** | opus | Quality gate — commits when satisfied |
 
-The Developer owns work end-to-end. The Reviewer is spawned
-by the lead when a second opinion is needed — not mandated
-for every change.
+### Workflow
+
+```text
+Orchestrator → Task → Dev-Team → Reviewer → Commit
+                         ↑          |
+                         └──────────┘ (if rejected)
+```
+
+1. **Orchestrator** decomposes the user's request into
+   sequential tasks.
+2. **Dev-team** (Developer, Test Engineer, Security
+   Engineer) receives each task, discusses approach, then
+   implements. Test Engineer writes tests first. Developer
+   makes them pass. Security Engineer advises throughout.
+3. **Reviewer** examines the completed work. If satisfied,
+   commits with a conventional commit message. If not,
+   sends findings back to the full dev-team for fixes.
+4. Orchestrator sends the next task after commit.
 
 ### Knowledge Base
 
@@ -125,7 +146,7 @@ Agent teams are experimental. Be aware of:
   the lead.
 - **Task status can lag** — Teammates sometimes fail to mark
   tasks completed. Check and update manually if stuck.
-- **File conflicts** — Two teammates editing the same file
-  causes overwrites. Assign file ownership to prevent this.
+- **File conflicts** — Test Engineer goes first, Developer
+  follows. Assign clear file ownership.
 - **Permissions inherit** — All teammates inherit the lead's
   permission settings.

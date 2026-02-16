@@ -2,11 +2,11 @@
 
 ## What This Is
 
-This repository contains a blueprint for Claude Code
+This repository contains blueprints for Claude Code
 multi-agent orchestration. It is not a runnable application.
-The `blueprint_v2/` directory contains a `.claude/` setup
-that gets copied into target projects to enable coordinated
-multi-agent workflows.
+Blueprint directories contain a `.claude/` setup that gets
+copied into target projects to enable coordinated multi-agent
+workflows.
 
 ## Project Structure
 
@@ -15,11 +15,14 @@ claude_orchestration/
 ├── CLAUDE.md              # This file (project context)
 ├── README.md              # User-facing documentation
 ├── blueprint/             # v1 blueprint (archived)
-├── blueprint_v2/          # Current blueprint
+├── blueprint_v2/          # v2 blueprint (archived)
+├── blueprint_v3/          # Current blueprint
 │   └── .claude/
 │       ├── CLAUDE.md      # Orchestration instructions
 │       ├── settings.json  # Enables agent teams + hooks
-│       ├── agents/        # Developer, Reviewer
+│       ├── config.json    # Documentation files to check
+│       ├── agents/        # Developer, Test Engineer,
+│       │                  # Security Engineer, Reviewer
 │       ├── knowledge/
 │       │   ├── base/      # Language-agnostic principles
 │       │   ├── languages/ # Language-specific extensions
@@ -31,12 +34,13 @@ claude_orchestration/
 ## Key Directories
 
 - **`blueprint/`** — v1 blueprint, archived for reference.
-- **`blueprint_v2/`** — current orchestration design, in
+- **`blueprint_v2/`** — v2 blueprint, archived for reference.
+- **`blueprint_v3/`** — current orchestration design, in
   active development.
 
 ## Conventions
 
-### Knowledge files (`blueprint_v2/.claude/knowledge/`)
+### Knowledge files (`blueprint_v3/.claude/knowledge/`)
 
 - `base/` files are **language-agnostic**. No code examples
   in any specific language. Use pseudocode or prose
@@ -52,3 +56,11 @@ claude_orchestration/
 ### Practices
 
 - `practices/` files are language-agnostic workflow guidance.
+
+### Terminology
+
+- Use **"lead"** — not "orchestrator" — when referring to
+  the session that creates and manages the team. "Lead" is
+  Claude Code's native term.
+- If the user says "orchestrator," gently remind them that
+  the correct term is "lead."

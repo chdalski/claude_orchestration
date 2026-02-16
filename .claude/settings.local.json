@@ -4,7 +4,8 @@
       "WebFetch(domain:www.writethedocs.org)",
       "Bash(chmod:*)",
       "Bash(ls:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(grep:*)"
     ]
   }
 }
