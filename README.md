@@ -13,7 +13,9 @@ claude_orchestration/
 ├── blueprint/             # v1 blueprint (archived)
 ├── blueprint_v2/          # v2 blueprint (archived)
 ├── blueprint_v3/          # v3 blueprint (archived)
-└── blueprint_v4/          # Current blueprint
+├── blueprint_v4/          # v4 blueprint (archived)
+├── blueprint_v5/          # v5 blueprint (archived)
+└── blueprint_v6/          # Current blueprint
     └── .claude/
         ├── CLAUDE.md      # Orchestration instructions
         ├── settings.json  # Agent teams config + hooks
@@ -36,7 +38,12 @@ claude_orchestration/
 - **`blueprint_v3/`** — v3: dev-team model without
   housekeeping checks. Archived as baseline.
 - **`blueprint_v4/`** — v4: dev-team model with housekeeping
-  checks, pre-commit hooks, and config.json. Current.
+  checks, pre-commit hooks, and config.json. Archived.
+- **`blueprint_v5/`** — v5: async coordination rules,
+  security sign-off gate, batch tests. Archived.
+- **`blueprint_v6/`** — v6: integration test spikes, single
+  Reviewer handoff, duplicate messaging reduction, clean
+  builds. Current.
 
 ## Prerequisites
 
@@ -54,7 +61,7 @@ export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 Copy the blueprint into your project:
 
 ```bash
-cp -r blueprint_v4/.claude/ /path/to/your/project/.claude/
+cp -r blueprint_v6/.claude/ /path/to/your/project/.claude/
 ```
 
 Start Claude Code in your project directory. The CLAUDE.md
