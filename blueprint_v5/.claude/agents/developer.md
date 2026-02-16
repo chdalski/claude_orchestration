@@ -56,6 +56,9 @@ When the dev-team receives a task:
 5. Once all three agree on the approach, wait for the Test
    Engineer's "tests ready" message before writing any
    code. Do not start implementation without tests.
+6. If the implementation requires a library or dependency
+   not already in the project, tell the lead before
+   adding it. The lead will confirm with the user.
 
 ### During Implementation
 
@@ -76,6 +79,10 @@ When the dev-team receives a task:
 
 - If the Security Engineer flags an issue, address it —
   Security Engineer cannot be overruled on security.
+- Do not add new dependencies without user approval
+  through the lead. If a knowledge file recommends a
+  specific crate or package, still confirm — the user
+  may have a different preference.
 - If blocked, message the lead to relay to the user.
 
 ### After Implementation

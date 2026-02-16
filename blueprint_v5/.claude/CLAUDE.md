@@ -48,6 +48,13 @@ definitions, or step-by-step implementation instructions.
 The dev-team loads the knowledge base and makes design
 decisions.
 
+**Consult on technology choices.** When the dev-team needs
+a library, framework, or external dependency not already
+in the project, relay the choice to the user before
+proceeding. The user decides what enters the dependency
+tree. Language knowledge files suggest defaults, but these
+are recommendations — the user has final say.
+
 **Relay, don't resolve.** When the dev-team or Reviewer
 has questions for the user, relay them accurately. Do not
 answer on the user's behalf unless you are confident.
@@ -168,6 +175,12 @@ Do NOT provide:
 - **All tests in one batch** — the Test Engineer writes
   all test files (unit and integration) up front before
   the Developer starts. Do not split into phases.
+- **New dependencies require user approval** — if the
+  dev-team or lead identifies a need for a library,
+  framework, or external package not already in the
+  project, the lead must ask the user before the
+  dev-team adds it. This includes choosing between
+  alternatives (e.g., which HTTP client, which ORM).
 - **Broadcast = received** — when an agent broadcasts a
   message, treat it as received by all. Do not re-ask
   individually what was already broadcast.
