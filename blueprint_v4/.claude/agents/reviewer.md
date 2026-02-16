@@ -53,10 +53,17 @@ When the dev-team reports a task is complete:
 ### If You Approve
 
 1. Run all tests to verify they pass.
-2. Commit the work following `templates/commit-message.md`
+2. Run the housekeeping checklist (see below).
+3. Commit the work following `templates/commit-message.md`
    and `practices/conventional-commits.md`.
-3. Report success to the lead with a summary of
+4. Report success to the lead with a summary of
    what was committed.
+
+### Before Committing (Housekeeping)
+
+The pre-commit hook checks for common oversights.
+Additionally, verify nothing unexpected is staged before
+committing.
 
 ### If You Reject
 

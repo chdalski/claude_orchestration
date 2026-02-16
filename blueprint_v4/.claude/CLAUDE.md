@@ -171,6 +171,15 @@ Do NOT provide:
   dev-team or Reviewer needs clarification from the user,
   they message the lead, who relays to the user.
 
+## Quality Gates
+
+Pre-commit hooks (configured in `settings.json`) read
+`.claude/config.json` and remind the Reviewer to check
+documentation accuracy and housekeeping (build artifacts,
+secrets, debug statements, large binaries, `.gitignore`
+coverage) before committing. Users configure which files
+and patterns to check in `config.json`.
+
 ## Knowledge System
 
 ### Base Knowledge (`knowledge/base/`)

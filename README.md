@@ -12,7 +12,8 @@ of software engineering principles.
 claude_orchestration/
 ├── blueprint/             # v1 blueprint (archived)
 ├── blueprint_v2/          # v2 blueprint (archived)
-└── blueprint_v3/          # Current blueprint
+├── blueprint_v3/          # v3 blueprint (archived)
+└── blueprint_v4/          # Current blueprint
     └── .claude/
         ├── CLAUDE.md      # Orchestration instructions
         ├── settings.json  # Agent teams config + hooks
@@ -32,10 +33,10 @@ claude_orchestration/
 - **`blueprint_v2/`** — v2: minimal 2-agent design
   (Developer + Reviewer). Too permissive — Developer
   skipped tests and security checks.
-- **`blueprint_v3/`** — v3: dev-team model with clear
-  ownership. Developer, Test Engineer, and Security Engineer
-  work as a unit. Independent Reviewer commits when
-  satisfied.
+- **`blueprint_v3/`** — v3: dev-team model without
+  housekeeping checks. Archived as baseline.
+- **`blueprint_v4/`** — v4: dev-team model with housekeeping
+  checks, pre-commit hooks, and config.json. Current.
 
 ## Prerequisites
 
@@ -53,7 +54,7 @@ export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 Copy the blueprint into your project:
 
 ```bash
-cp -r blueprint_v3/.claude/ /path/to/your/project/.claude/
+cp -r blueprint_v4/.claude/ /path/to/your/project/.claude/
 ```
 
 Start Claude Code in your project directory. The CLAUDE.md
@@ -75,12 +76,12 @@ decompose the work into tasks and feed them to the dev-team.
 ### Workflow
 
 ```text
-Orchestrator → Task → Dev-Team → Reviewer → Commit
-                         ↑          |
-                         └──────────┘ (if rejected)
+Lead → Task → Dev-Team → Reviewer → Commit
+                  ↑          |
+                  └──────────┘ (if rejected)
 ```
 
-1. **Orchestrator** decomposes the user's request into
+1. **Lead** decomposes the user's request into
    sequential tasks.
 2. **Dev-team** (Developer, Test Engineer, Security
    Engineer) receives each task, discusses approach, then
@@ -89,7 +90,7 @@ Orchestrator → Task → Dev-Team → Reviewer → Commit
 3. **Reviewer** examines the completed work. If satisfied,
    commits with a conventional commit message. If not,
    sends findings back to the full dev-team for fixes.
-4. Orchestrator sends the next task after commit.
+4. Lead sends the next task after commit.
 
 ### Knowledge Base
 

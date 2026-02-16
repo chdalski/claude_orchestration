@@ -54,7 +54,8 @@ When the dev-team receives a task:
 4. Ask the Test Engineer: "What are you planning to test?
    Is there anything I should know about the test design?"
 5. Once all three agree on the approach, wait for the Test
-   Engineer to write tests first.
+   Engineer's "tests ready" message before writing any
+   code. Do not start implementation without tests.
 
 ### During Implementation
 

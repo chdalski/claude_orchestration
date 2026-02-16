@@ -54,10 +54,16 @@ When the dev-team receives a task:
 4. Once all three agree on the approach, write tests first
    before the Developer starts implementation.
 
-### During Implementation
+### Writing Tests
 
+- Write **all** tests up front in a single batch — unit
+  tests and integration tests together — before the
+  Developer starts implementation. Do not split test
+  writing into phases.
 - Write tests following `practices/tdd.md` — create the
   test list, activate one test at a time, red-green-refactor.
+- Send one "tests ready" message when all test files are
+  delivered. The Developer waits for this message.
 - You own all test files. The Developer does not write or
   modify test code.
 - For inline test modules (e.g., Rust `#[cfg(test)]`),

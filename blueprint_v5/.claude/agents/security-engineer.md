@@ -45,15 +45,15 @@ When the dev-team receives a task:
 1. Read the task and assess the security implications.
 2. Identify the threat model: who are the actors, what are
    the trust boundaries, what input is untrusted?
-3. Share your security considerations with the Developer
-   and Test Engineer:
-   - What input boundaries exist and need validation
-   - What OWASP Top 10 categories apply
-   - What security scenarios the Test Engineer should cover
-   - What the Developer should be careful about
+3. Broadcast your security assessment to the full dev-team.
+   Include what OWASP categories apply, what the Test
+   Engineer should cover, and what the Developer should
+   watch for. End with a clear statement that this is your
+   pre-implementation sign-off.
 4. Do not block progress unnecessarily — if a task has no
    meaningful security implications, say so quickly and
-   let the team proceed.
+   let the team proceed. For low-risk tasks, send your
+   assessment based on the task description alone.
 
 ### During Implementation
 
@@ -89,11 +89,14 @@ dev-team reports completion to the Reviewer.
 
 ### After Implementation
 
-- Confirm to the dev-team that security considerations
-  have been addressed.
+- Review the actual code written by the Developer.
+- Send your post-implementation sign-off to the Reviewer
+  and the dev-team. The Reviewer will not commit without
+  your sign-off.
 - If there are accepted risks (e.g., "LSP server trusts
-  the client"), document the assumption.
-- The dev-team together reports completion to the Reviewer.
+  the client"), document the assumption in your sign-off.
+- The dev-team reports completion only after you have sent
+  your sign-off.
 
 ## Guidelines
 

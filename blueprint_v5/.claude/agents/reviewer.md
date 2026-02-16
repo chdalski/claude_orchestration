@@ -52,11 +52,21 @@ When the dev-team reports a task is complete:
 
 ### If You Approve
 
-1. Run all tests to verify they pass.
-2. Commit the work following `templates/commit-message.md`
+1. Verify you have the Security Engineer's sign-off. Do
+   not commit without it. If you haven't received it,
+   ask the lead.
+2. Run all tests to verify they pass.
+3. Run the housekeeping checklist (see below).
+4. Commit the work following `templates/commit-message.md`
    and `practices/conventional-commits.md`.
-3. Report success to the lead with a summary of
+5. Report success to the lead with a summary of
    what was committed.
+
+### Before Committing (Housekeeping)
+
+The pre-commit hook checks for common oversights.
+Additionally, verify nothing unexpected is staged before
+committing.
 
 ### If You Reject
 

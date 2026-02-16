@@ -114,9 +114,12 @@ completed work and either commits it or sends it back.
 ### Dev-Team Task Cycle
 
 All three agents discuss and agree on approach, then Test
-Engineer writes tests (TDD), Developer implements, and
-Security Engineer reviews throughout. Dev-team reports
-completion to the Reviewer.
+Engineer writes all tests in one batch (unit and
+integration), Developer implements to make them pass, and
+Security Engineer reviews throughout. Security Engineer
+sends post-implementation sign-off to the Reviewer.
+Dev-team reports completion only after receiving the
+security sign-off.
 
 ### Review Cycle
 
@@ -160,16 +163,43 @@ Do NOT provide:
   module first, Developer implements above it.
 - **Test Engineer goes first** — tests are written before
   implementation. This enforces TDD and prevents file
-  conflicts.
+  conflicts. The Developer must wait for the Test
+  Engineer's "tests ready" message before starting.
+- **All tests in one batch** — the Test Engineer writes
+  all test files (unit and integration) up front before
+  the Developer starts. Do not split into phases.
+- **Broadcast = received** — when an agent broadcasts a
+  message, treat it as received by all. Do not re-ask
+  individually what was already broadcast.
+- **Security sign-off before review** — the Security
+  Engineer must send post-implementation sign-off to the
+  Reviewer. The Reviewer will not commit without it.
+- **Wiring code** — for thin framework glue where the
+  core logic is already well-tested, the Test Engineer
+  may write tests in parallel with the Developer's wiring
+  implementation. The Developer still waits for the Test
+  Engineer to confirm tests are ready before reporting
+  done.
 - **Agent startup takes 1-2 turns** — agents loading
   knowledge files during startup is normal and expected.
   Do not suppress it.
 - **Agents go idle between turns** — this is normal, not
   failure. Wait for their SendMessage before concluding
   they're stuck.
+- **Message delivery is async** — messages between agents
+  may be delayed. Wait for confirmation before nudging.
 - **Questions flow through the lead** — if the
   dev-team or Reviewer needs clarification from the user,
   they message the lead, who relays to the user.
+
+## Quality Gates
+
+Pre-commit hooks (configured in `settings.json`) read
+`.claude/config.json` and remind the Reviewer to check
+documentation accuracy and housekeeping (build artifacts,
+secrets, debug statements, large binaries, `.gitignore`
+coverage) before committing. Users configure which files
+and patterns to check in `config.json`.
 
 ## Knowledge System
 
