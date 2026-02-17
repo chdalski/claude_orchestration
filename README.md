@@ -15,7 +15,8 @@ claude_orchestration/
 ├── blueprint_v3/          # v3 blueprint (archived)
 ├── blueprint_v4/          # v4 blueprint (archived)
 ├── blueprint_v5/          # v5 blueprint (archived)
-└── blueprint_v6/          # Current blueprint
+├── blueprint_v6/          # v6 blueprint (archived)
+└── blueprint_v7/          # Current blueprint
     └── .claude/
         ├── CLAUDE.md      # Orchestration instructions
         ├── settings.json  # Agent teams config + hooks
@@ -43,7 +44,9 @@ claude_orchestration/
   security sign-off gate, batch tests. Archived.
 - **`blueprint_v6/`** — v6: integration test spikes, single
   Reviewer handoff, duplicate messaging reduction, clean
-  builds. Current.
+  builds. Archived.
+- **`blueprint_v7/`** — v7: non-code task support, dependency
+  approval guardrails. Current.
 
 ## Prerequisites
 
@@ -61,7 +64,7 @@ export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 Copy the blueprint into your project:
 
 ```bash
-cp -r blueprint_v6/.claude/ /path/to/your/project/.claude/
+cp -r blueprint_v7/.claude/ /path/to/your/project/.claude/
 ```
 
 Start Claude Code in your project directory. The CLAUDE.md
