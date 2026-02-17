@@ -19,14 +19,17 @@ claude_orchestration/
 ├── blueprint_v3/          # v3 blueprint (archived)
 ├── blueprint_v4/          # v4 blueprint (archived)
 │   └── .claude/
-│       ├── ...            # Same structure as v7
+│       ├── ...            # Same structure as v8
 ├── blueprint_v5/          # v5 blueprint (archived)
 │   └── .claude/
-│       ├── ...            # Same structure as v7
+│       ├── ...            # Same structure as v8
 ├── blueprint_v6/          # v6 blueprint (archived)
 │   └── .claude/
-│       ├── ...            # Same structure as v7
-├── blueprint_v7/          # Current blueprint
+│       ├── ...            # Same structure as v8
+├── blueprint_v7/          # v7 blueprint (archived)
+│   └── .claude/
+│       ├── ...            # Same structure as v8
+├── blueprint_v8/          # Current blueprint
 │   └── .claude/
 │       ├── CLAUDE.md      # Orchestration instructions
 │       ├── settings.json  # Enables agent teams + hooks
@@ -49,12 +52,13 @@ claude_orchestration/
 - **`blueprint_v4/`** — v4 blueprint, archived for reference.
 - **`blueprint_v5/`** — v5 blueprint, archived for reference.
 - **`blueprint_v6/`** — v6 blueprint, archived for reference.
-- **`blueprint_v7/`** — current orchestration design, in
+- **`blueprint_v7/`** — v7 blueprint, archived for reference.
+- **`blueprint_v8/`** — current orchestration design, in
   active development.
 
 ## Conventions
 
-### Knowledge files (`blueprint_v7/.claude/knowledge/`)
+### Knowledge files (`blueprint_v8/.claude/knowledge/`)
 
 - `base/` files are **language-agnostic**. No code examples
   in any specific language. Use pseudocode or prose
