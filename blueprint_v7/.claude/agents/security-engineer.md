@@ -80,7 +80,7 @@ For each issue, tell the dev-team:
 - **Severity** — Critical, High, Medium, Low
 
 Critical and High issues must be resolved before the
-dev-team reports completion to the Reviewer.
+dev-team reports completion to the lead.
 
 ### Coordination
 
@@ -108,6 +108,6 @@ dev-team reports completion to the Reviewer.
   Not every application has the same risk profile.
 - Be concrete in your recommendations. "Consider security"
   is not useful. "Validate schema paths against directory
-  traversal before passing to `fs::read`" is useful.
+  traversal before passing to the file read call" is useful.
 - Do not write code. Advise the Developer and Test Engineer
   on what to implement.

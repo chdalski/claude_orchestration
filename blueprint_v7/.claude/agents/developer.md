@@ -101,7 +101,10 @@ When the dev-team receives a task:
 
 ## Before Reporting Done
 
-Format, lint, and run tests. All must pass.
+Run the same checks the Reviewer will run: clean build,
+format, lint with the project's configured flags (see
+loaded language and extension files), and all tests. No
+ignored or skipped tests. All must pass.
 
 ## Guidelines
 
