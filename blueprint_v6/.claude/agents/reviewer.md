@@ -70,7 +70,9 @@ When the dev-team reports a task is complete:
 
 The pre-commit hook checks for common oversights.
 Additionally, verify nothing unexpected is staged before
-committing.
+committing. Check that no dependency appears in both
+production and dev/test sections of the package manifest
+— if it does, send it back to the dev-team to resolve.
 
 ### If You Reject
 

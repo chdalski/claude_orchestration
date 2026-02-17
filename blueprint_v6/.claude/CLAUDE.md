@@ -169,7 +169,10 @@ Do NOT provide:
   Engineer owns test files. For inline test modules (when
   the language supports them), Test Engineer creates the
   file and test module first, Developer implements above
-  it.
+  it. Shared files (package manifest, project config) are
+  edited sequentially: Test Engineer adds test/dev
+  dependencies first, Developer adds production
+  dependencies after "tests ready."
 - **Test Engineer goes first** — tests are written before
   implementation. This enforces TDD and prevents file
   conflicts. The Developer must wait for the Test
