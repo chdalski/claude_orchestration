@@ -11,7 +11,11 @@ of software engineering principles.
 ```text
 claude_orchestration/
 ├── blueprint_tdd_v1/        # TDD blueprint (test-first)
+│   ├── .claude/             # Orchestration config + agents
+│   └── .devcontainer/       # Sandboxed execution environment
 └── blueprint_testlist_v1/   # Test-list blueprint (spec-first)
+    ├── .claude/             # Orchestration config + agents
+    └── .devcontainer/       # Sandboxed execution environment
 ```
 
 ## Choosing a Blueprint
@@ -65,6 +69,37 @@ Start Claude Code in your project directory. The CLAUDE.md
 loads automatically and configures your session as the team
 lead. Describe what you want to build, and it will
 decompose the work into tasks and feed them to the dev-team.
+
+## Devcontainer (Sandboxed Execution)
+
+Each blueprint includes a `.devcontainer/` directory for
+running agents in an isolated container with:
+
+- **Network firewall** — outbound traffic restricted to
+  an allowlist of domains (Anthropic API, GitHub, package
+  registries, language docs). Edit
+  `allowed-domains.conf` to add or remove domains —
+  changes take effect on container restart, no rebuild
+  needed.
+- **UID/GID mapping** — container user matches the host
+  user, so bind-mounted files have correct permissions
+  regardless of the host's UID.
+- **Autopilot permissions** — `bypassPermissions` mode
+  is enabled automatically inside the container. The
+  container is the security boundary, so per-tool prompts
+  are unnecessary.
+- **Host Claude config** — `~/.claude` is bind-mounted
+  read-only so agents have access to API keys and
+  settings without modifying the host config.
+
+To use the devcontainer, copy it alongside `.claude/`:
+
+```bash
+cp -r blueprint_tdd_v1/.devcontainer/ /path/to/your/project/.devcontainer/
+```
+
+Then open the project in VS Code with the Dev Containers
+extension, or use the `devcontainer` CLI.
 
 ## Agents
 

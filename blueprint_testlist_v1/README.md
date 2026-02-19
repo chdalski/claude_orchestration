@@ -71,5 +71,12 @@ while preserving independent test design review.
 cp -r .claude/ /path/to/your/project/.claude/
 ```
 
-See the repository README for prerequisites and
-configuration details.
+Optionally, copy the devcontainer for sandboxed execution
+with a network firewall and autopilot permissions:
+
+```bash
+cp -r .devcontainer/ /path/to/your/project/.devcontainer/
+```
+
+See the repository README for prerequisites, devcontainer
+details, and configuration options.
