@@ -12,53 +12,55 @@ workflows.
 
 ```text
 claude_orchestration/
-├── CLAUDE.md              # This file (project context)
-├── README.md              # User-facing documentation
-├── blueprint/             # v1 blueprint (archived)
-├── blueprint_v2/          # v2 blueprint (archived)
-├── blueprint_v3/          # v3 blueprint (archived)
-├── blueprint_v4/          # v4 blueprint (archived)
+├── CLAUDE.md                # This file (project context)
+├── README.md                # User-facing documentation
+├── blueprint_tdd_v1/        # TDD blueprint (test-first)
 │   └── .claude/
-│       ├── ...            # Same structure as v8
-├── blueprint_v5/          # v5 blueprint (archived)
-│   └── .claude/
-│       ├── ...            # Same structure as v8
-├── blueprint_v6/          # v6 blueprint (archived)
-│   └── .claude/
-│       ├── ...            # Same structure as v8
-├── blueprint_v7/          # v7 blueprint (archived)
-│   └── .claude/
-│       ├── ...            # Same structure as v8
-├── blueprint_v8/          # Current blueprint
-│   └── .claude/
-│       ├── CLAUDE.md      # Orchestration instructions
-│       ├── settings.json  # Enables agent teams + hooks
-│       ├── config.json    # Documentation files to check
-│       ├── agents/        # Developer, Test Engineer,
-│       │                  # Security Engineer, Reviewer
+│       ├── CLAUDE.md        # Orchestration instructions
+│       ├── settings.json    # Enables agent teams + hooks
+│       ├── config.json      # Documentation files to check
+│       ├── agents/          # Developer, Test Engineer,
+│       │                    # Security Engineer, Reviewer
 │       ├── knowledge/
-│       │   ├── base/      # Language-agnostic principles
-│       │   ├── languages/ # Language-specific extensions
-│       │   └── extensions/# Project-specific conventions
-│       ├── practices/     # TDD, conventional commits
-│       └── templates/     # Commit message template
+│       │   ├── base/        # Language-agnostic principles
+│       │   ├── languages/   # Language-specific extensions
+│       │   └── extensions/  # Project-specific conventions
+│       ├── practices/       # TDD, conventional commits
+│       └── templates/       # Commit message template
+├── blueprint_testlist_v1/   # Test-list blueprint (spec-first)
+│   └── .claude/
+│       ├── ...              # Same structure as TDD blueprint
+│       └── practices/       # Test-list workflow, conventional
+│                            # commits
 ```
 
-## Key Directories
+## Blueprints
 
-- **`blueprint/`** — v1 blueprint, archived for reference.
-- **`blueprint_v2/`** — v2 blueprint, archived for reference.
-- **`blueprint_v3/`** — v3 blueprint, archived for reference.
-- **`blueprint_v4/`** — v4 blueprint, archived for reference.
-- **`blueprint_v5/`** — v5 blueprint, archived for reference.
-- **`blueprint_v6/`** — v6 blueprint, archived for reference.
-- **`blueprint_v7/`** — v7 blueprint, archived for reference.
-- **`blueprint_v8/`** — current orchestration design, in
-  active development.
+Two blueprint variants, each with a different approach to
+testing:
+
+- **`blueprint_tdd_v1/`** — **TDD (test-first).** The Test
+  Engineer writes all test code before the Developer starts
+  implementing. Strict file ownership: Test Engineer owns
+  test files, Developer owns source files. Follows
+  red-green-refactor workflow.
+
+- **`blueprint_testlist_v1/`** — **Test-list (spec-first).**
+  The Test Engineer produces a test specification (what to
+  test), the Developer writes all code (source and tests).
+  Test Engineer verifies tests match the spec before
+  implementation starts, then gives a post-implementation
+  sign-off confirming tests were not altered. Unified file
+  ownership eliminates coordination overhead.
+
+Both blueprints share the same knowledge base, agent
+structure (Developer, Test Engineer, Security Engineer,
+Reviewer), and coordination principles. They differ in
+who writes test code and the resulting workflow.
 
 ## Conventions
 
-### Knowledge files (`blueprint_v8/.claude/knowledge/`)
+### Knowledge files (`knowledge/`)
 
 - `base/` files are **language-agnostic**. No code examples
   in any specific language. Use pseudocode or prose

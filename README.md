@@ -1,7 +1,7 @@
 # Claude Orchestration Kit
 
 A drop-in orchestration kit for Claude Code multi-agent
-workflows. Copy the blueprint's `.claude/` directory into any
+workflows. Copy a blueprint's `.claude/` directory into any
 project to get a team of specialized agents coordinated by
 your Claude Code session, guided by a shared knowledge base
 of software engineering principles.
@@ -10,46 +10,33 @@ of software engineering principles.
 
 ```text
 claude_orchestration/
-├── blueprint/             # v1 blueprint (archived)
-├── blueprint_v2/          # v2 blueprint (archived)
-├── blueprint_v3/          # v3 blueprint (archived)
-├── blueprint_v4/          # v4 blueprint (archived)
-├── blueprint_v5/          # v5 blueprint (archived)
-├── blueprint_v6/          # v6 blueprint (archived)
-├── blueprint_v7/          # v7 blueprint (archived)
-└── blueprint_v8/          # Current blueprint
-    └── .claude/
-        ├── CLAUDE.md      # Orchestration instructions
-        ├── settings.json  # Agent teams config + hooks
-        ├── config.json    # Documentation files to check
-        ├── agents/        # Developer, Test Engineer,
-        │                  # Security Engineer, Reviewer
-        ├── knowledge/     # Shared knowledge base
-        │   ├── base/      # Language-agnostic principles
-        │   ├── languages/ # Language-specific extensions
-        │   └── extensions/# Project-specific conventions
-        ├── practices/     # TDD, conventional commits
-        └── templates/     # Commit message template
+├── blueprint_tdd_v1/        # TDD blueprint (test-first)
+└── blueprint_testlist_v1/   # Test-list blueprint (spec-first)
 ```
 
-- **`blueprint/`** — v1: rigid increment-based workflow with
-  6 specialist agents. Too prescriptive.
-- **`blueprint_v2/`** — v2: minimal 2-agent design
-  (Developer + Reviewer). Too permissive — Developer
-  skipped tests and security checks.
-- **`blueprint_v3/`** — v3: dev-team model without
-  housekeeping checks. Archived as baseline.
-- **`blueprint_v4/`** — v4: dev-team model with housekeeping
-  checks, pre-commit hooks, and config.json. Archived.
-- **`blueprint_v5/`** — v5: async coordination rules,
-  security sign-off gate, batch tests. Archived.
-- **`blueprint_v6/`** — v6: integration test spikes, single
-  Reviewer handoff, duplicate messaging reduction, clean
-  builds. Archived.
-- **`blueprint_v7/`** — v7: non-code task support, dependency
-  approval guardrails. Archived.
-- **`blueprint_v8/`** — v8: reasoning annotations on
-  coordination rules. Current.
+## Choosing a Blueprint
+
+Both blueprints use the same four agents, knowledge base,
+and coordination principles. They differ in **who writes
+test code**:
+
+| | TDD (test-first) | Test-list (spec-first) |
+|---|---|---|
+| **Test Engineer** | Writes all test code | Designs test spec, verifies coverage |
+| **Developer** | Writes source code only | Writes all code (source + tests) |
+| **File ownership** | Split (TE owns tests, Dev owns source) | Unified (Dev owns everything) |
+| **Coordination** | Dev waits for "tests ready" | Dev writes tests from spec, TE verifies |
+| **Practice** | Red-green-refactor (TDD) | Test-list-driven development |
+| **Tradeoff** | Structural enforcement of test-first | Less coordination overhead, faster cycles |
+
+**TDD blueprint** — choose when you want strict enforcement
+that tests exist before implementation, and are willing to
+accept the coordination overhead of split file ownership.
+
+**Test-list blueprint** — choose when you want faster cycles
+with less agent coordination, accepting that test quality is
+enforced through verification checkpoints rather than file
+ownership boundaries.
 
 ## Prerequisites
 
@@ -64,10 +51,14 @@ export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 
 ## Quick Start
 
-Copy the blueprint into your project:
+Copy your chosen blueprint into your project:
 
 ```bash
-cp -r blueprint_v8/.claude/ /path/to/your/project/.claude/
+# TDD blueprint
+cp -r blueprint_tdd_v1/.claude/ /path/to/your/project/.claude/
+
+# Or test-list blueprint
+cp -r blueprint_testlist_v1/.claude/ /path/to/your/project/.claude/
 ```
 
 Start Claude Code in your project directory. The CLAUDE.md
@@ -75,37 +66,35 @@ loads automatically and configures your session as the team
 lead. Describe what you want to build, and it will
 decompose the work into tasks and feed them to the dev-team.
 
-## How It Works
-
-### Agents
+## Agents
 
 | Agent | Model | Role |
 |-------|-------|------|
-| **Developer** | opus | Implements source code |
-| **Test Engineer** | opus | Owns all test code |
+| **Developer** | opus | Implements code (scope depends on blueprint) |
+| **Test Engineer** | opus | Test design and verification |
 | **Security Engineer** | opus | Advisory — checks security gaps |
 | **Reviewer** | opus | Quality gate — commits when satisfied |
 
-### Workflow
+## Workflow
 
 ```text
-Lead → Task → Dev-Team → Reviewer → Commit
-                  ↑          |
-                  └──────────┘ (if rejected)
+Lead -> Task -> Dev-Team -> Reviewer -> Commit
+                  ^            |
+                  '------------' (if rejected)
 ```
 
-1. **Lead** decomposes the user's request into
-   sequential tasks.
+1. **Lead** decomposes the user's request into sequential
+   tasks.
 2. **Dev-team** (Developer, Test Engineer, Security
    Engineer) receives each task, discusses approach, then
-   implements. Test Engineer writes tests first. Developer
-   makes them pass. Security Engineer advises throughout.
+   implements. The testing workflow depends on the blueprint
+   chosen.
 3. **Reviewer** examines the completed work. If satisfied,
-   commits with a conventional commit message. If not,
-   sends findings back to the full dev-team for fixes.
+   commits with a conventional commit message. If not, sends
+   findings back to the full dev-team for fixes.
 4. Lead sends the next task after commit.
 
-### Knowledge Base
+## Knowledge Base
 
 Engineering principles in `knowledge/` that agents load
 during startup:
@@ -119,16 +108,6 @@ during startup:
   principles it builds on.
 - **`extensions/`** — project-specific conventions added
   after copying the blueprint into a target project.
-
-### Practices
-
-- **TDD** — red-green-refactor workflow
-- **Conventional Commits** — structured commit messages
-
-### Templates
-
-- **Commit message** — format for consistent, informative
-  commit history
 
 ## Adding Languages
 
@@ -160,7 +139,5 @@ Agent teams are experimental. Be aware of:
   the lead.
 - **Task status can lag** — Teammates sometimes fail to mark
   tasks completed. Check and update manually if stuck.
-- **File conflicts** — Test Engineer goes first, Developer
-  follows. Assign clear file ownership.
 - **Permissions inherit** — All teammates inherit the lead's
   permission settings.
