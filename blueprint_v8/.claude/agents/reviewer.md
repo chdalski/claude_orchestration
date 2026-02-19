@@ -52,10 +52,12 @@ When the dev-team reports a task is complete:
 
 ### If You Approve
 
-1. The lead's "ready for review" message confirms that
-   the Security Engineer's sign-off has been received
-   by the dev-team. If the lead's message does not
-   mention the sign-off, ask the lead to confirm.
+1. The lead's "ready for review" message must confirm
+   that all three dev-team agents have completed:
+   Developer (source code done), Test Engineer (tests
+   done), and Security Engineer (sign-off given). If
+   any signal is missing from the lead's message, ask
+   the lead to confirm before starting the review.
 2. Run a clean build before quality checks — remove
    cached build artifacts using the project's build
    tool clean command to avoid reacting to stale state.

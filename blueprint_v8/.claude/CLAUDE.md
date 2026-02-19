@@ -216,11 +216,18 @@ Do NOT provide:
   they've already fixed. If unsure, read the current file
   state rather than asking. Duplicate messages waste turns
   and can cause agents to redo completed work.
+- **Three signals before review** — the lead must receive
+  completion messages from all three dev-team agents
+  (Developer, Test Engineer, Security Engineer) before
+  sending "ready for review" to the Reviewer. A single
+  agent's "done" message is NOT sufficient — one agent
+  finishing does not mean the others have finished, since
+  they own different files. If only one or two agents have
+  reported, wait for the remaining agents.
 - **Single handoff to Reviewer** — only the lead sends
   "ready for review" to the Reviewer. No other agent
-  contacts the Reviewer about the task. The lead sends
-  this only after the dev-team reports completion (which
-  requires the Security Engineer's sign-off first).
+  contacts the Reviewer about the task. The lead's message
+  must confirm all three dev-team agents have completed.
   Multiple agents contacting the Reviewer caused duplicate
   messages and confused reviews in earlier iterations.
 - **Security sign-off to dev-team** — the Security
