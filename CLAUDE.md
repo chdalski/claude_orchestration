@@ -20,25 +20,23 @@ claude_orchestration/
 │   ├── init-firewall.sh     # Network firewall setup
 │   └── allowed-domains.conf # Configurable domain allowlist
 ├── blueprint_tdd_v1/        # TDD blueprint (test-first)
-│   ├── .claude/
-│   │   ├── CLAUDE.md        # Orchestration instructions
-│   │   ├── settings.json    # Enables agent teams + hooks
-│   │   ├── config.json      # Documentation files to check
-│   │   ├── agents/          # Developer, Test Engineer,
-│   │   │                    # Security Engineer, Reviewer
-│   │   ├── knowledge/
-│   │   │   ├── base/        # Language-agnostic principles
-│   │   │   ├── languages/   # Language-specific extensions
-│   │   │   └── extensions/  # Project-specific conventions
-│   │   ├── practices/       # TDD, conventional commits
-│   │   └── templates/       # Commit message template
-│   └── .devcontainer/       # Same as root .devcontainer
+│   └── .claude/
+│       ├── CLAUDE.md        # Orchestration instructions
+│       ├── settings.json    # Enables agent teams + hooks
+│       ├── config.json      # Documentation files to check
+│       ├── agents/          # Developer, Test Engineer,
+│       │                    # Security Engineer, Reviewer
+│       ├── knowledge/
+│       │   ├── base/        # Language-agnostic principles
+│       │   ├── languages/   # Language-specific extensions
+│       │   └── extensions/  # Project-specific conventions
+│       ├── practices/       # TDD, conventional commits
+│       └── templates/       # Commit message template
 ├── blueprint_testlist_v1/   # Test-list blueprint (spec-first)
-│   ├── .claude/
-│   │   ├── ...              # Same structure as TDD blueprint
-│   │   └── practices/       # Test-list workflow, conventional
-│   │                        # commits
-│   └── .devcontainer/       # Same as root .devcontainer
+│   └── .claude/
+│       ├── ...              # Same structure as TDD blueprint
+│       └── practices/       # Test-list workflow, conventional
+│                            # commits
 ```
 
 ## Blueprints

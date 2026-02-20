@@ -69,7 +69,7 @@ while read -r cidr; do
         exit 1
     fi
     echo "  Adding GitHub range $cidr"
-    ipset add allowed-domains "$cidr"
+    ipset add allowed-domains "$cidr" -exist
 done < <(echo "$gh_ranges" | jq -r '(.web + .api + .git)[]' | aggregate -q)
 
 # Process the config file: resolve domains and add CIDR ranges
@@ -81,7 +81,7 @@ while IFS= read -r line; do
     if [[ "$line" =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/[0-9]{1,2}$ ]]; then
         # CIDR range — add directly
         echo "Adding CIDR $line"
-        ipset add allowed-domains "$line"
+        ipset add allowed-domains "$line" -exist
 
     else
         # Domain — resolve via DNS
@@ -98,7 +98,7 @@ while IFS= read -r line; do
                 exit 1
             fi
             echo "  Adding $ip for $line"
-            ipset add allowed-domains "$ip"
+            ipset add allowed-domains "$ip" -exist
         done < <(echo "$ips")
     fi
 done < "$CONFIG_FILE"

@@ -10,12 +10,11 @@ of software engineering principles.
 
 ```text
 claude_orchestration/
+├── .devcontainer/           # Sandboxed execution environment
 ├── blueprint_tdd_v1/        # TDD blueprint (test-first)
-│   ├── .claude/             # Orchestration config + agents
-│   └── .devcontainer/       # Sandboxed execution environment
+│   └── .claude/             # Orchestration config + agents
 └── blueprint_testlist_v1/   # Test-list blueprint (spec-first)
-    ├── .claude/             # Orchestration config + agents
-    └── .devcontainer/       # Sandboxed execution environment
+    └── .claude/             # Orchestration config + agents
 ```
 
 ## Choosing a Blueprint
@@ -72,8 +71,8 @@ decompose the work into tasks and feed them to the dev-team.
 
 ## Devcontainer (Sandboxed Execution)
 
-Each blueprint includes a `.devcontainer/` directory for
-running agents in an isolated container with:
+The root `.devcontainer/` directory provides an isolated
+container for running agents with:
 
 - **Network firewall** — outbound traffic restricted to
   an allowlist of domains (Anthropic API, GitHub, package
@@ -95,7 +94,7 @@ running agents in an isolated container with:
 To use the devcontainer, copy it alongside `.claude/`:
 
 ```bash
-cp -r blueprint_tdd_v1/.devcontainer/ /path/to/your/project/.devcontainer/
+cp -r .devcontainer/ /path/to/your/project/.devcontainer/
 ```
 
 Then open the project in VS Code with the Dev Containers
