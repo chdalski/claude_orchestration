@@ -6,6 +6,11 @@
       "TZ": "${localEnv:TZ:Europe/Berlin}",
     },
   },
+  // Use features to enable language support (https://containers.dev/features):
+  //
+  // "features": {
+  //   "ghcr.io/devcontainers/features/rust:1": {}
+  // }
   "runArgs": [
     "--cap-add=NET_ADMIN",
     "--cap-add=NET_RAW"
