@@ -25,3 +25,15 @@
 ```bash
 cargo clippy --all -- -W clippy::all -W clippy::pedantic -W clippy::nursery -D warnings
 ```
+
+- Every crate's `Cargo.toml` must include these defensive lints:
+
+```toml
+[lints.clippy]
+indexing_slicing = "deny"
+fallible_impl_from = "deny"
+wildcard_enum_match_arm = "deny"
+unneeded_field_pattern = "deny"
+fn_params_excessive_bools = "deny"
+must_use_candidate = "deny"
+```

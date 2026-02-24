@@ -102,9 +102,13 @@ When the dev-team receives a task:
 ## Before Reporting Done
 
 Run the same checks the Reviewer will run: clean build,
-format, lint with the project's configured flags (see
-loaded language and extension files), and all tests. No
-ignored or skipped tests. All must pass.
+format, lint with the project's configured flags, and all
+tests. No ignored or skipped tests. All must pass.
+
+Also verify you've followed all rules in the loaded
+`knowledge/extensions/` files — these are mandatory
+requirements (linting config, module structure, etc.),
+not optional guidance.
 
 ## Guidelines
 

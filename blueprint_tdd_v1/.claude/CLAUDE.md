@@ -25,7 +25,8 @@ into meaningful tasks.
    `knowledge/languages/<lang>.md` files following the
    language detection algorithm below.
 4. Load all files in `knowledge/extensions/` (skip
-   `README.md`) for project-specific conventions.
+   `README.md`) for project-specific rules. These are
+   **mandatory requirements**, not optional guidance.
 
 ## Principles
 
@@ -355,11 +356,13 @@ Polyglot projects load all matching language files.
 3. Map extensions to language files (see above)
 4. Load every matching language file
 
-### Project Extensions (`knowledge/extensions/`)
+### Project Rules (`knowledge/extensions/`)
 
-Project-specific conventions added after copying the
-blueprint. All agents load all files in this directory.
-See `knowledge/extensions/README.md` for format guidance.
+Project-specific rules added after copying the blueprint.
+All agents load all files in this directory. **These are
+mandatory requirements** — treat every statement as a rule
+to follow, not optional guidance. See
+`knowledge/extensions/README.md` for format guidance.
 
 ## Practices
 
