@@ -1,6 +1,6 @@
 # Rust Conventions
 
-**Agents**: Developer, Test Engineer, Code Reviewer
+**Agents**: Developer, Test Engineer, Reviewer
 
 ## Module Structure
 

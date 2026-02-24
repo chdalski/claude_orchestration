@@ -260,8 +260,8 @@ Do NOT provide:
   logic), fix the harness before writing the rest. This
   catches infrastructure problems early — discovering a
   broken harness after writing 20 tests wastes significant
-  rework. Unit tests do not need a spike. The Test
-  Engineer explicitly requests the spike in the test list.
+  rework. Unit tests do not need a spike. The Developer
+  spikes automatically when integration tests are present.
 - **New dependencies require user approval** — if the
   dev-team or lead identifies a need for a library,
   framework, or external package not already in the
@@ -300,14 +300,18 @@ Do NOT provide:
   post-implementation test sign-off to the dev-team after
   verifying that tests were not altered during
   implementation and coverage matches the original
-  specification. This exists because the Developer owns
-  all code — without this check, tests could be weakened
-  under implementation pressure without anyone noticing.
+  specification. Use the format: "Test sign-off: tests
+  match original spec, coverage complete." This exists
+  because the Developer owns all code — without this
+  check, tests could be weakened under implementation
+  pressure without anyone noticing.
 - **Security sign-off to dev-team** — the Security
   Engineer sends post-implementation sign-off to the
   dev-team after verifying security concerns were
-  addressed. The dev-team reports completion to the lead
-  only after receiving both sign-offs.
+  addressed. Use the format: "Security sign-off:
+  [concerns addressed / no concerns identified]." The
+  dev-team reports completion to the lead only after
+  receiving both sign-offs.
 - **Research before implementing** — when a task involves
   a library the dev-team has not used before, spend one
   turn consulting external resources before writing code:
@@ -334,6 +338,12 @@ Do NOT provide:
   they're stuck.
 - **Message delivery is async** — messages between agents
   may be delayed. Wait for confirmation before nudging.
+- **If an agent seems stuck** — wait at least 3 turns
+  after their last message. Then message them: "Haven't
+  heard from you — are you blocked?" If they respond
+  with a blocker, help resolve it or escalate to the
+  user. If no response after another turn, pause the
+  team and ask the user to check.
 - **Questions flow through the lead** — if the
   dev-team or Reviewer needs clarification from the user,
   they message the lead, who relays to the user. The lead

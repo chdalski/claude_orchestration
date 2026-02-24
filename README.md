@@ -11,35 +11,27 @@ of software engineering principles.
 ```text
 claude_orchestration/
 ├── .devcontainer/           # Sandboxed execution environment
-├── blueprint_tdd_v1/        # TDD blueprint (test-first)
-│   └── .claude/             # Orchestration config + agents
 └── blueprint_testlist_v1/   # Test-list blueprint (spec-first)
     └── .claude/             # Orchestration config + agents
 ```
 
-## Choosing a Blueprint
+## Blueprint
 
-Both blueprints use the same four agents, knowledge base,
-and coordination principles. They differ in **who writes
-test code**:
+The **test-list blueprint** uses a spec-first approach:
 
-| | TDD (test-first) | Test-list (spec-first) |
-|---|---|---|
-| **Test Engineer** | Writes all test code | Designs test spec, verifies coverage |
-| **Developer** | Writes source code only | Writes all code (source + tests) |
-| **File ownership** | Split (TE owns tests, Dev owns source) | Unified (Dev owns everything) |
-| **Coordination** | Dev waits for "tests ready" | Dev writes tests from spec, TE verifies |
-| **Practice** | Red-green-refactor (TDD) | Test-list-driven development |
-| **Tradeoff** | Structural enforcement of test-first | Less coordination overhead, faster cycles |
+| | Test-list (spec-first) |
+|---|---|
+| **Test Engineer** | Designs test spec, verifies coverage |
+| **Developer** | Writes all code (source + tests) |
+| **File ownership** | Unified (Dev owns everything) |
+| **Coordination** | Dev writes tests from spec, TE verifies |
+| **Practice** | Test-list-driven development |
 
-**TDD blueprint** — choose when you want strict enforcement
-that tests exist before implementation, and are willing to
-accept the coordination overhead of split file ownership.
-
-**Test-list blueprint** — choose when you want faster cycles
-with less agent coordination, accepting that test quality is
-enforced through verification checkpoints rather than file
-ownership boundaries.
+The Developer owns all code, eliminating file-conflict
+coordination. Test quality is enforced through verification
+checkpoints: the Test Engineer verifies tests match the spec
+before implementation, then confirms tests were not altered
+after implementation.
 
 ## Prerequisites
 
@@ -54,13 +46,9 @@ export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 
 ## Quick Start
 
-Copy your chosen blueprint into your project:
+Copy the blueprint into your project:
 
 ```bash
-# TDD blueprint
-cp -r blueprint_tdd_v1/.claude/ /path/to/your/project/.claude/
-
-# Or test-list blueprint
 cp -r blueprint_testlist_v1/.claude/ /path/to/your/project/.claude/
 ```
 

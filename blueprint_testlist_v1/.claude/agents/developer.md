@@ -38,8 +38,7 @@ verified, and implement — all without file handoffs.
 
 ## Startup
 
-Follow the SessionStart checklist, then load these
-role-specific knowledge files:
+Load these role-specific knowledge files:
 
 - `knowledge/base/principles.md` — always
 - `knowledge/base/functional.md` — always
@@ -89,10 +88,8 @@ After receiving the test list from the Test Engineer:
    harness (server setup, database fixtures, framework
    test utilities). If the spike fails due to
    framework behavior (not application logic), fix the
-   harness before writing the rest. This catches
-   infrastructure problems early — discovering a
-   broken harness after writing the full test batch
-   wastes significant rework. Unit tests do not need
+   harness before writing the rest. Keep the spike as
+   the first test in the batch. Unit tests do not need
    a spike.
 2. Write **all** tests from the test list in a single
    batch — unit tests and integration tests together.

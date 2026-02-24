@@ -19,7 +19,7 @@ claude_orchestration/
 │   ├── Dockerfile           # Image definition
 │   ├── init-firewall.sh     # Network firewall setup
 │   └── allowed-domains.conf # Configurable domain allowlist
-├── blueprint_tdd_v1/        # TDD blueprint (test-first)
+├── blueprint_testlist_v1/   # Test-list blueprint (spec-first)
 │   └── .claude/
 │       ├── CLAUDE.md        # Orchestration instructions
 │       ├── settings.json    # Enables agent teams + hooks
@@ -30,38 +30,20 @@ claude_orchestration/
 │       │   ├── base/        # Language-agnostic principles
 │       │   ├── languages/   # Language-specific extensions
 │       │   └── extensions/  # Project-specific conventions
-│       ├── practices/       # TDD, conventional commits
+│       ├── practices/       # Test-list workflow, conventional
+│       │                    # commits
 │       └── templates/       # Commit message template
-├── blueprint_testlist_v1/   # Test-list blueprint (spec-first)
-│   └── .claude/
-│       ├── ...              # Same structure as TDD blueprint
-│       └── practices/       # Test-list workflow, conventional
-│                            # commits
 ```
 
-## Blueprints
+## Blueprint
 
-Two blueprint variants, each with a different approach to
-testing:
-
-- **`blueprint_tdd_v1/`** — **TDD (test-first).** The Test
-  Engineer writes all test code before the Developer starts
-  implementing. Strict file ownership: Test Engineer owns
-  test files, Developer owns source files. Follows
-  red-green-refactor workflow.
-
-- **`blueprint_testlist_v1/`** — **Test-list (spec-first).**
-  The Test Engineer produces a test specification (what to
-  test), the Developer writes all code (source and tests).
-  Test Engineer verifies tests match the spec before
-  implementation starts, then gives a post-implementation
-  sign-off confirming tests were not altered. Unified file
-  ownership eliminates coordination overhead.
-
-Both blueprints share the same knowledge base, agent
-structure (Developer, Test Engineer, Security Engineer,
-Reviewer), and coordination principles. They differ in
-who writes test code and the resulting workflow.
+**`blueprint_testlist_v1/`** — **Test-list (spec-first).**
+The Test Engineer produces a test specification (what to
+test), the Developer writes all code (source and tests).
+Test Engineer verifies tests match the spec before
+implementation starts, then gives a post-implementation
+sign-off confirming tests were not altered. Unified file
+ownership eliminates coordination overhead.
 
 ## Conventions
 
@@ -89,3 +71,11 @@ who writes test code and the resulting workflow.
   Claude Code's native term.
 - If the user says "orchestrator," gently remind them that
   the correct term is "lead."
+
+## Session Checklist
+
+Before ending a session that modified the blueprint:
+
+1. Verify `CLAUDE.md` (this file) reflects current structure
+2. Verify `README.md` matches current blueprints and workflow
+3. Update the project structure diagram if directories changed
