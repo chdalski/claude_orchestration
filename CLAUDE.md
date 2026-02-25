@@ -76,6 +76,7 @@ ownership eliminates coordination overhead.
 
 Before ending a session that modified the blueprint:
 
-1. Verify `CLAUDE.md` (this file) reflects current structure
-2. Verify `README.md` matches current blueprints and workflow
-3. Update the project structure diagram if directories changed
+1. Verify that all changes are safe, sound and concise
+2. Verify `CLAUDE.md` (this file) reflects current structure
+3. Verify `README.md` matches current blueprints and workflow
+4. Update the project structure diagram if directories changed

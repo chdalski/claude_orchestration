@@ -4,6 +4,7 @@ ARG TZ
 ENV TZ="$TZ"
 
 # Install development tools and iptables/ipset
+# hadolint ignore=DL3009
 RUN apt-get update && apt-get install -y --no-install-recommends \
     less \
     procps \
@@ -40,6 +41,7 @@ ENV SHELL=/usr/bin/fish
 ENV EDITOR=nano
 ENV VISUAL=nano
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN curl -sS https://starship.rs/install.sh | sh -s -- --yes \
     && mkdir -p /home/vscode/.config/fish \
     && echo 'fish_add_path /home/vscode/.local/bin' >> /home/vscode/.config/fish/config.fish \
