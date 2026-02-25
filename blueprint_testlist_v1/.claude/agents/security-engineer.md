@@ -1,7 +1,7 @@
 ---
 name: Security Engineer
 description: Advisory role — checks for security gaps and missing considerations
-model: opus
+model: sonnet
 color: red
 tools:
   - Read

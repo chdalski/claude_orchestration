@@ -1,7 +1,7 @@
 ---
 name: Test Engineer
 description: Advisory role — designs test specifications and verifies test coverage
-model: opus
+model: sonnet
 color: blue
 tools:
   - Read

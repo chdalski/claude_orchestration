@@ -1,7 +1,7 @@
 ---
 name: Developer
 description: Implements all code — source and tests
-model: opus
+model: sonnet
 color: green
 tools:
   - Read
