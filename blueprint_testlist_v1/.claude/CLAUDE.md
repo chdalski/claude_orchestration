@@ -27,6 +27,73 @@ into meaningful tasks.
 4. Load all files in `knowledge/extensions/` (skip
    `README.md`) for project-specific rules. These are
    **mandatory requirements**, not optional guidance.
+5. Create the team and spawn all agents (see Spawning the
+   Team below).
+
+## Spawning the Team
+
+After loading knowledge files, create the team and spawn
+all four agents:
+
+1. **Create the team:**
+
+   ```
+   TeamCreate(team_name="dev-team", description="Development team for <project>")
+   ```
+
+2. **Spawn all agents in parallel** (single message with
+   four Task tool calls):
+
+   ```
+   Task(
+     subagent_type="general-purpose",
+     name="developer",
+     team_name="dev-team",
+     model="sonnet",
+     description="Spawn Developer",
+     prompt="You are the Developer on the dev-team. Wait for the first task from the lead."
+   )
+
+   Task(
+     subagent_type="general-purpose",
+     name="test-engineer",
+     team_name="dev-team",
+     model="sonnet",
+     description="Spawn Test Engineer",
+     prompt="You are the Test Engineer on the dev-team. Wait for the first task from the lead."
+   )
+
+   Task(
+     subagent_type="general-purpose",
+     name="security-engineer",
+     team_name="dev-team",
+     model="sonnet",
+     description="Spawn Security Engineer",
+     prompt="You are the Security Engineer on the dev-team. Wait for the first task from the lead."
+   )
+
+   Task(
+     subagent_type="general-purpose",
+     name="reviewer",
+     team_name="dev-team",
+     model="opus",
+     description="Spawn Reviewer",
+     prompt="You are the Reviewer. Wait for the lead to send you completed work to review."
+   )
+   ```
+
+**Important notes:**
+
+- The `name` parameter must match the `name:` field in the
+  corresponding `.claude/agents/*.md` file. This loads the
+  agent definition (model, tools, color, instructions).
+- Use `subagent_type="general-purpose"` for all four agents.
+  The agent definition overrides the base tool set.
+- All four agents join the same `team_name` for coordination,
+  but the Reviewer is NOT part of the dev-team conceptually
+  — it is an independent quality gate.
+- Spawn all four agents during startup, before presenting
+  the plan to the user. They will idle until needed.
 
 ## Principles
 
@@ -70,11 +137,11 @@ The dev-team and Reviewer work together on each task:
 
 ### Dev-Team
 
-| Agent | Model | Role |
-|-------|-------|------|
-| **Developer** | opus | Implements all code (source and tests) |
-| **Test Engineer** | opus | Advisory — designs test specifications, verifies coverage |
-| **Security Engineer** | opus | Advisory — checks for security gaps |
+| Agent               | Model  | Role                                                    |
+|---------------------|--------|---------------------------------------------------------|
+| **Developer**       | sonnet | Implements all code (source and tests)                  |
+| **Test Engineer**   | sonnet | Advisory — designs test specifications, verifies coverage |
+| **Security Engineer** | sonnet | Advisory — checks for security gaps                     |
 
 All three receive each task simultaneously. They discuss
 and agree on approach before implementation starts. The
@@ -86,9 +153,9 @@ tests without the Test Engineer's approval.
 
 ### Quality Gate
 
-| Agent | Model | Role |
-|-------|-------|------|
-| **Reviewer** | opus | Reviews work, commits if satisfied |
+| Agent        | Model | Role                                 |
+|--------------|-------|--------------------------------------|
+| **Reviewer** | opus  | Reviews work, commits if satisfied   |
 
 The Reviewer is independent from the dev-team. It reviews
 completed work and either commits it or sends it back.
@@ -127,10 +194,33 @@ all questions are resolved and the user has confirmed.
    until the user has confirmed. If the user's answers
    raise new questions, use `AskUserQuestion` again —
    all questions must be resolved before proceeding.
-5. Feed the first task to the dev-team (all three agents
-   receive it).
-6. Wait for the Reviewer to commit the completed work.
-7. Feed the next task. Repeat until done.
+5. Send the task to all three dev-team agents:
+
+   ```
+   SendMessage(
+     type="broadcast",
+     content="<task description with acceptance criteria>",
+     summary="Task: <brief description>"
+   )
+   ```
+
+   All three dev-team agents (developer, test-engineer,
+   security-engineer) receive the broadcast and begin work.
+6. Wait for all three dev-team agents to report completion
+   (see "Three signals before review" in Coordination).
+7. Send "ready for review" to the Reviewer:
+
+   ```
+   SendMessage(
+     type="message",
+     recipient="reviewer",
+     content="Task complete. All three dev-team agents have signed off: Developer (implementation done), Test Engineer (test sign-off given), Security Engineer (security sign-off given). Ready for review.",
+     summary="Ready for review"
+   )
+   ```
+
+8. Wait for the Reviewer to commit the completed work.
+9. Send the next task. Repeat until done.
 
 ### Bug Fix
 
@@ -141,21 +231,34 @@ all questions are resolved and the user has confirmed.
    (reproduction steps, expected behavior, scope of fix)
    and to confirm the approach. Do not proceed until the
    user confirms and all questions are resolved.
-4. Feed the bug description as a single task to the
-   dev-team.
-5. Wait for the Reviewer to commit the fix.
+4. Send the bug description as a single task to the
+   dev-team using `SendMessage` with `type="broadcast"`.
+5. Wait for all three dev-team agents to complete, then
+   send "ready for review" to the Reviewer.
+6. Wait for the Reviewer to commit the fix.
 
 ### Security Audit
 
 1. Use `AskUserQuestion` to confirm the audit scope with
    the user (full codebase, specific module, specific
    concern). Resolve any open questions before proceeding.
-2. Spawn a Security Engineer to audit the codebase and
-   report findings.
-3. Present findings to the user as regular text, then use
+2. Send the audit request to the security-engineer:
+
+   ```
+   SendMessage(
+     type="message",
+     recipient="security-engineer",
+     content="<audit scope and focus areas>",
+     summary="Security audit request"
+   )
+   ```
+
+3. Wait for the security-engineer to report findings.
+4. Present findings to the user as regular text, then use
    `AskUserQuestion` to confirm which fixes to proceed
    with.
-4. Feed confirmed fixes as tasks to the dev-team.
+5. Send confirmed fixes as tasks to the dev-team using
+   `SendMessage` with `type="broadcast"`.
 
 ### Documentation
 
@@ -163,7 +266,8 @@ all questions are resolved and the user has confirmed.
    document, the target audience, and where the
    documentation should live. Resolve any open questions
    before proceeding.
-2. Feed the documentation task to the dev-team.
+2. Send the documentation task to the dev-team using
+   `SendMessage` with `type="broadcast"`.
 
 ### Dev-Team Task Cycle
 
@@ -440,6 +544,30 @@ To reduce friction, users can create
   }
 }
 ```
+
+### Shutting Down the Team
+
+When all work is complete:
+
+1. Send shutdown requests to all agents:
+
+   ```
+   SendMessage(
+     type="shutdown_request",
+     recipient="developer",
+     content="All tasks complete. Shutting down the team."
+   )
+   ```
+
+   Repeat for test-engineer, security-engineer, and reviewer.
+
+2. Wait for all agents to approve shutdown.
+
+3. Delete the team:
+
+   ```
+   TeamDelete()
+   ```
 
 ### Limitations
 
