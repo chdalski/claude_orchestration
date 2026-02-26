@@ -11,13 +11,15 @@ of software engineering principles.
 ```text
 claude_orchestration/
 ├── .devcontainer/           # Sandboxed execution environment
-└── blueprint_testlist_v1/   # Test-list blueprint (spec-first)
+├── blueprint_testlist_v1/   # Test-list blueprint (4 agents)
+│   └── .claude/             # Orchestration config + agents
+└── blueprint_testlist_v2/   # Test-list blueprint (5 agents + Architect)
     └── .claude/             # Orchestration config + agents
 ```
 
-## Blueprint
+## Blueprints
 
-The **test-list blueprint** uses a spec-first approach:
+Both blueprints use the **test-list (spec-first)** workflow:
 
 | | Test-list (spec-first) |
 |---|---|
@@ -33,6 +35,31 @@ checkpoints: the Test Engineer verifies tests match the spec
 before implementation, then confirms tests were not altered
 after implementation.
 
+### v1: Lead Decomposes Tasks (4 agents)
+
+The lead handles everything: clarifies requirements with
+the user, reads the codebase, decomposes work into tasks,
+and sends tasks to the dev-team.
+
+**Agents:** Lead, Developer, Test Engineer, Security Engineer, Reviewer
+
+**Best for:** Smaller projects, or when you want the lead
+to understand the codebase directly.
+
+### v2: Architect Decomposes Tasks (5 agents)
+
+The lead focuses purely on user communication and
+coordination. The Architect reads the codebase, decomposes
+work into tasks, writes plans to `.claude/plan.md`, and
+feeds tasks to the dev-team.
+
+**Agents:** Lead, Architect, Developer, Test Engineer, Security Engineer, Reviewer
+
+**Best for:** Larger projects, or when you want clearer
+separation between communication (lead) and technical
+analysis (architect). The plan file persists across
+context compaction.
+
 ## Prerequisites
 
 Agent teams are an experimental Claude Code feature, disabled
@@ -46,16 +73,22 @@ export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 
 ## Quick Start
 
-Copy the blueprint into your project:
+Copy a blueprint into your project:
 
 ```bash
+# v1 (lead decomposes tasks)
 cp -r blueprint_testlist_v1/.claude/ /path/to/your/project/.claude/
+
+# OR v2 (architect decomposes tasks)
+cp -r blueprint_testlist_v2/.claude/ /path/to/your/project/.claude/
 ```
 
 Start Claude Code in your project directory. The CLAUDE.md
 loads automatically and configures your session as the team
-lead. Describe what you want to build, and it will
-decompose the work into tasks and feed them to the dev-team.
+lead. Describe what you want to build:
+
+- **v1:** Lead decomposes work and sends tasks to dev-team
+- **v2:** Lead clarifies requirements, sends story to Architect, who decomposes and manages dev-team
 
 ## Devcontainer (Sandboxed Execution)
 
@@ -90,31 +123,66 @@ extension, or use the `devcontainer` CLI.
 
 ## Agents
 
+### v1 (4 agents)
+
 | Agent | Model | Role |
 |-------|-------|------|
-| **Developer** | opus | Implements code (scope depends on blueprint) |
-| **Test Engineer** | opus | Test design and verification |
-| **Security Engineer** | opus | Advisory — checks security gaps |
+| **Developer** | sonnet | Implements all code (source + tests) |
+| **Test Engineer** | sonnet | Advisory — designs test specs, verifies coverage |
+| **Security Engineer** | sonnet | Advisory — checks security gaps |
+| **Reviewer** | opus | Quality gate — commits when satisfied |
+
+### v2 (5 agents)
+
+| Agent | Model | Role |
+|-------|-------|------|
+| **Architect** | sonnet | Reads codebase, decomposes tasks, writes plans |
+| **Developer** | sonnet | Implements all code (source + tests) |
+| **Test Engineer** | sonnet | Advisory — designs test specs, verifies coverage |
+| **Security Engineer** | sonnet | Advisory — checks security gaps |
 | **Reviewer** | opus | Quality gate — commits when satisfied |
 
 ## Workflow
 
+### v1 Workflow
+
 ```text
-Lead -> Task -> Dev-Team -> Reviewer -> Commit
-                  ^            |
-                  '------------' (if rejected)
+User -> Lead -> Task -> Dev-Team -> Reviewer -> Commit
+                 ^         |           |
+                 |         '-----<-----' (if rejected)
+                 '-----<-----' (questions)
 ```
 
-1. **Lead** decomposes the user's request into sequential
-   tasks.
-2. **Dev-team** (Developer, Test Engineer, Security
-   Engineer) receives each task, discusses approach, then
-   implements. The testing workflow depends on the blueprint
-   chosen.
-3. **Reviewer** examines the completed work. If satisfied,
-   commits with a conventional commit message. If not, sends
-   findings back to the full dev-team for fixes.
-4. Lead sends the next task after commit.
+1. **Lead** clarifies requirements with user, reads codebase,
+   decomposes into tasks
+2. **Dev-team** receives task, implements
+3. **Reviewer** commits or rejects
+4. Lead sends next task after commit
+
+### v2 Workflow
+
+```text
+User -> Lead -> Story -> Architect -> Task -> Dev-Team -> Reviewer -> Commit
+         ^                  |          ^        |            |
+         |                  |          |        '------<-----' (if rejected)
+         '--------<---------'          '--------<-----' (questions)
+```
+
+1. **Lead** clarifies requirements with user using AskUserQuestion
+2. **Architect** receives clarified story, reads codebase,
+   decomposes into tasks, writes plan to `.claude/plan.md`
+3. **Dev-team** receives task from Architect, implements
+4. **Reviewer** commits or rejects (coordinated by Lead)
+5. Architect sends next task after commit
+
+In both workflows:
+
+- **Dev-team** (Developer, Test Engineer, Security Engineer)
+  discusses approach before implementing
+- Test Engineer produces test spec, Developer writes tests,
+  Test Engineer verifies before implementation starts
+- Post-implementation: both Test Engineer and Security
+  Engineer give sign-offs before review
 
 ## Knowledge Base
 

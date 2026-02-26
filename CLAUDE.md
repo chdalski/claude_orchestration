@@ -19,7 +19,7 @@ claude_orchestration/
 │   ├── Dockerfile           # Image definition
 │   ├── init-firewall.sh     # Network firewall setup
 │   └── allowed-domains.conf # Configurable domain allowlist
-├── blueprint_testlist_v1/   # Test-list blueprint (spec-first)
+├── blueprint_testlist_v1/   # Test-list blueprint (4 agents)
 │   └── .claude/
 │       ├── CLAUDE.md        # Orchestration instructions
 │       ├── settings.json    # Enables agent teams + hooks
@@ -33,17 +33,69 @@ claude_orchestration/
 │       ├── practices/       # Test-list workflow, conventional
 │       │                    # commits
 │       └── templates/       # Commit message template
+├── blueprint_testlist_v2/   # Test-list blueprint (5 agents + Architect)
+│   └── .claude/
+│       ├── CLAUDE.md        # Orchestration instructions
+│       ├── settings.json    # Enables agent teams + hooks
+│       ├── config.json      # Documentation files to check
+│       ├── agents/          # Architect, Developer, Test Engineer,
+│       │                    # Security Engineer, Reviewer
+│       ├── knowledge/
+│       │   ├── base/        # Language-agnostic principles
+│       │   ├── languages/   # Language-specific extensions
+│       │   └── extensions/  # Project-specific conventions
+│       ├── practices/       # Test-list workflow, conventional
+│       │                    # commits
+│       └── templates/       # Commit message template
 ```
 
-## Blueprint
+## Blueprints
 
-**`blueprint_testlist_v1/`** — **Test-list (spec-first).**
-The Test Engineer produces a test specification (what to
-test), the Developer writes all code (source and tests).
-Test Engineer verifies tests match the spec before
-implementation starts, then gives a post-implementation
-sign-off confirming tests were not altered. Unified file
-ownership eliminates coordination overhead.
+### blueprint_testlist_v1 (4 agents)
+
+**Test-list (spec-first), Lead handles task decomposition.**
+
+The lead clarifies requirements with the user, reads the
+codebase, decomposes work into tasks, and sends tasks to
+the dev-team. The Test Engineer produces a test
+specification (what to test), the Developer writes all
+code (source and tests). Test Engineer verifies tests
+match the spec before implementation starts, then gives a
+post-implementation sign-off confirming tests were not
+altered. Unified file ownership eliminates coordination
+overhead.
+
+**Agents:**
+- Lead (user communication + codebase understanding + task decomposition)
+- Developer (implements all code)
+- Test Engineer (advisory — designs test specs, verifies coverage)
+- Security Engineer (advisory — checks security)
+- Reviewer (independent quality gate)
+
+### blueprint_testlist_v2 (5 agents + Architect)
+
+**Test-list (spec-first), Architect handles task decomposition.**
+
+The lead focuses purely on user communication and team
+coordination. The Architect reads the codebase, decomposes
+work into tasks, writes plans to `.claude/plan.md`, and
+feeds tasks to the dev-team sequentially. The dev-team
+workflow is the same as v1 — Test Engineer produces test
+specs, Developer implements, both engineers give sign-offs.
+
+**Agents:**
+- Lead (user communication + team coordination only)
+- Architect (codebase understanding + task decomposition + planning)
+- Developer (implements all code)
+- Test Engineer (advisory — designs test specs, verifies coverage)
+- Security Engineer (advisory — checks security)
+- Reviewer (independent quality gate)
+
+**Key differences from v1:**
+- Lead is simpler — no Read/Glob/Grep, no codebase understanding
+- Architect bridges between lead and dev-team
+- Plans persist in `.claude/plan.md` for context continuity
+- Better separation of concerns: communication vs technical analysis
 
 ## Conventions
 
