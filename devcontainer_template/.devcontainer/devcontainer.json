@@ -7,10 +7,10 @@
     },
   },
   // Use features to enable language support (https://containers.dev/features):
-  //
-  // "features": {
-  //   "ghcr.io/devcontainers/features/rust:1": {}
-  // }
+  "features": {
+    "ghcr.io/devcontainers/features/rust:1": {},
+    "ghcr.io/devcontainers/features/node:1": {}
+  },
   "runArgs": [
     "--cap-add=NET_ADMIN",
     "--cap-add=NET_RAW"
