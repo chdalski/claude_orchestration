@@ -1,5 +1,5 @@
 # Claude Orchestration Kit
-
+"ANTHROPIC_BASE_URL": "https://api.portkey.ai",
 A drop-in orchestration kit for Claude Code multi-agent
 workflows. Copy a blueprint's `.claude/` directory into any
 project to get a team of specialized agents coordinated by

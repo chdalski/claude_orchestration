@@ -12,6 +12,10 @@ allowlist of domains.
   outbound traffic except DNS, SSH, and domains listed in
   `allowed-domains.conf`. GitHub IP ranges are fetched
   dynamically from `api.github.com/meta` and always allowed.
+- **Cache proxy** — Automatic prompt caching proxy that
+  intercepts Claude API requests and injects cache headers,
+  providing ~90% cost savings on repeated context tokens.
+  Runs on `localhost:3000` and starts automatically.
 - **Non-root execution** — runs as user `vscode` with sudo
   only for the firewall init script.
 - **Autopilot mode** — if a `.claude/` directory exists in
@@ -168,11 +172,52 @@ EOF
 This ensures Claude Code skips the onboarding prompt and
 reads your API key from `settings.json` on first run.
 
+## Cache Proxy
+
+The cache proxy automatically enables Anthropic's prompt
+caching for multi-agent orchestration, reducing costs by
+~90% on repeated context tokens.
+
+Built with **mitmproxy** (Python) for robust HTTP/HTTPS
+proxying with built-in SSL handling and timeout management.
+
+**How it works:**
+1. Container starts → proxy starts on `localhost:3000`
+2. `ANTHROPIC_BASE_URL` env var routes Claude through proxy
+3. Proxy intercepts requests, injects cache headers
+4. Requests forwarded to Portkey/Anthropic with caching
+   enabled
+
+**Monitoring:**
+```bash
+# Check if proxy is running
+nc -z localhost 3000
+
+# View cache stats in real-time
+tail -f /workspace/cache-proxy.log
+
+# Verify ANTHROPIC_BASE_URL is configured correctly, by asking claude to:
+echo $ANTHROPIC_BASE_URL
+# Should output: http://localhost:3000
+```
+
+**Configuration:**
+Set environment variables before starting the container:
+- `PORTKEY_URL` - Target API URL (default: `https://api.portkey.ai`)
+- `PROXY_PORT` - Local port (default: `3000`)
+- `PROXY_TIMEOUT` - Request timeout in ms (default: `180000`)
+
+See `.devcontainer/docs/cache-proxy-migration.md` for
+migration details from the previous Node.js implementation.
+
 ## Files
 
 | File | Purpose |
 |------|---------|
 | `Dockerfile` | Ubuntu-based image with dev tools, fish shell, starship prompt, and Claude Code |
-| `devcontainer.json` | Container config: mounts, capabilities, firewall init |
+| `devcontainer.json` | Container config: mounts, capabilities, cache proxy, firewall |
 | `init-firewall.sh` | iptables/ipset firewall script run at container start |
 | `allowed-domains.conf` | Allowlist of outbound domains (bind-mounted, editable without rebuild) |
+| `cache-proxy.py` | mitmproxy-based prompt caching proxy server |
+| `start-claude-proxy.sh` | Starts cache proxy as background daemon |
+| `docs/cache-proxy-migration.md` | Migration guide from Node.js to mitmproxy |

@@ -1,2 +1,3 @@
 .claude/settings.local.json
 .claude-session/
+cache-proxy.log

@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/devcontainers/base:ubuntu
 ARG TZ="UTC"
 ENV TZ="$TZ"
 
-# Install development tools and iptables/ipset
+# Install development tools
 # hadolint ignore=DL3009
 RUN apt-get update && apt-get install -y --no-install-recommends \
     less \
@@ -13,12 +13,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
     gnupg2 \
     dnsutils \
-    aggregate \
     jq \
     nano \
     vim \
-    fish \
-    mitmproxy
+    fish
 
 # Set `DEVCONTAINER` environment variable to help with orientation
 ENV DEVCONTAINER=true
@@ -47,4 +45,3 @@ RUN curl -sS https://starship.rs/install.sh | sh -s -- --yes && \
     echo 'alias l="ls -lisa"' >> /home/vscode/.config/fish/config.fish && \
     echo 'alias claude="claude --dangerously-skip-permissions"' >> /home/vscode/.config/fish/config.fish && \
     echo 'starship init fish | source' >> /home/vscode/.config/fish/config.fish
-
