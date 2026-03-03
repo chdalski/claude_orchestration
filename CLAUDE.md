@@ -14,6 +14,9 @@ workflows.
 claude_orchestration/
 ├── CLAUDE.md                # This file (project context)
 ├── README.md                # User-facing documentation
+├── .claude/
+│   └── rules/
+│       └── prompt-caching.md  # Caching design constraints
 ├── blueprint_testlist/      # Test-list blueprint (5 agents)
 │   ├── README.md            # Blueprint-specific docs
 │   └── .claude/
@@ -102,6 +105,29 @@ docker compose up -d
 Logs go to stdout (viewable via `docker compose logs -f`).
 
 ## Conventions
+
+### Rule files (`.claude/rules/`)
+
+Rule files are Claude Code's mechanism for modular,
+topic-specific instructions that load into every session.
+
+- Stored in `.claude/rules/` (project-level) or
+  `~/.claude/rules/` (user-level)
+- Plain markdown with optional YAML frontmatter
+- **Unconditional** (no `paths` frontmatter): loaded at
+  session start, always in context — same priority as
+  CLAUDE.md
+- **Conditional** (with `paths:` frontmatter): loaded only
+  when Claude reads files matching the glob patterns
+
+Use rule files for self-contained constraints that should
+always be enforced (like caching rules). Use CLAUDE.md for
+project structure, workflow, and session checklists.
+
+This project uses:
+- `.claude/rules/prompt-caching.md` — ensures all
+  blueprints align with Claude Code's prompt caching
+  architecture
 
 ### Knowledge files (`knowledge/`)
 
