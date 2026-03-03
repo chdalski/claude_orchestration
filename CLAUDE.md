@@ -14,30 +14,8 @@ workflows.
 claude_orchestration/
 ├── CLAUDE.md                # This file (project context)
 ├── README.md                # User-facing documentation
-├── .devcontainer/           # Devcontainer for sandboxed runs
-│   ├── devcontainer.json    # Container config
-│   ├── Dockerfile           # Image definition
-│   └── claude_proxy/        # Prompt caching proxy scripts
-├── container_template/      # Standalone proxy container
-│   ├── docker-compose.yaml  # Configurable compose file
-│   ├── Dockerfile           # Python + mitmproxy image
-│   ├── cache-proxy.py       # Proxy with stdout logging
-│   └── .env.example         # Environment variable docs
-├── blueprint_testlist_v1/   # Test-list blueprint (4 agents)
-│   └── .claude/
-│       ├── CLAUDE.md        # Orchestration instructions
-│       ├── settings.json    # Enables agent teams + hooks
-│       ├── config.json      # Documentation files to check
-│       ├── agents/          # Developer, Test Engineer,
-│       │                    # Security Engineer, Reviewer
-│       ├── knowledge/
-│       │   ├── base/        # Language-agnostic principles
-│       │   ├── languages/   # Language-specific extensions
-│       │   └── extensions/  # Project-specific conventions
-│       ├── practices/       # Test-list workflow, conventional
-│       │                    # commits
-│       └── templates/       # Commit message template
-├── blueprint_testlist_v2/   # Test-list blueprint (5 agents + Architect)
+├── blueprint_testlist/      # Test-list blueprint (5 agents)
+│   ├── README.md            # Blueprint-specific docs
 │   └── .claude/
 │       ├── CLAUDE.md        # Orchestration instructions
 │       ├── settings.json    # Enables agent teams + hooks
@@ -51,55 +29,55 @@ claude_orchestration/
 │       ├── practices/       # Test-list workflow, conventional
 │       │                    # commits
 │       └── templates/       # Commit message template
+├── devcontainer_template/   # Devcontainer for sandboxed runs
+│   ├── README.md            # Setup and configuration docs
+│   └── .devcontainer/
+│       ├── devcontainer.json  # Container config
+│       ├── Dockerfile         # Image definition
+│       └── init-claude-settings.sh  # Startup script
+├── container_template/      # Standalone prompt caching proxy
+│   ├── docker-compose.yaml  # Configurable compose file
+│   ├── Dockerfile           # Python + mitmproxy image
+│   ├── cache-proxy.py       # Proxy with stdout logging
+│   └── .env.example         # Environment variable docs
+└── docs/                    # Design docs and references
+    └── prompt-caching-proxy-solution.md
 ```
 
-## Blueprints
+## Blueprint
 
-### blueprint_testlist_v1 (4 agents)
-
-**Test-list (spec-first), Lead handles task decomposition.**
-
-The lead clarifies requirements with the user, reads the
-codebase, decomposes work into tasks, and sends tasks to
-the dev-team. The Test Engineer produces a test
-specification (what to test), the Developer writes all
-code (source and tests). Test Engineer verifies tests
-match the spec before implementation starts, then gives a
-post-implementation sign-off confirming tests were not
-altered. Unified file ownership eliminates coordination
-overhead.
-
-**Agents:**
-- Lead (user communication + codebase understanding + task decomposition)
-- Developer (implements all code)
-- Test Engineer (advisory — designs test specs, verifies coverage)
-- Security Engineer (advisory — checks security)
-- Reviewer (independent quality gate)
-
-### blueprint_testlist_v2 (5 agents + Architect)
+### blueprint_testlist (5 agents)
 
 **Test-list (spec-first), Architect handles task decomposition.**
 
-The lead focuses purely on user communication and team
+The lead focuses on user communication and team
 coordination. The Architect reads the codebase, decomposes
 work into tasks, writes plans to `.claude/plan.md`, and
-feeds tasks to the dev-team sequentially. The dev-team
-workflow is the same as v1 — Test Engineer produces test
-specs, Developer implements, both engineers give sign-offs.
+feeds tasks to the dev-team sequentially. The Test Engineer
+produces test specs, the Developer writes all code (source
+and tests). Both Test Engineer and Security Engineer give
+post-implementation sign-offs before review.
 
 **Agents:**
-- Lead (user communication + team coordination only)
+
+- Lead (user communication + team coordination)
 - Architect (codebase understanding + task decomposition + planning)
 - Developer (implements all code)
 - Test Engineer (advisory — designs test specs, verifies coverage)
 - Security Engineer (advisory — checks security)
 - Reviewer (independent quality gate)
 
-**Key differences from v1:**
-- Lead is simpler — no Read/Glob/Grep, no codebase understanding
-- Architect bridges between lead and dev-team
-- Plans persist in `.claude/plan.md` for context continuity
-- Better separation of concerns: communication vs technical analysis
+## Devcontainer Template
+
+`devcontainer_template/` provides a devcontainer setup for
+sandboxed agent execution. It uses an external prompt
+caching proxy (from `container_template/`) rather than
+embedding one.
+
+- Project-scoped Docker volume for Claude config and history
+- Host `~/.claude/settings.json` mounted read-only as template
+- Startup script copies and modifies settings to point at
+  the external proxy
 
 ## Container Template
 
@@ -108,11 +86,13 @@ container. It injects `cache_control` blocks into Claude API
 requests to enable prompt caching.
 
 **Environment variables:**
+
 - `PROXY_PORT` — Port to listen on (default: 3000)
-- `TARGET_URL` — Upstream API URL (default: https://api.portkey.ai)
+- `TARGET_URL` — Upstream API URL (default: `https://api.portkey.ai`)
 - `MIN_CACHE_CHARS` — Minimum chars for caching (default: 1024)
 
 **Usage:**
+
 ```bash
 cd container_template
 cp .env.example .env  # edit as needed
