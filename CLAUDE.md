@@ -38,13 +38,6 @@ claude_orchestration/
 │       ├── devcontainer.json  # Container config
 │       ├── Dockerfile         # Image definition
 │       └── init-claude-settings.sh  # Startup script
-├── container_template/      # Standalone prompt caching proxy
-│   ├── docker-compose.yaml  # Configurable compose file
-│   ├── Dockerfile           # Python + mitmproxy image
-│   ├── cache-proxy.py       # Proxy with stdout logging
-│   └── .env.example         # Environment variable docs
-└── docs/                    # Design docs and references
-    └── prompt-caching-proxy-solution.md
 ```
 
 ## Blueprint
@@ -73,36 +66,11 @@ post-implementation sign-offs before review.
 ## Devcontainer Template
 
 `devcontainer_template/` provides a devcontainer setup for
-sandboxed agent execution. It uses an external prompt
-caching proxy (from `container_template/`) rather than
-embedding one.
+sandboxed agent execution.
 
 - Project-scoped Docker volume for Claude config and history
 - Host `~/.claude/settings.json` mounted read-only as template
-- Startup script copies and modifies settings to point at
-  the external proxy
-
-## Container Template
-
-`container_template/` provides a standalone prompt caching proxy
-container. It injects `cache_control` blocks into Claude API
-requests to enable prompt caching.
-
-**Environment variables:**
-
-- `PROXY_PORT` — Port to listen on (default: 3000)
-- `TARGET_URL` — Upstream API URL (default: `https://api.portkey.ai`)
-- `MIN_CACHE_CHARS` — Minimum chars for caching (default: 1024)
-
-**Usage:**
-
-```bash
-cd container_template
-cp .env.example .env  # edit as needed
-docker compose up -d
-```
-
-Logs go to stdout (viewable via `docker compose logs -f`).
+- Startup script copies host settings into the container
 
 ## Conventions
 
