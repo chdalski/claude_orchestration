@@ -1,64 +1,110 @@
 # Claude Orchestration Kit
-"ANTHROPIC_BASE_URL": "https://api.portkey.ai",
+
 A drop-in orchestration kit for Claude Code multi-agent
 workflows. Copy a blueprint's `.claude/` directory into any
 project to get a team of specialized agents coordinated by
-your Claude Code session, guided by a shared knowledge base
-of software engineering principles.
+your Claude Code session.
 
 ## Repository Layout
 
 ```text
 claude_orchestration/
 ├── .devcontainer/           # Sandboxed execution environment
-├── blueprint_testlist_v1/   # Test-list blueprint (4 agents)
+├── blueprint_testlist/      # Test-list blueprint (5 agents)
 │   └── .claude/             # Orchestration config + agents
-└── blueprint_testlist_v2/   # Test-list blueprint (5 agents + Architect)
-    └── .claude/             # Orchestration config + agents
+└── blueprint_v2/            # Plan-first blueprint (workflow-based)
+    ├── .claude/             # Lead instructions, agents, rules, workflows
+    └── .ai/                 # Plan documents
 ```
 
 ## Blueprints
 
-Both blueprints use the **test-list (spec-first)** workflow:
+### Test-List Blueprint (blueprint_testlist)
 
-| | Test-list (spec-first) |
-|---|---|
-| **Test Engineer** | Designs test spec, verifies coverage |
-| **Developer** | Writes all code (source + tests) |
-| **File ownership** | Unified (Dev owns everything) |
-| **Coordination** | Dev writes tests from spec, TE verifies |
-| **Practice** | Test-list-driven development |
+**Test-list (spec-first), Architect handles task
+decomposition.**
 
-The Developer owns all code, eliminating file-conflict
-coordination. Test quality is enforced through verification
-checkpoints: the Test Engineer verifies tests match the spec
-before implementation, then confirms tests were not altered
-after implementation.
-
-### v1: Lead Decomposes Tasks (4 agents)
-
-The lead handles everything: clarifies requirements with
-the user, reads the codebase, decomposes work into tasks,
-and sends tasks to the dev-team.
-
-**Agents:** Lead, Developer, Test Engineer, Security Engineer, Reviewer
-
-**Best for:** Smaller projects, or when you want the lead
-to understand the codebase directly.
-
-### v2: Architect Decomposes Tasks (5 agents)
-
-The lead focuses purely on user communication and
+The lead focuses on user communication and team
 coordination. The Architect reads the codebase, decomposes
 work into tasks, writes plans to `.claude/plan.md`, and
-feeds tasks to the dev-team.
+feeds tasks to the dev-team sequentially. The Test Engineer
+produces test specs, the Developer writes all code (source
+and tests). Both Test Engineer and Security Engineer give
+post-implementation sign-offs before review.
 
-**Agents:** Lead, Architect, Developer, Test Engineer, Security Engineer, Reviewer
+**Agents:** Lead, Architect, Developer, Test Engineer,
+Security Engineer, Reviewer
 
-**Best for:** Larger projects, or when you want clearer
-separation between communication (lead) and technical
-analysis (architect). The plan file persists across
-context compaction.
+| Agent | Model | Role |
+|-------|-------|------|
+| **Architect** | sonnet | Reads codebase, decomposes tasks, writes plans |
+| **Developer** | sonnet | Implements all code (source + tests) |
+| **Test Engineer** | sonnet | Advisory — designs test specs, verifies coverage |
+| **Security Engineer** | sonnet | Advisory — checks security gaps |
+| **Reviewer** | opus | Quality gate — commits when satisfied |
+
+**Workflow:**
+
+```text
+User -> Lead -> Story -> Architect -> Task -> Dev-Team -> Reviewer -> Commit
+         ^                  |          ^        |            |
+         |                  |          |        '------<-----' (if rejected)
+         '--------<---------'          '--------<-----' (questions)
+```
+
+1. **Lead** clarifies requirements with user
+2. **Architect** receives clarified story, reads codebase,
+   decomposes into tasks, writes plan to `.claude/plan.md`
+3. **Dev-team** receives task from Architect, implements
+4. **Reviewer** commits or rejects (coordinated by Lead)
+5. Architect sends next task after commit
+
+The dev-team (Developer, Test Engineer, Security Engineer)
+discusses approach before implementing. Test Engineer
+produces test spec, Developer writes tests, Test Engineer
+verifies before implementation starts. Post-implementation:
+both Test Engineer and Security Engineer give sign-offs
+before review.
+
+**Knowledge base:** Engineering principles in `knowledge/`
+that agents load during startup — language-agnostic base
+principles, language-specific extensions (Rust, TypeScript,
+Python, Go), and project-specific conventions in
+`extensions/`.
+
+### Plan-First Blueprint (blueprint_v2)
+
+**Plan-first, workflow-based.** The lead starts in plan
+mode, clarifies the task, spawns an Architect to write a
+plan to `.ai/plans/`, and the user approves before
+execution. Workflows define execution patterns — adding a
+new workflow is just adding a file. Language-specific
+guidance loads automatically via conditional rules (no
+manual knowledge loading).
+
+**Agents:** Lead, Architect, Auditor, Committer, Developer,
+Test Engineer, Security Engineer, Reviewer
+
+| Agent | Model | Role |
+|-------|-------|------|
+| **Architect** | opus | Reads codebase, writes plans, decomposes and feeds tasks |
+| **Auditor** | haiku | Checks CLAUDE.md accuracy |
+| **Committer** | haiku | Stages and commits files |
+| **Developer** | sonnet | Implements all code (source + tests) |
+| **Test Engineer** | sonnet | Advisory — designs test specs, verifies coverage |
+| **Security Engineer** | sonnet | Advisory — checks security gaps |
+| **Reviewer** | sonnet | Independent quality gate — reviews, does not commit |
+
+**Workflows:**
+
+- **Develop-Review** — test-list-driven development with
+  security review and independent quality gate. The
+  Reviewer reviews but does not commit (Committer handles
+  commits).
+
+**Best for:** Projects wanting plan-first development with
+flexible workflow selection and automatic language-specific
+guidance. See `blueprint_v2/README.md` for full details.
 
 ## Prerequisites
 
@@ -76,19 +122,17 @@ export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 Copy a blueprint into your project:
 
 ```bash
-# v1 (lead decomposes tasks)
-cp -r blueprint_testlist_v1/.claude/ /path/to/your/project/.claude/
+# Test-list blueprint
+cp -r blueprint_testlist/.claude/ /path/to/your/project/.claude/
 
-# OR v2 (architect decomposes tasks)
-cp -r blueprint_testlist_v2/.claude/ /path/to/your/project/.claude/
+# OR plan-first blueprint
+cp -r blueprint_v2/.claude/ /path/to/your/project/.claude/
+cp -r blueprint_v2/.ai/ /path/to/your/project/.ai/
 ```
 
 Start Claude Code in your project directory. The CLAUDE.md
 loads automatically and configures your session as the team
-lead. Describe what you want to build:
-
-- **v1:** Lead decomposes work and sends tasks to dev-team
-- **v2:** Lead clarifies requirements, sends story to Architect, who decomposes and manages dev-team
+lead.
 
 ## Devcontainer (Sandboxed Execution)
 
@@ -120,101 +164,6 @@ cp -r .devcontainer/ /path/to/your/project/.devcontainer/
 
 Then open the project in VS Code with the Dev Containers
 extension, or use the `devcontainer` CLI.
-
-## Agents
-
-### v1 (4 agents)
-
-| Agent | Model | Role |
-|-------|-------|------|
-| **Developer** | sonnet | Implements all code (source + tests) |
-| **Test Engineer** | sonnet | Advisory — designs test specs, verifies coverage |
-| **Security Engineer** | sonnet | Advisory — checks security gaps |
-| **Reviewer** | opus | Quality gate — commits when satisfied |
-
-### v2 (5 agents)
-
-| Agent | Model | Role |
-|-------|-------|------|
-| **Architect** | sonnet | Reads codebase, decomposes tasks, writes plans |
-| **Developer** | sonnet | Implements all code (source + tests) |
-| **Test Engineer** | sonnet | Advisory — designs test specs, verifies coverage |
-| **Security Engineer** | sonnet | Advisory — checks security gaps |
-| **Reviewer** | opus | Quality gate — commits when satisfied |
-
-## Workflow
-
-### v1 Workflow
-
-```text
-User -> Lead -> Task -> Dev-Team -> Reviewer -> Commit
-                 ^         |           |
-                 |         '-----<-----' (if rejected)
-                 '-----<-----' (questions)
-```
-
-1. **Lead** clarifies requirements with user, reads codebase,
-   decomposes into tasks
-2. **Dev-team** receives task, implements
-3. **Reviewer** commits or rejects
-4. Lead sends next task after commit
-
-### v2 Workflow
-
-```text
-User -> Lead -> Story -> Architect -> Task -> Dev-Team -> Reviewer -> Commit
-         ^                  |          ^        |            |
-         |                  |          |        '------<-----' (if rejected)
-         '--------<---------'          '--------<-----' (questions)
-```
-
-1. **Lead** clarifies requirements with user using AskUserQuestion
-2. **Architect** receives clarified story, reads codebase,
-   decomposes into tasks, writes plan to `.claude/plan.md`
-3. **Dev-team** receives task from Architect, implements
-4. **Reviewer** commits or rejects (coordinated by Lead)
-5. Architect sends next task after commit
-
-In both workflows:
-
-- **Dev-team** (Developer, Test Engineer, Security Engineer)
-  discusses approach before implementing
-- Test Engineer produces test spec, Developer writes tests,
-  Test Engineer verifies before implementation starts
-- Post-implementation: both Test Engineer and Security
-  Engineer give sign-offs before review
-
-## Knowledge Base
-
-Engineering principles in `knowledge/` that agents load
-during startup:
-
-- **`base/`** — language-agnostic principles: Simple Design,
-  KISS, YAGNI, SOLID, FP, SSOT, security (OWASP Top 10),
-  code mass, hexagonal architecture, testing pyramid,
-  documentation.
-- **`languages/`** — language-specific extensions for Rust,
-  TypeScript, Python, and Go. Each references the base
-  principles it builds on.
-- **`extensions/`** — project-specific conventions added
-  after copying the blueprint into a target project.
-
-## Adding Languages
-
-Create a file at `knowledge/languages/<language>.md`
-following the pattern of existing language files. Include:
-
-1. Language philosophy and idioms
-2. How base principles apply in that language
-3. Testing frameworks and patterns
-4. Common pitfalls
-5. Recommended tools and libraries
-
-## Project Extensions
-
-After copying into your project, add project-specific
-conventions in `.claude/knowledge/extensions/`. See
-`knowledge/extensions/README.md` for format details.
 
 ## Known Limitations
 

@@ -53,6 +53,10 @@ decides whether to follow that recommendation.
 | **Architect** | opus | Reads codebase, writes plans, decomposes and feeds tasks | No (plans only) |
 | **Auditor** | haiku | Checks CLAUDE.md accuracy | No (read-only) |
 | **Committer** | haiku | Stages and commits files | No (git only) |
+| **Developer** | sonnet | Implements all code (source + tests) | Yes |
+| **Test Engineer** | sonnet | Advisory — designs test specs, verifies coverage | No |
+| **Security Engineer** | sonnet | Advisory — checks security gaps | No |
+| **Reviewer** | sonnet | Independent quality gate — reviews completed work | No |
 
 The Architect spans both planning (pre-workflow) and
 execution (during workflow). It writes the plan, then
@@ -64,8 +68,9 @@ instructions. The Committer is a shared utility — any
 workflow can use it to commit work without bundling commit
 logic into review or implementation agents.
 
-Workflow-specific agents (Developer, Reviewer, etc.) are
-added as workflows are defined.
+Developer, Test Engineer, Security Engineer, and Reviewer
+are workflow-specific agents used by the Develop-Review
+workflow.
 
 ### Workflows
 
@@ -77,6 +82,28 @@ CLAUDE.md — just add a file.
 
 See `.claude/workflows/CLAUDE.md` for the required format
 and the list of shared agents available to all workflows.
+
+#### Develop-Review
+
+The Develop-Review workflow provides a full development
+cycle for code tasks. The Architect feeds task slices to a
+dev-team (Developer, Test Engineer, Security Engineer) that
+uses test-list-driven development. After implementation,
+the Reviewer provides an independent quality gate before
+each commit.
+
+Flow per task slice:
+
+1. Dev-team discusses → Security Engineer assesses →
+   Test Engineer produces test list
+2. Developer writes tests → Test Engineer verifies →
+   Developer implements
+3. Test Engineer and Security Engineer give sign-offs
+4. Reviewer evaluates → approves or rejects
+5. User confirms commit → Committer commits
+
+See `.claude/workflows/develop-review.md` for the full
+step-by-step flow and completion criteria.
 
 ### Conditional Rules
 

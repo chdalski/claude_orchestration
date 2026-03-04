@@ -1,8 +1,14 @@
 """Shared fixtures for blueprint tests."""
 
+import sys
 from pathlib import Path
 
 import yaml
+
+# Ensure this blueprint's test directory is on sys.path for imports
+_tests_dir = str(Path(__file__).parent)
+if _tests_dir not in sys.path:
+    sys.path.insert(0, _tests_dir)
 from dotenv import load_dotenv
 
 # Path constants

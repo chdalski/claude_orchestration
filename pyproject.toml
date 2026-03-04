@@ -19,5 +19,5 @@ markers = [
     "behavioral: tests that run real Claude Code sessions (requires API key)",
 ]
 testpaths = ["blueprint_testlist/tests", "blueprint_v2/tests"]
-pythonpath = ["blueprint_testlist/tests"]
-norecursedirs = ["blueprint_testlist/tests/fixtures"]
+pythonpath = []
+norecursedirs = ["blueprint_testlist/tests/fixtures", "blueprint_v2/tests/fixtures"]

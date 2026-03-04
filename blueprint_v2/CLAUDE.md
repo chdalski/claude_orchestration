@@ -74,7 +74,11 @@ blueprint_v2/
 │   ├── agents/            ← Agent definitions (frontmatter + instructions)
 │   │   ├── architect.md   ← Reads codebase, writes plans, feeds tasks
 │   │   ├── auditor.md     ← Checks CLAUDE.md structural accuracy
-│   │   └── committer.md   ← Stages and commits specified files
+│   │   ├── committer.md   ← Stages and commits specified files
+│   │   ├── developer.md   ← Implements all code (source + tests)
+│   │   ├── reviewer.md    ← Independent quality gate (review only)
+│   │   ├── security-engineer.md ← Advisory — security assessment
+│   │   └── test-engineer.md     ← Advisory — test design + verification
 │   ├── rules/             ← Unconditional + conditional rules
 │   │   ├── simplicity.md         ← [unconditional] KISS, YAGNI, etc.
 │   │   ├── code-principles.md    ← [conditional: source files] SOLID, Kent Beck
@@ -87,7 +91,8 @@ blueprint_v2/
 │   │   ├── code-mass.md          ← [conditional: source files]
 │   │   └── cargo-lints.md        ← [conditional: Cargo.toml]
 │   └── workflows/         ← Workflow definitions
-│       └── CLAUDE.md      ← Workflow format guide + shared agents
+│       ├── CLAUDE.md      ← Workflow format guide + shared agents
+│       └── develop-review.md ← Dev-team + review workflow
 ├── .ai/
 │   └── plans/             ← Living plan documents (git-committed)
 │       └── CLAUDE.md      ← Plan format guide
@@ -207,6 +212,11 @@ No changes to `.claude/CLAUDE.md`, agents, or workflows.
 4. Run tests
 
 No changes to `.claude/CLAUDE.md` or existing rules.
+
+See `develop-review.md` for a concrete example — it uses
+four workflow-specific agents (Developer, Test Engineer,
+Security Engineer, Reviewer) alongside the shared Architect
+and Committer.
 
 ## Prompt Caching Alignment
 

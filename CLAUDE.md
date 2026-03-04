@@ -47,7 +47,9 @@ claude_orchestration/
 │   ├── .claude/
 │   │   ├── CLAUDE.md        # Lead instructions
 │   │   ├── settings.json    # Plan mode + agent teams
-│   │   ├── agents/          # Architect, Auditor, Committer
+│   │   ├── agents/          # Architect, Auditor, Committer,
+│   │   │                    # Developer, Reviewer,
+│   │   │                    # Test Engineer, Security Engineer
 │   │   ├── rules/           # Unconditional + conditional rules
 │   │   │   ├── simplicity.md       # KISS, YAGNI, Reveals Intent (unconditional)
 │   │   │   ├── code-principles.md  # SOLID, Kent Beck (source files)
@@ -60,6 +62,7 @@ claude_orchestration/
 │   │   │   ├── lang-rust.md        # Rust idioms + testing
 │   │   │   └── lang-typescript.md  # TypeScript idioms + testing
 │   │   └── workflows/       # Workflow definitions + format guide
+│   │       └── develop-review.md  # Dev-team + review workflow
 │   ├── .ai/
 │   │   └── plans/           # Living plan documents
 │   └── tests/               # Blueprint verification tests
@@ -118,9 +121,17 @@ agents; the Committer handles all git commits.
   decomposition + task feeding)
 - Auditor (background — checks CLAUDE.md structural claims)
 - Committer (utility — stages and commits specified files)
+- Developer (implements all code — source and tests)
+- Test Engineer (advisory — designs test specs, verifies
+  coverage)
+- Security Engineer (advisory — checks security)
+- Reviewer (independent quality gate — reviews, does not
+  commit)
 
-Workflow-specific agents (Developer, Reviewer, etc.) are
-defined as workflows are added.
+**Workflows:**
+
+- Develop-Review — test-list-driven development with
+  security review and independent quality gate
 
 ## Devcontainer Template
 

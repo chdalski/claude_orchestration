@@ -48,6 +48,10 @@ AGENT_FILES: dict[str, str] = {
     "Architect": "architect.md",
     "Auditor": "auditor.md",
     "Committer": "committer.md",
+    "Developer": "developer.md",
+    "Reviewer": "reviewer.md",
+    "Test Engineer": "test-engineer.md",
+    "Security Engineer": "security-engineer.md",
 }
 
 # Agent tools — exact tool set for each agent
@@ -59,6 +63,23 @@ AGENT_TOOLS: dict[str, set[str]] = {
     },
     "Auditor": {"Read", "Glob", "Grep", "SendMessage"},
     "Committer": {"Read", "Glob", "Bash", "SendMessage"},
+    "Developer": {
+        "Read", "Write", "Edit", "Bash", "Glob", "Grep",
+        "WebSearch", "WebFetch", "SendMessage", "TaskUpdate",
+        "TaskList", "TaskGet",
+    },
+    "Reviewer": {
+        "Read", "Glob", "Grep", "Bash", "SendMessage",
+        "TaskUpdate", "TaskList", "TaskGet",
+    },
+    "Test Engineer": {
+        "Read", "Glob", "Grep", "Bash", "SendMessage",
+        "TaskUpdate", "TaskList", "TaskGet",
+    },
+    "Security Engineer": {
+        "Read", "Glob", "Grep", "Bash", "SendMessage",
+        "TaskUpdate", "TaskList", "TaskGet",
+    },
 }
 
 # Agent models — required model for each agent
@@ -66,6 +87,10 @@ AGENT_MODELS: dict[str, str] = {
     "Architect": "opus",
     "Auditor": "haiku",
     "Committer": "haiku",
+    "Developer": "sonnet",
+    "Reviewer": "sonnet",
+    "Test Engineer": "sonnet",
+    "Security Engineer": "sonnet",
 }
 
 DYNAMIC_CONTENT_ALLOWLIST: list[str] = [
