@@ -1,19 +1,19 @@
 # Plan-First Blueprint (v2)
 
 Plan-first, workflow-based blueprint for Claude Code
-multi-agent orchestration. The lead clarifies and plans
-before any execution begins. Workflows define how work
-gets done.
+multi-agent orchestration. The lead clarifies, the
+Architect plans, and workflows define how work gets done.
 
 ## How It Works
 
 ### Planning Approach
 
 The lead starts every session in plan mode. It clarifies
-the task with the user, writes a plan to `.ai/plans/`,
-then proposes a workflow from `.claude/workflows/`. No
-agents are spawned and no code is touched until the user
-approves the approach. This front-loads understanding and
+the task with the user, then spawns the Architect to read
+the codebase, write a plan to `.ai/plans/`, and decompose
+it into task slices. The lead presents the plan to the user
+for approval, then proposes a workflow. No code is touched
+until the user approves. This front-loads understanding and
 avoids wasting tokens on misunderstood requirements.
 
 ### Startup
@@ -22,16 +22,25 @@ avoids wasting tokens on misunderstood requirements.
    CLAUDE.md integrity.
 2. Lead checks for existing plans from previous sessions.
 3. Lead begins clarification with the user.
-4. When the Auditor reports, the lead notes any
-   discrepancies and prepends a fix step to the plan if
-   codebase changes are involved.
+4. Once clarified, lead spawns the Architect with the
+   request.
+5. Architect writes the plan and reports back.
+6. Lead presents the plan to the user for approval.
+7. When the Auditor reports discrepancies and the plan
+   involves codebase changes, a fix step is prepended.
 
 ### Agents
 
 | Agent | Model | Role | Writes Code |
 |-------|-------|------|-------------|
+| **Architect** | opus | Reads codebase, writes plans, decomposes and feeds tasks | No (plans only) |
 | **Auditor** | haiku | Checks CLAUDE.md accuracy | No (read-only) |
 | **Committer** | haiku | Stages and commits files | No (git only) |
+
+The Architect spans both planning (pre-workflow) and
+execution (during workflow). It writes the plan, then
+feeds tasks to whichever agents the chosen workflow
+provides.
 
 The Auditor runs at session start to catch stale
 instructions. The Committer is a shared utility — any
@@ -51,6 +60,37 @@ CLAUDE.md — just add a file.
 
 See `.claude/workflows/CLAUDE.md` for the required format
 and the list of shared agents available to all workflows.
+
+### Conditional Rules
+
+Language-specific and topic-specific guidance lives in
+`.claude/rules/` as conditional rule files with `paths:`
+frontmatter. Claude Code automatically injects these into
+context when agents touch matching files — no startup
+loading or agent configuration needed.
+
+**Unconditional** (always loaded, no `paths:` frontmatter):
+
+| Rule File | Content |
+|-----------|---------|
+| `simplicity.md` | KISS, YAGNI, Reveals Intent, Fewest Elements — universal principles for all work |
+
+**Conditional** (loaded when matching files are touched):
+
+| Rule File | Triggers On | Content |
+|-----------|------------|---------|
+| `code-principles.md` | all source files | SOLID, Kent Beck's Four Rules, type-driven design |
+| `lang-typescript.md` | `*.ts`, `*.tsx` | TypeScript idioms, type system, React, testing |
+| `lang-python.md` | `*.py` | Pythonic patterns, type hints, pytest |
+| `lang-go.md` | `*.go` | Go idioms, error handling, concurrency, testing |
+| `lang-rust.md` | `*.rs` | Ownership, type system, async, testing |
+| `functional-style.md` | `*.ts`, `*.tsx`, `*.py`, `*.rs` | FP principles (not Go) |
+| `documentation.md` | `README*`, `docs/**/*.md` | Documentation principles |
+| `code-mass.md` | `*.ts`, `*.tsx`, `*.py`, `*.rs`, `*.go` | APP refactoring metric |
+| `cargo-lints.md` | `Cargo.toml` | Required Clippy lints |
+
+Adding a new language is just adding a file — no changes
+to CLAUDE.md or agent definitions required.
 
 ### Conventional Commits
 

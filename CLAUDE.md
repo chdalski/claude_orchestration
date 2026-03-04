@@ -18,7 +18,8 @@ claude_orchestration/
 ├── .claude/
 │   └── rules/
 │       ├── prompt-caching.md    # Caching design constraints
-│       └── reasoned-instructions.md  # Rationale requirement
+│       ├── reasoned-instructions.md  # Rationale requirement
+│       └── self-check.md        # Post-change verification
 ├── blueprint_testlist/      # Test-list blueprint (5 agents)
 │   ├── README.md            # Blueprint-specific docs
 │   ├── .claude/
@@ -45,7 +46,18 @@ claude_orchestration/
 │   ├── .claude/
 │   │   ├── CLAUDE.md        # Lead instructions
 │   │   ├── settings.json    # Plan mode + agent teams
-│   │   ├── agents/          # Auditor, Committer
+│   │   ├── agents/          # Architect, Auditor, Committer
+│   │   ├── rules/           # Unconditional + conditional rules
+│   │   │   ├── simplicity.md       # KISS, YAGNI, Reveals Intent (unconditional)
+│   │   │   ├── code-principles.md  # SOLID, Kent Beck (source files)
+│   │   │   ├── cargo-lints.md      # Rust Cargo.toml lints
+│   │   │   ├── code-mass.md        # APP refactoring metric
+│   │   │   ├── documentation.md    # Documentation principles
+│   │   │   ├── functional-style.md # FP principles (TS/Py/Rust)
+│   │   │   ├── lang-go.md          # Go idioms + testing
+│   │   │   ├── lang-python.md      # Python idioms + testing
+│   │   │   ├── lang-rust.md        # Rust idioms + testing
+│   │   │   └── lang-typescript.md  # TypeScript idioms + testing
 │   │   └── workflows/       # Workflow definitions + format guide
 │   ├── .ai/
 │   │   └── plans/           # Living plan documents
@@ -91,14 +103,18 @@ Workflows define execution patterns.**
 
 The lead starts in plan mode, spawns an Auditor to check
 CLAUDE.md integrity, clarifies the task with the user,
-writes a plan, then proposes a workflow. Workflows are
-defined as separate files in `.claude/workflows/` — adding
-a new workflow requires no changes to CLAUDE.md. The
-Committer agent handles all git commits across workflows.
+then spawns the Architect to write a plan and decompose it
+into task slices. After user approval, the lead proposes a
+workflow. Workflows are defined as separate files in
+`.claude/workflows/` — adding a new workflow requires no
+changes to CLAUDE.md. The Architect feeds tasks to workflow
+agents; the Committer handles all git commits.
 
 **Agents:**
 
-- Lead (clarification + planning + coordination)
+- Lead (clarification + coordination)
+- Architect (codebase analysis + plan writing + task
+  decomposition + task feeding)
 - Auditor (background — checks CLAUDE.md structural claims)
 - Committer (utility — stages and commits specified files)
 

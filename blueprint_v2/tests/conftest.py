@@ -21,6 +21,7 @@ load_dotenv(REPO_ROOT / ".env.local")
 
 CLAUDE_DIR = BLUEPRINT_ROOT / ".claude"
 AGENTS_DIR = CLAUDE_DIR / "agents"
+RULES_DIR = CLAUDE_DIR / "rules"
 SETTINGS_FILE = CLAUDE_DIR / "settings.json"
 CLAUDE_MD = CLAUDE_DIR / "CLAUDE.md"
 

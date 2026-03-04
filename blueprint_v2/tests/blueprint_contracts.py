@@ -13,6 +13,7 @@ REQUIRED_CLAUDE_FILES: list[str] = [
 REQUIRED_DIRECTORIES: list[str] = [
     ".claude",
     ".claude/agents",
+    ".claude/rules",
     ".claude/workflows",
     ".ai/plans",
 ]
@@ -44,18 +45,25 @@ DYNAMIC_CONTENT_PATTERNS: list[str] = [
 # Allowlist for date-like patterns that are actually static content
 # Agent definitions — filename must match exactly
 AGENT_FILES: dict[str, str] = {
+    "Architect": "architect.md",
     "Auditor": "auditor.md",
     "Committer": "committer.md",
 }
 
 # Agent tools — exact tool set for each agent
 AGENT_TOOLS: dict[str, set[str]] = {
+    "Architect": {
+        "Read", "Glob", "Grep", "Write", "Edit",
+        "SendMessage", "TaskCreate", "TaskUpdate",
+        "TaskList", "TaskGet",
+    },
     "Auditor": {"Read", "Glob", "Grep", "SendMessage"},
     "Committer": {"Read", "Glob", "Bash", "SendMessage"},
 }
 
 # Agent models — required model for each agent
 AGENT_MODELS: dict[str, str] = {
+    "Architect": "opus",
     "Auditor": "haiku",
     "Committer": "haiku",
 }

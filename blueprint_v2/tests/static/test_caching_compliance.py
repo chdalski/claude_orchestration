@@ -8,7 +8,7 @@ from blueprint_contracts import (
     DYNAMIC_CONTENT_ALLOWLIST,
     DYNAMIC_CONTENT_PATTERNS,
 )
-from conftest import AGENTS_DIR, CLAUDE_MD, PLANS_CLAUDE_MD, WORKFLOWS_CLAUDE_MD
+from conftest import AGENTS_DIR, CLAUDE_MD, PLANS_CLAUDE_MD, RULES_DIR, WORKFLOWS_CLAUDE_MD
 
 pytestmark = pytest.mark.static
 
@@ -20,6 +20,8 @@ def _static_files():
     yield WORKFLOWS_CLAUDE_MD
     if AGENTS_DIR.is_dir():
         yield from sorted(AGENTS_DIR.glob("*.md"))
+    if RULES_DIR.is_dir():
+        yield from sorted(RULES_DIR.glob("*.md"))
 
 
 def _line_has_dynamic_content(line: str) -> str | None:

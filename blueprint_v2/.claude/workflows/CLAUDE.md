@@ -83,6 +83,18 @@ Some agents in `.claude/agents/` are not workflow-specific
 Workflow authors should use these rather than reinventing
 their capabilities.
 
+- **Architect** (`agents/architect.md`) — reads the
+  codebase, writes plans, decomposes into vertical task
+  slices, and feeds tasks to agents during execution. The
+  lead spawns the Architect after clarification; it
+  persists through both planning and execution phases.
+  Workflows do not spawn the Architect — the lead does.
+  During execution, the lead tells the Architect which
+  agents the workflow provides, and the Architect feeds
+  tasks to them sequentially via TaskList. Workflow authors
+  should assume the Architect is available and define their
+  agents and flow accordingly.
+
 - **Committer** (`agents/committer.md`) — stages specified
   files and commits with a provided message. Use this
   agent whenever a workflow needs to commit work. The

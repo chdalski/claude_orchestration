@@ -1,10 +1,11 @@
 # Plan Format
 
-Every plan file in this directory must follow this
-structure. Plans are living documents — update them as
-work progresses. This consistency ensures any agent or
-user can pick up a plan mid-session and understand its
-state without guessing.
+The Architect writes all plans in this directory. The lead
+reads them to present to the user but does not write them.
+Every plan file must follow this structure. Plans are living
+documents — the Architect updates them as work progresses.
+This consistency ensures any agent or user can pick up a
+plan mid-session and understand its state without guessing.
 
 ## Required Sections
 
@@ -50,6 +51,35 @@ when a session resumes.
 Keep steps granular enough to track progress but not so
 fine-grained that the list becomes noise — a 50-item
 checklist obscures status rather than revealing it.
+
+### Tasks
+
+Vertical task slices decomposed from the steps above. Each
+task is a committable unit of work with acceptance criteria.
+The Architect writes these during planning; during execution,
+each becomes a TaskList entry fed to workflow agents.
+
+```markdown
+### Task 1: Add token model
+
+**What:** Create the JWT token data model with
+validation and serialization.
+
+**Acceptance Criteria:**
+- Token struct with required fields
+- Validation for expiration and signature
+- Unit tests for happy path and expired token
+
+**Files likely involved:**
+- `src/models/token.rs`
+- `tests/models/token_test.rs`
+```
+
+Order tasks by dependency — foundational work first. Use
+vertical slices (each task touches all layers needed for
+that feature) rather than horizontal slices (all routes,
+then all handlers) — vertical slices deliver working
+increments and reduce integration risk.
 
 ### Decisions
 
