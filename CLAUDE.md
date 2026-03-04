@@ -42,13 +42,13 @@ claude_orchestration/
 │       ├── behavioral/      # SDK-based runtime tests
 │       └── fixtures/        # Minimal project for behavioral
 │           └── minimal_project/
-├── blueprint_v2/            # V2 blueprint (plan-first, workflow-based)
+├── blueprint_v2/            # V2 blueprint (clarify-first, workflow-based)
 │   ├── CLAUDE.md            # Blueprint design reference
 │   ├── .claude/
 │   │   ├── CLAUDE.md        # Lead instructions
-│   │   ├── settings.json    # Plan mode + agent teams
+│   │   ├── settings.json    # Agent teams
 │   │   ├── agents/          # Architect, Auditor, Committer,
-│   │   │                    # Developer, Reviewer,
+│   │   │                    # Developer, Plan Init, Reviewer,
 │   │   │                    # Test Engineer, Security Engineer
 │   │   ├── rules/           # Unconditional + conditional rules
 │   │   │   ├── simplicity.md       # KISS, YAGNI, Reveals Intent (unconditional)
@@ -61,11 +61,12 @@ claude_orchestration/
 │   │   │   ├── lang-python.md      # Python idioms + testing
 │   │   │   ├── lang-rust.md        # Rust idioms + testing
 │   │   │   └── lang-typescript.md  # TypeScript idioms + testing
+│   │   ├── templates/        # Canonical templates copied at runtime
 │   │   └── workflows/       # Workflow definitions + format guide
+│   │       ├── CLAUDE.md          # Workflow format guide + shared agents
 │   │       ├── develop-review.md  # Dev-team + review workflow
+│   │       ├── solo.md            # Lead handles work directly
 │   │       └── tdd-user-in-the-loop.md  # TDD with user approval at phase transitions
-│   ├── .ai/
-│   │   └── plans/           # Living plan documents
 │   └── tests/               # Blueprint verification tests
 │       ├── blueprint_contracts.py  # Single source of truth
 │       ├── conftest.py      # Shared fixtures + helpers
@@ -75,7 +76,7 @@ claude_orchestration/
 │   └── .devcontainer/
 │       ├── devcontainer.json  # Container config
 │       ├── Dockerfile         # Image definition
-│       └── init-claude-settings.sh  # Startup script
+│       └── init-claude-settings.sh   # Startup script
 ```
 
 ## Blueprint
@@ -101,19 +102,20 @@ post-implementation sign-offs before review.
 - Security Engineer (advisory — checks security)
 - Reviewer (independent quality gate)
 
-### blueprint_v2 (plan-first, workflow-based)
+### blueprint_v2 (clarify-first, workflow-based)
 
-**Plan-first, the lead owns clarification and planning.
-Workflows define execution patterns.**
+**Clarify-first, the lead owns clarification and workflow
+proposal. The user chooses how work gets done.**
 
-The lead starts in plan mode, spawns an Auditor to check
-CLAUDE.md integrity, clarifies the task with the user,
-then spawns the Architect to write a plan and decompose it
-into task slices. After user approval, the lead proposes a
-workflow. Workflows are defined as separate files in
-`.claude/workflows/` — adding a new workflow requires no
-changes to CLAUDE.md. The Architect feeds tasks to workflow
-agents; the Committer handles all git commits.
+The lead spawns an Auditor and Plan Init agent in the
+background, clarifies the task with the user, then presents
+workflow options. The user chooses a workflow: Solo for
+simple tasks (lead handles directly), or Develop-Review /
+TDD for complex tasks (Architect writes a plan, user
+approves, then workflow agents execute). Workflows are
+defined as separate files in `.claude/workflows/` — adding
+a new workflow requires no changes to CLAUDE.md. The
+Committer handles all git commits.
 
 **Agents:**
 
@@ -121,6 +123,7 @@ agents; the Committer handles all git commits.
 - Architect (codebase analysis + plan writing + task
   decomposition + task feeding)
 - Auditor (background — checks CLAUDE.md structural claims)
+- Plan Init (background — ensures .ai/plans/ and format guide exist)
 - Committer (utility — stages and commits specified files)
 - Developer (implements all code — source and tests)
 - Test Engineer (advisory — designs test specs, verifies
@@ -131,6 +134,7 @@ agents; the Committer handles all git commits.
 
 **Workflows:**
 
+- Solo — lead handles work directly for simple tasks
 - Develop-Review — test-list-driven development with
   security review and independent quality gate
 - TDD User-in-the-Loop — strict Red-Green-Refactor with

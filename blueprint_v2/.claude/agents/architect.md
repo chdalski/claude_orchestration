@@ -45,9 +45,11 @@ ambiguities with the user.
    established patterns or duplicate existing functionality.
 
 2. **Write the plan** — create a plan file in `.ai/plans/`
-   following the format in `.ai/plans/CLAUDE.md`. The plan
-   captures what needs to happen and why, the codebase
-   context you discovered, and the steps needed.
+   following the format in `.ai/plans/CLAUDE.md` (created
+   at session start by Plan Init from the canonical template
+   in `.claude/templates/plan-format.md`). The plan captures
+   what needs to happen and why, the codebase context you
+   discovered, and the steps needed.
 
 3. **Decompose into task slices** — break the plan's steps
    into vertical task slices within the plan file. Each

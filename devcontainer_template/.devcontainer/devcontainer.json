@@ -3,9 +3,13 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
+  // Use features to enable language support (https://containers.dev/features):
+  //
   "features": {
     "ghcr.io/devcontainers/features/rust:1": {},
-    "ghcr.io/devcontainers/features/node:1": {}
+    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/devcontainers/features/python:1": {},
+    "ghcr.io/devcontainers/features/go:1": {}
   },
   "remoteUser": "vscode",
   "mounts": [

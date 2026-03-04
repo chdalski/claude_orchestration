@@ -9,18 +9,20 @@ structural consistency. For user-facing setup and usage, see
 
 ## Philosophy
 
-### Plan-first
+### Clarify-first
 
-Every session starts in plan mode. The lead clarifies the
-task with the user, the Architect reads the codebase and
-writes a plan, and the user approves before execution
-begins. This front-loads understanding — misunderstood
-requirements waste more tokens than an extra question.
+Every session starts with clarification. The lead
+understands the task through structured dialogue with the
+user, then presents workflow options. The user chooses how
+work gets done — Solo for simple tasks, Develop-Review or
+TDD for complex ones. Planning via the Architect happens
+when the user selects a workflow that needs it, not as a
+forced default.
 
 ### Workflow-agnostic
 
 The blueprint does not prescribe how code gets written. It
-defines a planning phase and a set of shared agents, then
+defines a clarification phase and a set of shared agents, then
 defers execution to workflow files. Each workflow defines
 its own agents, step order, and completion criteria. Adding
 a new workflow requires no changes to CLAUDE.md, agents, or
@@ -37,17 +39,15 @@ This means the blueprint intentionally excludes:
   because they are broadly accepted; opinionated choices
   belong in the target project's CLAUDE.md
 
-### Proportional response
+### User-driven workflow choice
 
-The full planning flow (clarification → Architect → plan →
-workflow) is the default, not a mandate. The lead triages
-every task by scope and chooses a proportional response:
-trivial tasks are handled directly, small tasks get a
-single agent, and medium-to-large tasks get the full flow.
-This prevents the blueprint from being annoying on small
-tasks while still providing structure for complex ones. The
-user can also bypass planning entirely — the lead respects
-this and advises on scope without enforcing process.
+The lead always clarifies the task, then presents workflow
+options to the user via `AskUserQuestion`. The user decides
+how work gets done — not the lead. This replaces auto-triage
+(where the lead decided scope and chose the response level),
+which was unreliable because the lead's scope assessment
+could be wrong, and users had no control over the process
+until they explicitly overrode it.
 
 ### File-triggered guidance
 
@@ -70,11 +70,12 @@ blueprint_v2/
 ├── README.md              ← Human-facing setup and usage
 ├── .claude/
 │   ├── CLAUDE.md          ← Lead instructions (session behavior)
-│   ├── settings.json      ← Plan mode + agent teams
+│   ├── settings.json      ← Agent teams
 │   ├── agents/            ← Agent definitions (frontmatter + instructions)
 │   │   ├── architect.md   ← Reads codebase, writes plans, feeds tasks
 │   │   ├── auditor.md     ← Checks CLAUDE.md structural accuracy
 │   │   ├── committer.md   ← Stages and commits specified files
+│   │   ├── plan-init.md   ← Ensures .ai/plans/ and format guide exist
 │   │   ├── developer.md   ← Implements all code (source + tests)
 │   │   ├── reviewer.md    ← Independent quality gate (review only)
 │   │   ├── security-engineer.md ← Advisory — security assessment
@@ -90,12 +91,13 @@ blueprint_v2/
 │   │   ├── documentation.md      ← [conditional: README*, docs/**]
 │   │   ├── code-mass.md          ← [conditional: source files]
 │   │   └── cargo-lints.md        ← [conditional: Cargo.toml]
+│   ├── templates/         ← Canonical templates copied at runtime
+│   │   └── plan-format.md ← Plan format guide (copied to .ai/plans/ by Plan Init)
 │   └── workflows/         ← Workflow definitions
 │       ├── CLAUDE.md      ← Workflow format guide + shared agents
-│       └── develop-review.md ← Dev-team + review workflow
-├── .ai/
-│   └── plans/             ← Living plan documents (git-committed)
-│       └── CLAUDE.md      ← Plan format guide
+│       ├── develop-review.md ← Dev-team + review workflow
+│       ├── solo.md        ← Lead handles work directly
+│       └── tdd-user-in-the-loop.md ← Strict Red-Green-Refactor with user approval
 └── tests/                 ← Blueprint verification tests
     ├── blueprint_contracts.py  ← Single source of truth for structure
     ├── conftest.py             ← Shared fixtures + helpers
@@ -128,6 +130,13 @@ patterns — which agents are needed, what order they work
 in, where user checkpoints go. The lead reads these at
 runtime and presents options to the user. Workflows
 reference agents but do not define them.
+
+**Templates** (`.claude/templates/*.md`) are canonical
+source files that get copied to their runtime locations by
+utility agents. Currently: `plan-format.md` (copied to
+`.ai/plans/CLAUDE.md` by Plan Init). Templates ship with
+the `.claude/` directory so users don't need to remember
+to copy additional directories.
 
 **Plans** (`.ai/plans/*.md`) are runtime artifacts written
 by the Architect during a session. They capture the goal,
@@ -230,8 +239,6 @@ architecture (see repo-level
 - **Tool set stability** — each agent has a fixed tool set
   in its frontmatter. No conditional tool loading.
   `settings.json` has no hooks that alter tools.
-- **Plan mode** — uses `EnterPlanMode`/`ExitPlanMode`
-  (state-transition tools), not tool-set swaps.
 - **Model delegation** — agents are subagents (separate
   conversations), not model switches within a conversation.
 - **Conditional rules** — loaded by Claude Code at level 3,

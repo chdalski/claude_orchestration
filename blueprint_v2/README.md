@@ -1,50 +1,51 @@
-# Plan-First Blueprint (v2)
+# Clarify-First Blueprint (v2)
 
-Plan-first, workflow-based blueprint for Claude Code
-multi-agent orchestration. The lead clarifies, the
-Architect plans, and workflows define how work gets done.
+Clarify-first, workflow-based blueprint for Claude Code
+multi-agent orchestration. The lead clarifies, the user
+chooses a workflow, and specialized agents execute.
 
 ## How It Works
 
-### Planning Approach
+### Approach
 
-The lead starts every session in plan mode. For medium to
-large tasks, it clarifies the request with the user, spawns
-the Architect to read the codebase and write a plan, then
-presents the plan for approval before proposing a workflow.
-No code is touched until the user approves. This
-front-loads understanding and avoids wasting tokens on
-misunderstood requirements.
+The lead starts every session by clarifying the request
+with the user through structured dialogue. Once the task is
+understood, the lead reads the available workflow files and
+presents them as options via `AskUserQuestion`. The user
+chooses how work gets done — not the lead.
 
-Not every task needs the full flow. The lead triages each
-request by scope:
+Available workflows:
 
-- **Trivial** (1-2 files, mechanical) — the lead handles
-  it directly. No agents, no plan.
-- **Small** (2-5 files, clear scope) — a single agent
-  executes directly. No Architect or plan needed.
-- **Medium to large** (5+ files, design decisions) — full
-  planning flow with Architect, plan approval, and
-  workflow selection.
+- **Solo** — the lead handles work directly. Best for
+  trivial-to-small tasks (1-5 files, mechanical changes).
+  No Architect, no plan, no multi-agent overhead.
+- **Develop-Review** — full development cycle with
+  Architect planning, test-list-driven development,
+  security review, and independent quality gate. Best for
+  medium-to-large tasks with design decisions.
+- **TDD User-in-the-Loop** — strict Red-Green-Refactor
+  with user approval at every phase transition. Best when
+  the user wants maximum visibility and control over
+  implementation.
 
-The user can exit plan mode at any time. When they do, the
-lead assesses scope and responds proportionally. If the
-task turns out to be larger than it looks, the lead shares
-its findings and recommends creating a plan — but the user
-decides whether to follow that recommendation.
+For Solo, the lead implements directly. For Develop-Review
+and TDD, the lead spawns the Architect to read the codebase
+and write a plan, presents the plan for approval, then
+executes per the workflow definition.
 
 ### Startup
 
-1. Lead spawns the Auditor in the background to check
-   CLAUDE.md integrity.
+1. Lead spawns the Auditor and Plan Init in the background
+   — Auditor checks CLAUDE.md integrity, Plan Init ensures
+   `.ai/plans/` and its format guide exist.
 2. Lead checks for existing plans from previous sessions.
 3. Lead begins clarification with the user.
-4. Once clarified, lead spawns the Architect with the
-   request.
-5. Architect writes the plan and reports back.
-6. Lead presents the plan to the user for approval.
-7. When the Auditor reports discrepancies and the plan
-   involves codebase changes, a fix step is prepended.
+4. Once clarified, lead presents workflow options.
+5. User chooses a workflow.
+6. For Solo: lead handles work directly.
+7. For Develop-Review / TDD: lead spawns the Architect,
+   Architect writes the plan, lead presents the plan for
+   approval, then executes per workflow.
 
 ### Agents
 
@@ -52,6 +53,7 @@ decides whether to follow that recommendation.
 |-------|-------|------|-------------|
 | **Architect** | opus | Reads codebase, writes plans, decomposes and feeds tasks | No (plans only) |
 | **Auditor** | haiku | Checks CLAUDE.md accuracy | No (read-only) |
+| **Plan Init** | haiku | Ensures .ai/plans/ and format guide exist | No (writes template only) |
 | **Committer** | haiku | Stages and commits files | No (git only) |
 | **Developer** | sonnet | Implements all code (source + tests) | Yes |
 | **Test Engineer** | sonnet | Advisory — designs test specs, verifies coverage | No |
@@ -63,14 +65,17 @@ execution (during workflow). It writes the plan, then
 feeds tasks to whichever agents the chosen workflow
 provides.
 
-The Auditor runs at session start to catch stale
-instructions. The Committer is a shared utility — any
-workflow can use it to commit work without bundling commit
-logic into review or implementation agents.
+The Auditor and Plan Init run at session start — the
+Auditor catches stale instructions, Plan Init ensures the
+`.ai/plans/` directory and its format guide exist (copied
+from `.claude/templates/plan-format.md`). The Committer is
+a shared utility — any workflow can use it to commit work
+without bundling commit logic into review or implementation
+agents.
 
 Developer, Test Engineer, Security Engineer, and Reviewer
 are workflow-specific agents used by the Develop-Review
-workflow.
+and TDD workflows.
 
 ### Workflows
 
@@ -82,6 +87,17 @@ CLAUDE.md — just add a file.
 
 See `.claude/workflows/CLAUDE.md` for the required format
 and the list of shared agents available to all workflows.
+
+#### Solo
+
+The Solo workflow is for trivial-to-small tasks where the
+user prefers directness over process. The lead handles all
+work directly — reading files, implementing changes, running
+tests — then presents the result for user approval before
+committing via the Committer.
+
+See `.claude/workflows/solo.md` for the full flow and
+completion criteria.
 
 #### Develop-Review
 
@@ -174,14 +190,45 @@ does not choose the prefix or message itself.
 
 ```bash
 cp -r .claude/ /path/to/your/project/.claude/
-cp -r .ai/ /path/to/your/project/.ai/
 ```
 
 Optionally, copy the devcontainer for sandboxed execution
-with a network firewall and autopilot permissions:
+with a network firewall:
 
 ```bash
 cp -r .devcontainer/ /path/to/your/project/.devcontainer/
+```
+
+### Permissions
+
+The blueprint relies on the clarification-first behavior
+defined in `.claude/CLAUDE.md` to ensure requirements are
+understood before execution — not on plan mode enforcement.
+The lead always clarifies the task and presents workflow
+options before any work begins.
+
+On the host, users are prompted for tool permissions — this
+is the safe default for unsandboxed environments.
+
+**Devcontainer (sandboxed):** The Dockerfile aliases
+`claude` to `claude --dangerously-skip-permissions`, so
+all tools are auto-approved without per-tool permission
+prompts. The startup script (`init-claude-settings.sh`)
+copies host settings into the container volume for
+configuration (model preferences, API keys, etc.).
+
+To add project-specific commands to the allow-list, create
+`.claude/settings.local.json`:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(make *)",
+      "Bash(docker *)"
+    ]
+  }
+}
 ```
 
 See the repository README for prerequisites, devcontainer

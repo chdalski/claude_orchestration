@@ -13,8 +13,7 @@ claude_orchestration/
 ├── blueprint_testlist/      # Test-list blueprint (5 agents)
 │   └── .claude/             # Orchestration config + agents
 └── blueprint_v2/            # Plan-first blueprint (workflow-based)
-    ├── .claude/             # Lead instructions, agents, rules, workflows
-    └── .ai/                 # Plan documents
+    └── .claude/             # Lead instructions, agents, rules, workflows, templates
 ```
 
 ## Blueprints
@@ -82,13 +81,14 @@ new workflow is just adding a file. Language-specific
 guidance loads automatically via conditional rules (no
 manual knowledge loading).
 
-**Agents:** Lead, Architect, Auditor, Committer, Developer,
-Test Engineer, Security Engineer, Reviewer
+**Agents:** Lead, Architect, Auditor, Plan Init, Committer,
+Developer, Test Engineer, Security Engineer, Reviewer
 
 | Agent | Model | Role |
 |-------|-------|------|
 | **Architect** | opus | Reads codebase, writes plans, decomposes and feeds tasks |
 | **Auditor** | haiku | Checks CLAUDE.md accuracy |
+| **Plan Init** | haiku | Ensures .ai/plans/ and format guide exist |
 | **Committer** | haiku | Stages and commits files |
 | **Developer** | sonnet | Implements all code (source + tests) |
 | **Test Engineer** | sonnet | Advisory — designs test specs, verifies coverage |
@@ -129,7 +129,6 @@ cp -r blueprint_testlist/.claude/ /path/to/your/project/.claude/
 
 # OR plan-first blueprint
 cp -r blueprint_v2/.claude/ /path/to/your/project/.claude/
-cp -r blueprint_v2/.ai/ /path/to/your/project/.ai/
 ```
 
 Start Claude Code in your project directory. The CLAUDE.md
@@ -150,10 +149,11 @@ container for running agents with:
 - **UID/GID mapping** — container user matches the host
   user, so bind-mounted files have correct permissions
   regardless of the host's UID.
-- **Autopilot permissions** — `bypassPermissions` mode
-  is enabled automatically inside the container. The
-  container is the security boundary, so per-tool prompts
-  are unnecessary.
+- **Project-controlled permissions** — the container
+  respects the project's `settings.json` permission mode.
+  Blueprints that use plan mode (like v2) will start in
+  plan mode; projects that set `bypassPermissions` will
+  run autonomously.
 - **Host Claude config** — `~/.claude` is bind-mounted
   read-only so agents have access to API keys and
   settings without modifying the host config.

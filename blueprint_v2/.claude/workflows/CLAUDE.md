@@ -106,6 +106,14 @@ their capabilities.
   (the workflow's job) from the "execute the commit" action
   (the Committer's job).
 
+- **Plan Init** (`agents/plan-init.md`) — ensures
+  `.ai/plans/` directory and its `CLAUDE.md` format guide
+  exist. Copies the canonical template from
+  `.claude/templates/plan-format.md` if the format guide
+  is missing or outdated. The lead spawns this at session
+  start alongside the Auditor, not as part of a workflow.
+  Workflow authors should not spawn Plan Init themselves.
+
 - **Auditor** (`agents/auditor.md`) — checks CLAUDE.md
   structural claims against the filesystem. The lead
   spawns this at session start, not as part of a workflow.

@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from blueprint_contracts import REQUIRED_SETTINGS, REQUIRED_SETTINGS_NESTED
+from blueprint_contracts import REQUIRED_SETTINGS
 from conftest import SETTINGS_FILE
 
 pytestmark = pytest.mark.static
@@ -23,18 +23,10 @@ def test_top_level_setting(settings, key, expected):
     )
 
 
-@pytest.mark.parametrize("dotted_key,expected", list(REQUIRED_SETTINGS_NESTED.items()))
-def test_nested_setting(settings, dotted_key, expected):
-    keys = dotted_key.split(".")
-    value = settings
-    for k in keys:
-        assert isinstance(value, dict), (
-            f"settings.json path {dotted_key!r}: expected dict at {k!r}, got {type(value).__name__}"
-        )
-        value = value.get(k)
-    assert value == expected, (
-        f"settings.json[{dotted_key!r}] should be {expected!r}, got {value!r}"
-    )
+def test_no_default_mode(settings):
+    """settings.json must not set defaultMode — plan mode enforcement is unreliable."""
+    permissions = settings.get("permissions", {})
+    assert "defaultMode" not in permissions
 
 
 def test_no_conditional_tool_loading(settings):

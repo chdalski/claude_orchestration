@@ -14,23 +14,20 @@ REQUIRED_DIRECTORIES: list[str] = [
     ".claude",
     ".claude/agents",
     ".claude/rules",
+    ".claude/templates",
     ".claude/workflows",
-    ".ai/plans",
 ]
 
 # Required files relative to blueprint root (outside .claude/)
 REQUIRED_ROOT_FILES: list[str] = [
-    ".ai/plans/CLAUDE.md",
+    ".claude/templates/plan-format.md",
     ".claude/workflows/CLAUDE.md",
+    ".claude/workflows/solo.md",
 ]
 
 # Settings.json required configuration
 REQUIRED_SETTINGS: dict[str, object] = {
     "plansDirectory": ".ai/plans/",
-}
-
-REQUIRED_SETTINGS_NESTED: dict[str, object] = {
-    "permissions.defaultMode": "plan",
 }
 
 # Caching compliance — patterns that indicate dynamic content
@@ -48,6 +45,7 @@ AGENT_FILES: dict[str, str] = {
     "Architect": "architect.md",
     "Auditor": "auditor.md",
     "Committer": "committer.md",
+    "Plan Init": "plan-init.md",
     "Developer": "developer.md",
     "Reviewer": "reviewer.md",
     "Test Engineer": "test-engineer.md",
@@ -63,6 +61,7 @@ AGENT_TOOLS: dict[str, set[str]] = {
     },
     "Auditor": {"Read", "Glob", "Grep", "SendMessage"},
     "Committer": {"Read", "Glob", "Bash", "SendMessage"},
+    "Plan Init": {"Read", "Glob", "Write", "Bash", "SendMessage"},
     "Developer": {
         "Read", "Write", "Edit", "Bash", "Glob", "Grep",
         "WebSearch", "WebFetch", "SendMessage", "TaskUpdate",
@@ -87,6 +86,7 @@ AGENT_MODELS: dict[str, str] = {
     "Architect": "opus",
     "Auditor": "haiku",
     "Committer": "haiku",
+    "Plan Init": "haiku",
     "Developer": "sonnet",
     "Reviewer": "sonnet",
     "Test Engineer": "sonnet",

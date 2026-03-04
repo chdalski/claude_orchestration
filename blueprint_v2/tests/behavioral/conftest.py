@@ -25,7 +25,6 @@ import pytest
 
 FIXTURES_DIR = Path(__file__).parent.parent / "fixtures" / "minimal_project"
 BLUEPRINT_CLAUDE_DIR = Path(__file__).parent.parent.parent / ".claude"
-BLUEPRINT_AI_DIR = Path(__file__).parent.parent.parent / ".ai"
 
 
 def pytest_collection_modifyitems(config, items):
@@ -67,10 +66,11 @@ class ToolCallLog:
 
 @pytest.fixture
 def fixture_project(tmp_path: Path) -> Path:
-    """Copy the minimal project, blueprint .claude/, and .ai/plans/ into a tmp directory.
+    """Copy the minimal project and blueprint .claude/ into a tmp directory.
 
     Returns the tmp project root, ready for Claude Code sessions.
-    V2 has no hooks in settings.json, so no hook-stripping variant is needed.
+    The .ai/plans/ directory is created at runtime by Plan Init,
+    so it does not need to be copied from the blueprint.
     """
     # Copy minimal project files
     for item in FIXTURES_DIR.iterdir():
@@ -83,11 +83,6 @@ def fixture_project(tmp_path: Path) -> Path:
     # Copy blueprint .claude/ directory
     dest_claude = tmp_path / ".claude"
     shutil.copytree(BLUEPRINT_CLAUDE_DIR, dest_claude)
-
-    # Copy .ai/plans/ directory (v2 uses plans for plan-first workflow)
-    if BLUEPRINT_AI_DIR.exists():
-        dest_ai = tmp_path / ".ai"
-        shutil.copytree(BLUEPRINT_AI_DIR, dest_ai)
 
     return tmp_path
 
