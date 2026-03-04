@@ -118,7 +118,7 @@ their capabilities.
   makes it harder for the lead to present individual
   options to the user.
 - File names should be descriptive:
-  `tdd-human-in-the-loop.md`, not `workflow-001.md` —
+  `tdd-user-in-the-loop.md`, not `workflow-001.md` —
   the lead may scan file names to quickly identify
   candidate workflows.
 - Keep workflows focused — a workflow that tries to

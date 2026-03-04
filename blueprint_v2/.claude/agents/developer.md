@@ -66,32 +66,18 @@ When the dev-team receives a task from the Architect:
 
 ### Writing Tests
 
-After receiving the test list from the Test Engineer:
+The workflow defines the test-writing cadence — batch or
+incremental. Follow the workflow's instructions for when
+and how to write tests from the Test Engineer's test list.
+Regardless of cadence:
 
-1. If the test list includes integration tests, **spike
-   one integration test first** — write and run a
-   single integration test to validate the test
-   harness (server setup, database fixtures, framework
-   test utilities). If the spike fails due to
-   framework behavior (not application logic), fix the
-   harness before writing the rest. Keep the spike as
-   the first test in the batch. Unit tests do not need
-   a spike.
-2. Write **all** tests from the test list in a single
-   batch — unit tests and integration tests together.
-   Do not split into phases. Writing all tests at once
-   gives you a complete picture of the expected
-   behavior before you start implementing, which leads
-   to better design decisions.
-3. Send the completed tests to the Test Engineer for
-   **verification**. The Test Engineer checks that your
-   tests match their specification. Do not start
-   implementing source code until the Test Engineer
-   sends "tests verified." This checkpoint exists
-   because you wrote the tests yourself — without
-   independent verification, gaps between the spec and
-   the actual tests would go unnoticed until the
-   Reviewer catches them, wasting a review cycle.
+- If the test list includes integration tests, spike one
+  first to validate the test harness before writing the
+  rest — the spike catches framework-level issues early.
+  Unit tests do not need a spike.
+- Do not start implementing source code until the Test
+  Engineer has verified your tests — either incrementally
+  or as a batch, depending on the workflow.
 
 ### During Implementation
 

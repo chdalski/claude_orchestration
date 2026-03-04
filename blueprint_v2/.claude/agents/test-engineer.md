@@ -109,23 +109,20 @@ send "no tests needed" instead.
 
 ### Verifying the Developer's Tests
 
-After the Developer writes tests from your spec and
-before the Developer starts implementing source code:
+The workflow defines the verification cadence — batch
+(all tests at once) or incremental (per test after each
+cycle). Regardless of cadence, for each test verify:
 
-1. Read all test files the Developer wrote.
-2. Compare them against your test list — every
-   specified test case must be present.
-3. Check that test names, scenarios, and assertions
-   match the specification.
-4. If tests are missing or incorrect, tell the
-   Developer what to fix and wait for corrections.
-5. When satisfied, send "tests verified" to the
-   Developer. The Developer must not start source code
-   implementation until receiving this message. This
-   checkpoint exists because the Developer wrote the
-   tests — without independent verification, missing
-   or weak tests would go unnoticed until the Reviewer
-   catches them, wasting a review cycle.
+- The test matches its specification from the test list
+  (name, scenario, assertions)
+- If a test is missing or incorrect, tell the Developer
+  what to fix and wait for corrections
+- Do not let the Developer proceed to source code
+  implementation until tests are verified — this
+  checkpoint exists because the Developer wrote the
+  tests, and without independent verification, gaps
+  between the spec and actual tests would go unnoticed
+  until the Reviewer catches them
 
 ### Coordination
 

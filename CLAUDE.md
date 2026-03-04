@@ -62,7 +62,8 @@ claude_orchestration/
 │   │   │   ├── lang-rust.md        # Rust idioms + testing
 │   │   │   └── lang-typescript.md  # TypeScript idioms + testing
 │   │   └── workflows/       # Workflow definitions + format guide
-│   │       └── develop-review.md  # Dev-team + review workflow
+│   │       ├── develop-review.md  # Dev-team + review workflow
+│   │       └── tdd-user-in-the-loop.md  # TDD with user approval at phase transitions
 │   ├── .ai/
 │   │   └── plans/           # Living plan documents
 │   └── tests/               # Blueprint verification tests
@@ -132,6 +133,8 @@ agents; the Committer handles all git commits.
 
 - Develop-Review — test-list-driven development with
   security review and independent quality gate
+- TDD User-in-the-Loop — strict Red-Green-Refactor with
+  user approval at every phase transition
 
 ## Devcontainer Template
 

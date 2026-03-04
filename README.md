@@ -101,6 +101,8 @@ Test Engineer, Security Engineer, Reviewer
   security review and independent quality gate. The
   Reviewer reviews but does not commit (Committer handles
   commits).
+- **TDD User-in-the-Loop** — strict Red-Green-Refactor
+  with user approval at every phase transition.
 
 **Best for:** Projects wanting plan-first development with
 flexible workflow selection and automatic language-specific

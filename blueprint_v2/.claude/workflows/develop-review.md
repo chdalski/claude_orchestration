@@ -61,16 +61,25 @@ through the same agents.
    Developer. This is the contract for what gets tested.
 
 4. **Developer writes all tests** from the test list in a
-   single batch. If integration tests are included, the
-   Developer spikes one first to validate the test harness.
+   single batch — unit tests and integration tests together.
+   If integration tests are included, the Developer spikes
+   one integration test first to validate the test harness
+   (server setup, database fixtures, framework test
+   utilities) before writing the rest. Writing all tests at
+   once gives a complete picture of expected behavior before
+   implementation, which leads to better design decisions.
    Sends completed tests to the Test Engineer.
 
 5. **Test Engineer verifies tests** — reads all test files,
-   compares against the test list, checks names, scenarios,
-   and assertions match. Sends "tests verified" to
-   Developer. Developer does not start implementing source
-   code until this message arrives — this checkpoint
-   catches spec-to-test gaps early.
+   compares against the test list. For each test, checks
+   that name, scenario, and assertions match the
+   specification. If tests are missing or incorrect, tells
+   the Developer what to fix and waits for corrections.
+   When satisfied, sends "tests verified" to Developer.
+   Developer does not start implementing source code until
+   this message arrives — this checkpoint catches
+   spec-to-test gaps early, before implementation effort
+   is spent on a misunderstood specification.
 
 6. **Developer implements source code** to make all tests
    pass. Follows the rule system's guidance (language

@@ -105,6 +105,33 @@ Flow per task slice:
 See `.claude/workflows/develop-review.md` for the full
 step-by-step flow and completion criteria.
 
+#### TDD User-in-the-Loop
+
+The TDD User-in-the-Loop workflow provides strict
+Red-Green-Refactor development with user approval at every
+phase transition. The Test Engineer produces the test list
+upfront, the user approves it, then the Developer works
+through tests one at a time. The user sees and approves each
+Red (failing test), Green (minimal implementation), and
+Refactor (mandatory improvement) phase before the next
+begins.
+
+Flow per task slice:
+
+1. Dev-team discusses → Security Engineer assesses →
+   Test Engineer produces test list → **User approves
+   test list**
+2. Per test: Red (write failing test, **user approves**) →
+   Green (minimal implementation, **user approves**) →
+   Refactor (mandatory improvement, **user approves**) →
+   Test Engineer verifies
+3. Test Engineer and Security Engineer give sign-offs
+4. Reviewer evaluates → approves or rejects
+5. User confirms commit → Committer commits
+
+See `.claude/workflows/tdd-user-in-the-loop.md` for the
+full step-by-step flow and completion criteria.
+
 ### Conditional Rules
 
 Language-specific and topic-specific guidance lives in
