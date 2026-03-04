@@ -18,6 +18,6 @@ markers = [
     "static: tests that parse files and validate structure (no API calls)",
     "behavioral: tests that run real Claude Code sessions (requires API key)",
 ]
-testpaths = ["blueprint_testlist/tests"]
+testpaths = ["blueprint_testlist/tests", "blueprint_v2/tests"]
 pythonpath = ["blueprint_testlist/tests"]
 norecursedirs = ["blueprint_testlist/tests/fixtures"]

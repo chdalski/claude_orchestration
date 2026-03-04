@@ -17,7 +17,8 @@ claude_orchestration/
 ├── pyproject.toml           # Test harness dependencies
 ├── .claude/
 │   └── rules/
-│       └── prompt-caching.md  # Caching design constraints
+│       ├── prompt-caching.md    # Caching design constraints
+│       └── reasoned-instructions.md  # Rationale requirement
 ├── blueprint_testlist/      # Test-list blueprint (5 agents)
 │   ├── README.md            # Blueprint-specific docs
 │   ├── .claude/
@@ -40,6 +41,18 @@ claude_orchestration/
 │       ├── behavioral/      # SDK-based runtime tests
 │       └── fixtures/        # Minimal project for behavioral
 │           └── minimal_project/
+├── blueprint_v2/            # V2 blueprint (plan-first, workflow-based)
+│   ├── .claude/
+│   │   ├── CLAUDE.md        # Lead instructions
+│   │   ├── settings.json    # Plan mode + agent teams
+│   │   ├── agents/          # Auditor, Committer
+│   │   └── workflows/       # Workflow definitions + format guide
+│   ├── .ai/
+│   │   └── plans/           # Living plan documents
+│   └── tests/               # Blueprint verification tests
+│       ├── blueprint_contracts.py  # Single source of truth
+│       ├── conftest.py      # Shared fixtures + helpers
+│       └── static/          # Structure, caching, agent tests
 ├── devcontainer_template/   # Devcontainer for sandboxed runs
 │   ├── README.md            # Setup and configuration docs
 │   └── .devcontainer/
@@ -70,6 +83,27 @@ post-implementation sign-offs before review.
 - Test Engineer (advisory — designs test specs, verifies coverage)
 - Security Engineer (advisory — checks security)
 - Reviewer (independent quality gate)
+
+### blueprint_v2 (plan-first, workflow-based)
+
+**Plan-first, the lead owns clarification and planning.
+Workflows define execution patterns.**
+
+The lead starts in plan mode, spawns an Auditor to check
+CLAUDE.md integrity, clarifies the task with the user,
+writes a plan, then proposes a workflow. Workflows are
+defined as separate files in `.claude/workflows/` — adding
+a new workflow requires no changes to CLAUDE.md. The
+Committer agent handles all git commits across workflows.
+
+**Agents:**
+
+- Lead (clarification + planning + coordination)
+- Auditor (background — checks CLAUDE.md structural claims)
+- Committer (utility — stages and commits specified files)
+
+Workflow-specific agents (Developer, Reviewer, etc.) are
+defined as workflows are added.
 
 ## Devcontainer Template
 
@@ -104,6 +138,9 @@ This project uses:
 - `.claude/rules/prompt-caching.md` — ensures all
   blueprints align with Claude Code's prompt caching
   architecture
+- `.claude/rules/reasoned-instructions.md` — requires
+  every directive in blueprint files to include its
+  rationale so agents understand intent, not just rules
 
 ### Knowledge files (`knowledge/`)
 

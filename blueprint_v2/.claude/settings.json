@@ -1,0 +1,6 @@
+{
+  "plansDirectory": ".ai/plans/",
+  "permissions": {
+    "defaultMode": "plan"
+  }
+}
