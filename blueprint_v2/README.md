@@ -8,13 +8,30 @@ Architect plans, and workflows define how work gets done.
 
 ### Planning Approach
 
-The lead starts every session in plan mode. It clarifies
-the task with the user, then spawns the Architect to read
-the codebase, write a plan to `.ai/plans/`, and decompose
-it into task slices. The lead presents the plan to the user
-for approval, then proposes a workflow. No code is touched
-until the user approves. This front-loads understanding and
-avoids wasting tokens on misunderstood requirements.
+The lead starts every session in plan mode. For medium to
+large tasks, it clarifies the request with the user, spawns
+the Architect to read the codebase and write a plan, then
+presents the plan for approval before proposing a workflow.
+No code is touched until the user approves. This
+front-loads understanding and avoids wasting tokens on
+misunderstood requirements.
+
+Not every task needs the full flow. The lead triages each
+request by scope:
+
+- **Trivial** (1-2 files, mechanical) — the lead handles
+  it directly. No agents, no plan.
+- **Small** (2-5 files, clear scope) — a single agent
+  executes directly. No Architect or plan needed.
+- **Medium to large** (5+ files, design decisions) — full
+  planning flow with Architect, plan approval, and
+  workflow selection.
+
+The user can exit plan mode at any time. When they do, the
+lead assesses scope and responds proportionally. If the
+task turns out to be larger than it looks, the lead shares
+its findings and recommends creating a plan — but the user
+decides whether to follow that recommendation.
 
 ### Startup
 

@@ -1,0 +1,250 @@
+# Blueprint v2 — Design Reference
+
+This file describes how the blueprint is designed and why.
+It targets sessions working *on* the blueprint (adding
+rules, workflows, agents) and the Auditor agent that checks
+structural consistency. For user-facing setup and usage, see
+`README.md`. For lead behavior during a session, see
+`.claude/CLAUDE.md`.
+
+## Philosophy
+
+### Plan-first
+
+Every session starts in plan mode. The lead clarifies the
+task with the user, the Architect reads the codebase and
+writes a plan, and the user approves before execution
+begins. This front-loads understanding — misunderstood
+requirements waste more tokens than an extra question.
+
+### Workflow-agnostic
+
+The blueprint does not prescribe how code gets written. It
+defines a planning phase and a set of shared agents, then
+defers execution to workflow files. Each workflow defines
+its own agents, step order, and completion criteria. Adding
+a new workflow requires no changes to CLAUDE.md, agents, or
+rules — just a new file in `.claude/workflows/`.
+
+This means the blueprint intentionally excludes:
+
+- **Specific architectures** (hexagonal, clean, etc.) —
+  these are project choices, not blueprint concerns
+- **Specific testing approaches** (test-list, TDD, etc.) —
+  these belong in workflow definitions
+- **Specific design philosophies** beyond universal
+  principles — SOLID and Kent Beck's rules are included
+  because they are broadly accepted; opinionated choices
+  belong in the target project's CLAUDE.md
+
+### Proportional response
+
+The full planning flow (clarification → Architect → plan →
+workflow) is the default, not a mandate. The lead triages
+every task by scope and chooses a proportional response:
+trivial tasks are handled directly, small tasks get a
+single agent, and medium-to-large tasks get the full flow.
+This prevents the blueprint from being annoying on small
+tasks while still providing structure for complex ones. The
+user can also bypass planning entirely — the lead respects
+this and advises on scope without enforcing process.
+
+### File-triggered guidance
+
+Language-specific and topic-specific knowledge loads
+automatically via Claude Code's conditional rule mechanism.
+Agents don't need startup instructions to load knowledge
+files — touching a `.py` file loads Python guidance,
+touching a `.rs` file loads Rust guidance. This solves
+three problems from the v1 approach:
+
+1. Agents can't forget to load relevant guidance
+2. Irrelevant guidance stays out of context (saves tokens)
+3. Adding a new language is just adding a file
+
+## Component Architecture
+
+```text
+blueprint_v2/
+├── CLAUDE.md              ← You are here (design reference)
+├── README.md              ← Human-facing setup and usage
+├── .claude/
+│   ├── CLAUDE.md          ← Lead instructions (session behavior)
+│   ├── settings.json      ← Plan mode + agent teams
+│   ├── agents/            ← Agent definitions (frontmatter + instructions)
+│   │   ├── architect.md   ← Reads codebase, writes plans, feeds tasks
+│   │   ├── auditor.md     ← Checks CLAUDE.md structural accuracy
+│   │   └── committer.md   ← Stages and commits specified files
+│   ├── rules/             ← Unconditional + conditional rules
+│   │   ├── simplicity.md         ← [unconditional] KISS, YAGNI, etc.
+│   │   ├── code-principles.md    ← [conditional: source files] SOLID, Kent Beck
+│   │   ├── lang-typescript.md    ← [conditional: *.ts, *.tsx]
+│   │   ├── lang-python.md        ← [conditional: *.py]
+│   │   ├── lang-go.md            ← [conditional: *.go]
+│   │   ├── lang-rust.md          ← [conditional: *.rs]
+│   │   ├── functional-style.md   ← [conditional: *.ts, *.py, *.rs]
+│   │   ├── documentation.md      ← [conditional: README*, docs/**]
+│   │   ├── code-mass.md          ← [conditional: source files]
+│   │   └── cargo-lints.md        ← [conditional: Cargo.toml]
+│   └── workflows/         ← Workflow definitions
+│       └── CLAUDE.md      ← Workflow format guide + shared agents
+├── .ai/
+│   └── plans/             ← Living plan documents (git-committed)
+│       └── CLAUDE.md      ← Plan format guide
+└── tests/                 ← Blueprint verification tests
+    ├── blueprint_contracts.py  ← Single source of truth for structure
+    ├── conftest.py             ← Shared fixtures + helpers
+    └── static/                 ← Structure, caching, agent tests
+```
+
+### How Components Relate
+
+**Lead instructions** (`.claude/CLAUDE.md`) define session
+behavior — startup sequence, clarification flow, workflow
+proposal, agent coordination. The lead is the only agent
+with user access.
+
+**Agent definitions** (`.claude/agents/*.md`) specify each
+agent's model, tools, and instructions via YAML frontmatter
+and markdown body. The frontmatter is machine-parsed by
+Claude Code; the body is the agent's instruction set.
+Agents are shared across workflows — the Architect and
+Committer serve any workflow.
+
+**Rules** (`.claude/rules/*.md`) provide guidance that
+Claude Code injects into agent context automatically.
+Unconditional rules load at session start; conditional
+rules load when agents touch matching files. Rules are
+independent of agents and workflows — they apply to any
+agent in any workflow that touches a matching file.
+
+**Workflows** (`.claude/workflows/*.md`) define execution
+patterns — which agents are needed, what order they work
+in, where user checkpoints go. The lead reads these at
+runtime and presents options to the user. Workflows
+reference agents but do not define them.
+
+**Plans** (`.ai/plans/*.md`) are runtime artifacts written
+by the Architect during a session. They capture the goal,
+context, steps, task decomposition, and decisions. Plans
+are committed to git as decision records — they survive
+across sessions and help future sessions resume work.
+
+**Tests** (`tests/`) verify the blueprint's structural
+integrity: required files exist, agent frontmatter matches
+contracts, static files contain no dynamic content. Tests
+run against the blueprint itself, not against target
+projects.
+
+## Rule System Design
+
+### Two tiers
+
+**Unconditional** (no `paths:` frontmatter) — loaded at
+session start, always in context. Use for principles that
+apply to everything agents produce, regardless of file
+type. Currently: `simplicity.md`.
+
+**Conditional** (with `paths:` frontmatter) — loaded only
+when agents touch matching files. Use for guidance that is
+specific to a file type, language, or context. All other
+rules.
+
+### What goes where
+
+| Guidance Type | Location | Rationale |
+|---|---|---|
+| Universal principles (KISS, YAGNI) | Unconditional rule | Applies before any files are touched — during planning, docs, config |
+| Code-specific principles (SOLID, testing) | Conditional rule on source files | Only relevant when writing code |
+| Language idioms + testing | Conditional rule on language extension | Only relevant for that language |
+| Cross-language patterns (FP, code mass) | Conditional rule on applicable extensions | Avoids loading irrelevant guidance |
+| Project-specific conventions | Target project's CLAUDE.md | Not the blueprint's concern |
+| Workflow-specific practices | Workflow definition file | Tied to a specific execution pattern |
+| Formatting commands, CI config | Target project's CLAUDE.md or pre-commit hooks | Project-specific tooling |
+
+### Avoiding redundancy
+
+Universal principles are stated once in the highest
+applicable tier. Language rules reference them by behavior
+(e.g., showing language-specific test patterns) but do not
+restate the universal principle. This prevents drift when
+one copy is updated and others are not.
+
+Example: test independence is stated once in
+`code-principles.md`. Language rules show
+language-specific test patterns (pytest fixtures,
+table-driven tests, `#[cfg(test)]` modules) without
+repeating the independence principle.
+
+### Adding a new language
+
+1. Create `.claude/rules/lang-<language>.md`
+2. Add `paths:` frontmatter with the language's file
+   extensions
+3. Include language idioms, type system, error handling,
+   testing patterns, tooling, and common pitfalls
+4. Add the language's extensions to `functional-style.md`
+   paths if the language supports FP well (skip for
+   pragmatic languages like Go)
+5. Add the language's extensions to `code-mass.md` and
+   `code-principles.md` paths
+6. Update `README.md` and root `CLAUDE.md` structure
+   diagram
+7. Run `uv run pytest blueprint_v2/tests/ -m static -v`
+
+No changes to `.claude/CLAUDE.md`, agents, or workflows.
+
+### Adding a new workflow
+
+1. Create `.claude/workflows/<name>.md` following the
+   format in `.claude/workflows/CLAUDE.md`
+2. Define which agents the workflow needs — reference
+   existing shared agents (Architect, Committer) and
+   define new workflow-specific agents in
+   `.claude/agents/` if needed
+3. If new agents are added, update `blueprint_contracts.py`
+   with their expected frontmatter
+4. Run tests
+
+No changes to `.claude/CLAUDE.md` or existing rules.
+
+## Prompt Caching Alignment
+
+The blueprint aligns with Claude Code's prompt caching
+architecture (see repo-level
+`.claude/rules/prompt-caching.md`):
+
+- **Level 3 (CLAUDE.md + rules)** — all files are fully
+  static. No dates, counters, or changing data. Enforced
+  by caching compliance tests.
+- **Tool set stability** — each agent has a fixed tool set
+  in its frontmatter. No conditional tool loading.
+  `settings.json` has no hooks that alter tools.
+- **Plan mode** — uses `EnterPlanMode`/`ExitPlanMode`
+  (state-transition tools), not tool-set swaps.
+- **Model delegation** — agents are subagents (separate
+  conversations), not model switches within a conversation.
+- **Conditional rules** — loaded by Claude Code at level 3,
+  part of the cached prefix. They do not inject dynamic
+  content.
+
+## What This Blueprint Does NOT Prescribe
+
+These are intentional omissions, not gaps:
+
+- **Architecture** — hexagonal, clean, layered, etc. are
+  project choices. The target project's CLAUDE.md should
+  define its architecture.
+- **Security practices** — threat modeling and security
+  audits are workflow-specific. A security-focused workflow
+  would reference security guidance; the blueprint doesn't
+  bake it in.
+- **Data modeling** — SSOT, event sourcing, CQRS, etc. are
+  architectural decisions for the target project.
+- **CI/CD** — pipeline configuration is project-specific
+  infrastructure.
+- **Formatting enforcement** — "run the formatter" belongs
+  in the target project's CLAUDE.md or pre-commit hooks,
+  because the exact command varies by project.
+- **Specific testing methodology** — test-list, TDD, BDD,
+  etc. are workflow choices, not universal requirements.

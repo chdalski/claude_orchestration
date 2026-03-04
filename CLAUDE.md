@@ -43,6 +43,7 @@ claude_orchestration/
 │       └── fixtures/        # Minimal project for behavioral
 │           └── minimal_project/
 ├── blueprint_v2/            # V2 blueprint (plan-first, workflow-based)
+│   ├── CLAUDE.md            # Blueprint design reference
 │   ├── .claude/
 │   │   ├── CLAUDE.md        # Lead instructions
 │   │   ├── settings.json    # Plan mode + agent teams
