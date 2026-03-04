@@ -1,0 +1,23 @@
+[project]
+name = "claude-orchestration-tests"
+version = "0.1.0"
+description = "Test harness for blueprint verification"
+requires-python = ">=3.11"
+dependencies = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+    "pyyaml>=6.0",
+    "claude-code-sdk>=0.0.20",
+    "python-dotenv>=1.0",
+    "pytest-timeout>=2.3",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+markers = [
+    "static: tests that parse files and validate structure (no API calls)",
+    "behavioral: tests that run real Claude Code sessions (requires API key)",
+]
+testpaths = ["blueprint_testlist/tests"]
+pythonpath = ["blueprint_testlist/tests"]
+norecursedirs = ["blueprint_testlist/tests/fixtures"]

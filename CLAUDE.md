@@ -14,24 +14,32 @@ workflows.
 claude_orchestration/
 ├── CLAUDE.md                # This file (project context)
 ├── README.md                # User-facing documentation
+├── pyproject.toml           # Test harness dependencies
 ├── .claude/
 │   └── rules/
 │       └── prompt-caching.md  # Caching design constraints
 ├── blueprint_testlist/      # Test-list blueprint (5 agents)
 │   ├── README.md            # Blueprint-specific docs
-│   └── .claude/
-│       ├── CLAUDE.md        # Orchestration instructions
-│       ├── settings.json    # Enables agent teams + hooks
-│       ├── config.json      # Documentation files to check
-│       ├── agents/          # Architect, Developer, Test Engineer,
-│       │                    # Security Engineer, Reviewer
-│       ├── knowledge/
-│       │   ├── base/        # Language-agnostic principles
-│       │   ├── languages/   # Language-specific extensions
-│       │   └── extensions/  # Project-specific conventions
-│       ├── practices/       # Test-list workflow, conventional
-│       │                    # commits
-│       └── templates/       # Commit message template
+│   ├── .claude/
+│   │   ├── CLAUDE.md        # Orchestration instructions
+│   │   ├── settings.json    # Enables agent teams + hooks
+│   │   ├── config.json      # Documentation files to check
+│   │   ├── agents/          # Architect, Developer, Test Engineer,
+│   │   │                    # Security Engineer, Reviewer
+│   │   ├── knowledge/
+│   │   │   ├── base/        # Language-agnostic principles
+│   │   │   ├── languages/   # Language-specific extensions
+│   │   │   └── extensions/  # Project-specific conventions
+│   │   ├── practices/       # Test-list workflow, conventional
+│   │   │                    # commits
+│   │   └── templates/       # Commit message template
+│   └── tests/               # Blueprint verification tests
+│       ├── blueprint_contracts.py  # Single source of truth
+│       ├── conftest.py      # Shared fixtures + helpers
+│       ├── static/          # Structure, caching, hook tests
+│       ├── behavioral/      # SDK-based runtime tests
+│       └── fixtures/        # Minimal project for behavioral
+│           └── minimal_project/
 ├── devcontainer_template/   # Devcontainer for sandboxed runs
 │   ├── README.md            # Setup and configuration docs
 │   └── .devcontainer/

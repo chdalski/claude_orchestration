@@ -1,3 +1,13 @@
 .claude/settings.local.json
 .claude-session/
 cache-proxy.log
+
+# Secrets
+.env.local
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
