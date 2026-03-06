@@ -100,7 +100,7 @@ these agents — the lead handles them.
 All other agents (Architect, Committer, Developer, Test
 Engineer, Security Engineer, Reviewer) are workflow-specific
 — each workflow that needs them lists them in its own Agents
-table. For multi-agent workflows (Develop-Review, TDD), the
+table. For multi-agent workflows (Develop-Review variants, TDD), the
 lead creates one team via `TeamCreate` with all listed
 agents so they can communicate via `SendMessage`. For Solo,
 the lead spawns individual agents (e.g., Committer) as

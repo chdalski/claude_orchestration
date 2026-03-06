@@ -14,8 +14,8 @@ structural consistency. For user-facing setup and usage, see
 Every session starts with clarification. The lead
 understands the task through structured dialogue with the
 user, then presents workflow options. The user chooses how
-work gets done — Solo for simple tasks, Develop-Review or
-TDD for complex ones. Planning via the Architect happens
+work gets done — Solo for simple tasks, Develop-Review (Supervised or
+Autonomous) or TDD for complex ones. Planning via the Architect happens
 when the user selects a workflow that needs it, not as a
 forced default.
 
@@ -95,7 +95,8 @@ blueprint_v2/
 │   │   └── plan-format.md ← Plan format guide (copied to .ai/plans/ by Plan Init)
 │   └── workflows/         ← Workflow definitions
 │       ├── CLAUDE.md      ← Workflow format guide + session-start agents
-│       ├── develop-review.md ← Dev-team + review workflow
+│       ├── develop-review-supervised.md ← Dev-team + review (user approves commits)
+│       ├── develop-review-autonomous.md ← Dev-team + review (auto-commit after Reviewer)
 │       ├── solo.md        ← Lead handles work directly
 │       └── tdd-user-in-the-loop.md ← Strict Red-Green-Refactor with user approval
 └── tests/                 ← Blueprint verification tests
@@ -223,7 +224,7 @@ No changes to `.claude/CLAUDE.md`, agents, or workflows.
 
 No changes to `.claude/CLAUDE.md` or existing rules.
 
-See `develop-review.md` for a concrete example — it uses
+See `develop-review-supervised.md` for a concrete example — it uses
 six workflow-specific agents (Architect, Developer, Test
 Engineer, Security Engineer, Reviewer, Committer).
 

@@ -64,7 +64,8 @@ claude_orchestration/
 │   │   ├── templates/        # Canonical templates copied at runtime
 │   │   └── workflows/       # Workflow definitions + format guide
 │   │       ├── CLAUDE.md          # Workflow format guide + session-start agents
-│   │       ├── develop-review.md  # Dev-team + review workflow
+│   │       ├── develop-review-supervised.md  # Dev-team + review (user approves commits)
+│   │       ├── develop-review-autonomous.md # Dev-team + review (auto-commit after Reviewer)
 │   │       ├── solo.md            # Lead handles work directly
 │   │       └── tdd-user-in-the-loop.md  # TDD with user approval at phase transitions
 │   └── tests/               # Blueprint verification tests
@@ -110,9 +111,10 @@ proposal. The user chooses how work gets done.**
 The lead spawns an Auditor and Plan Init agent in the
 background, clarifies the task with the user, then presents
 workflow options. The user chooses a workflow: Solo for
-simple tasks (lead handles directly), or Develop-Review /
-TDD for complex tasks (Architect writes a plan, user
-approves, then workflow agents execute). Workflows are
+simple tasks (lead handles directly), or Develop-Review
+(Supervised or Autonomous) / TDD for complex tasks
+(Architect writes a plan, user approves, then workflow
+agents execute). Workflows are
 defined as separate files in `.claude/workflows/` — adding
 a new workflow requires no changes to CLAUDE.md. The
 Committer handles all git commits.
@@ -135,8 +137,11 @@ Committer handles all git commits.
 **Workflows:**
 
 - Solo — lead handles work directly for simple tasks
-- Develop-Review — test-list-driven development with
-  security review and independent quality gate
+- Develop-Review (Supervised) — test-list-driven development
+  with security review and independent quality gate; user
+  approves each commit
+- Develop-Review (Autonomous) — same as Supervised but
+  commits automatically after Reviewer approval
 - TDD User-in-the-Loop — strict Red-Green-Refactor with
   user approval at every phase transition
 

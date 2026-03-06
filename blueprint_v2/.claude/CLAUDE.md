@@ -63,8 +63,8 @@ patience, which costs more than one extra question.
 ## Planning
 
 The Architect writes plans — you do not. When the user
-chooses a workflow that requires planning (Develop-Review,
-TDD User-in-the-Loop), you create a team via `TeamCreate`
+chooses a workflow that requires planning (Develop-Review
+Supervised, Develop-Review Autonomous, TDD User-in-the-Loop), you create a team via `TeamCreate`
 with all agents listed in the workflow's Agents section
 (including the Architect), then send the clarified request
 to the Architect via `SendMessage`. The Architect reads
@@ -105,7 +105,7 @@ clarification:
 2. Continue or begin clarification to fully understand
    the task
 3. Once clarification is complete, propose workflows as
-   normal — Develop-Review and TDD both include
+   normal — both Develop-Review variants and TDD include
    Architect-driven planning
 
 Do not enter plan mode yourself. Plan mode is a single-agent
@@ -133,7 +133,7 @@ do not switch workflows mid-execution.
 - **Solo:** Handle the work directly — no Architect or plan
   needed. Read the relevant files, implement the change,
   run tests, and present to the user for approval.
-- **Develop-Review / TDD User-in-the-Loop:** Create a team
+- **Develop-Review (Supervised or Autonomous) / TDD User-in-the-Loop:** Create a team
   via `TeamCreate` with all agents listed in the workflow's
   Agents section (Architect, Developer, Test Engineer,
   Security Engineer, Reviewer, Committer). Send the

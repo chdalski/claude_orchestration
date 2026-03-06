@@ -97,10 +97,13 @@ Developer, Test Engineer, Security Engineer, Reviewer
 
 **Workflows:**
 
-- **Develop-Review** — test-list-driven development with
-  security review and independent quality gate. The
-  Reviewer reviews but does not commit (Committer handles
-  commits).
+- **Develop-Review (Supervised)** — test-list-driven
+  development with security review and independent quality
+  gate. The user approves each commit before it enters git
+  history.
+- **Develop-Review (Autonomous)** — same as Supervised but
+  commits automatically after Reviewer approval — the user
+  trusts the agent quality gates.
 - **TDD User-in-the-Loop** — strict Red-Green-Refactor
   with user approval at every phase transition.
 

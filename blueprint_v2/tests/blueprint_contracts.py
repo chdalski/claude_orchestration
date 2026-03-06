@@ -23,6 +23,8 @@ REQUIRED_ROOT_FILES: list[str] = [
     ".claude/templates/plan-format.md",
     ".claude/workflows/CLAUDE.md",
     ".claude/workflows/solo.md",
+    ".claude/workflows/develop-review-supervised.md",
+    ".claude/workflows/develop-review-autonomous.md",
 ]
 
 # Settings.json required configuration

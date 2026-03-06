@@ -1,4 +1,4 @@
-# Develop-Review
+# Develop-Review (Autonomous)
 
 ## When to Use
 
@@ -6,9 +6,16 @@ Use this workflow for tasks that produce code — features,
 bug fixes, refactors, or any change that touches source
 files and tests. It provides a full development cycle with
 test-list-driven development, security review, and
-independent quality review before each commit. The overhead
-is justified when the task involves design decisions,
-multiple files, or code that needs to be correct and secure.
+independent quality review before each commit. There are no
+user checkpoints between Reviewer approval and commit — the
+user trusts the agent quality gates (Test Engineer sign-off,
+Security Engineer sign-off, Reviewer approval) to ensure
+correctness. This is the right choice when the user wants
+speed and trusts the team to batch work autonomously.
+
+For the same workflow with a user checkpoint before each
+commit, see `develop-review-supervised.md` — the user
+approves every change before it enters git history.
 
 Not appropriate for documentation-only changes, trivial
 config tweaks, or single-line fixes — the lead handles
@@ -25,7 +32,7 @@ those directly or with a single agent.
 | **Test Engineer** | Advisory — designs test specifications (the test list), verifies Developer's tests match the spec before and after implementation. Does not write code. |
 | **Security Engineer** | Advisory — assesses security implications, flags vulnerabilities, provides pre- and post-implementation sign-offs. Does not write code. |
 | **Reviewer** | Independent quality gate — evaluates correctness, security, test coverage, design, and idioms. Reports approval or rejection to the lead. Does not commit. |
-| **Committer** | Stages and commits files when the lead sends a file list and commit message after user approval. |
+| **Committer** | Stages and commits files when the lead sends a file list and commit message after Reviewer approval. |
 
 ## Team Lifecycle
 
@@ -121,12 +128,7 @@ sequentially through the same agents.
 
 ### Commit
 
-15. **User checkpoint** — the lead presents the completed
-    work to the user and asks them to confirm the commit.
-    This ensures the user sees and approves every change
-    before it enters the git history.
-
-16. **Lead sends file list and commit message to
+15. **Lead sends file list and commit message to
     Committer.** Committer stages the specified files,
     commits with the provided message, and reports the
     short SHA back to the lead. Lead tells Architect the
@@ -143,4 +145,3 @@ The workflow is complete when:
 - Each slice passed Reviewer approval before commit
 - All tests pass across the full project after the final
   commit
-- The user approved each commit at the user checkpoint

@@ -13,16 +13,17 @@ approval at every phase of test-driven development
   each test is written, failed, passed, and refactored
   before moving to the next
 - The user values correctness confidence over speed — this
-  workflow is slower than develop-review because it stops
-  for user approval at every phase transition
+  workflow is slower than the Develop-Review variants
+  because it stops for user approval at every phase
+  transition
 - The codebase is unfamiliar or the task involves subtle
   logic where assumptions need frequent validation
 
 Not appropriate when speed is the priority, when the user
 trusts the team to batch work autonomously, or for non-code
-tasks. Use develop-review instead when the user does not
-need per-phase control — it produces the same quality with
-fewer interruptions.
+tasks. Use Develop-Review (Supervised or Autonomous) instead
+when the user does not need per-phase control — they produce
+the same quality with fewer interruptions.
 
 ## Agents
 

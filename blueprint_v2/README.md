@@ -19,20 +19,24 @@ Available workflows:
 - **Solo** — the lead handles work directly. Best for
   trivial-to-small tasks (1-5 files, mechanical changes).
   No Architect, no plan, no multi-agent overhead.
-- **Develop-Review** — full development cycle with
-  Architect planning, test-list-driven development,
-  security review, and independent quality gate. Best for
-  medium-to-large tasks with design decisions.
+- **Develop-Review (Supervised)** — full development cycle
+  with Architect planning, test-list-driven development,
+  security review, and independent quality gate. The user
+  approves each commit before it enters git history.
+- **Develop-Review (Autonomous)** — same as Supervised but
+  commits automatically after Reviewer approval. The user
+  trusts the agent quality gates.
 - **TDD User-in-the-Loop** — strict Red-Green-Refactor
   with user approval at every phase transition. Best when
   the user wants maximum visibility and control over
   implementation.
 
-For Solo, the lead implements directly. For Develop-Review
-and TDD, the lead creates a team via `TeamCreate` with all
-workflow agents (including the Architect), sends the
-clarified request to the Architect, presents the plan for
-approval, then executes per the workflow definition.
+For Solo, the lead implements directly. For the
+Develop-Review variants and TDD, the lead creates a team
+via `TeamCreate` with all workflow agents (including the
+Architect), sends the clarified request to the Architect,
+presents the plan for approval, then executes per the
+workflow definition.
 
 ### Startup
 
@@ -44,7 +48,7 @@ approval, then executes per the workflow definition.
 4. Once clarified, lead presents workflow options.
 5. User chooses a workflow.
 6. For Solo: lead handles work directly.
-7. For Develop-Review / TDD: lead creates a team with all
+7. For Develop-Review (Supervised or Autonomous) / TDD: lead creates a team with all
    workflow agents, sends clarified request to the
    Architect, Architect writes the plan, lead presents the
    plan for approval, then executes per workflow.
@@ -93,14 +97,15 @@ committing via the Committer.
 See `.claude/workflows/solo.md` for the full flow and
 completion criteria.
 
-#### Develop-Review
+#### Develop-Review (Supervised)
 
 The Develop-Review workflow provides a full development
 cycle for code tasks. The Architect feeds task slices to a
 dev-team (Developer, Test Engineer, Security Engineer) that
 uses test-list-driven development. After implementation,
 the Reviewer provides an independent quality gate before
-each commit.
+each commit. In the Supervised variant, the user approves
+each commit before it enters git history.
 
 Flow per task slice:
 
@@ -112,8 +117,19 @@ Flow per task slice:
 4. Reviewer evaluates → approves or rejects
 5. User confirms commit → Committer commits
 
-See `.claude/workflows/develop-review.md` for the full
-step-by-step flow and completion criteria.
+See `.claude/workflows/develop-review-supervised.md` for
+the full step-by-step flow and completion criteria.
+
+#### Develop-Review (Autonomous)
+
+Same as the Supervised variant, but after Reviewer approval
+the lead sends directly to the Committer — no user
+checkpoint. The user trusts the agent quality gates (Test
+Engineer sign-off, Security Engineer sign-off, Reviewer
+approval) to ensure correctness.
+
+See `.claude/workflows/develop-review-autonomous.md` for
+the full step-by-step flow and completion criteria.
 
 #### TDD User-in-the-Loop
 

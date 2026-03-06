@@ -1,0 +1,154 @@
+# Develop-Review (Supervised)
+
+## When to Use
+
+Use this workflow for tasks that produce code — features,
+bug fixes, refactors, or any change that touches source
+files and tests. It provides a full development cycle with
+test-list-driven development, security review, and
+independent quality review before each commit. The user
+approves each commit before it enters git history — this
+is the right choice when the user wants to see and confirm
+every change. The overhead is justified when the task
+involves design decisions, multiple files, or code that
+needs to be correct and secure.
+
+For the same workflow without user commit checkpoints, see
+`develop-review-autonomous.md` — it sends directly to the
+Committer after Reviewer approval, relying on the agent
+quality gates alone.
+
+Not appropriate for documentation-only changes, trivial
+config tweaks, or single-line fixes — the lead handles
+those directly or with a single agent.
+
+## Agents
+
+### Workflow-Specific
+
+| Agent | Role |
+|-------|------|
+| **Architect** | Reads the codebase, writes plans, decomposes into task slices, and feeds tasks to the dev-team sequentially. Collects completion signals and sequences the next task. |
+| **Developer** | Implements all code (source + tests). Owns every code file. Uses WebSearch/WebFetch for API docs and library examples. |
+| **Test Engineer** | Advisory — designs test specifications (the test list), verifies Developer's tests match the spec before and after implementation. Does not write code. |
+| **Security Engineer** | Advisory — assesses security implications, flags vulnerabilities, provides pre- and post-implementation sign-offs. Does not write code. |
+| **Reviewer** | Independent quality gate — evaluates correctness, security, test coverage, design, and idioms. Reports approval or rejection to the lead. Does not commit. |
+| **Committer** | Stages and commits files when the lead sends a file list and commit message after user approval. |
+
+## Team Lifecycle
+
+The lead creates one team via `TeamCreate` with all
+workflow agents (Architect, Developer, Test Engineer,
+Security Engineer, Reviewer, Committer) at workflow start.
+The team persists across all task slices — agents are NOT
+re-spawned per task. This avoids the startup cost of
+re-reading agent definitions and rebuilding context for
+each slice, and ensures all agents can communicate via
+`SendMessage` from the start. The Architect feeds tasks
+sequentially through the same agents.
+
+## Flow
+
+### Per Task Slice
+
+1. **Architect sends task** to Developer, Test Engineer,
+   and Security Engineer simultaneously — all three need
+   the full task context to discuss the approach.
+
+2. **Dev-team discusses the task.** Security Engineer
+   broadcasts a pre-implementation security assessment to
+   Developer and Test Engineer — OWASP categories, what
+   the Test Engineer should cover, what the Developer
+   should watch for.
+
+3. **Test Engineer produces the test list** — a structured
+   specification of every test case — and sends it to the
+   Developer. This is the contract for what gets tested.
+
+4. **Developer writes all tests** from the test list in a
+   single batch — unit tests and integration tests together.
+   If integration tests are included, the Developer spikes
+   one integration test first to validate the test harness
+   (server setup, database fixtures, framework test
+   utilities) before writing the rest. Writing all tests at
+   once gives a complete picture of expected behavior before
+   implementation, which leads to better design decisions.
+   Sends completed tests to the Test Engineer.
+
+5. **Test Engineer verifies tests** — reads all test files,
+   compares against the test list. For each test, checks
+   that name, scenario, and assertions match the
+   specification. If tests are missing or incorrect, tells
+   the Developer what to fix and waits for corrections.
+   When satisfied, sends "tests verified" to Developer.
+   Developer does not start implementing source code until
+   this message arrives — this checkpoint catches
+   spec-to-test gaps early, before implementation effort
+   is spent on a misunderstood specification.
+
+6. **Developer implements source code** to make all tests
+   pass. Follows the rule system's guidance (language
+   idioms, code principles, simplicity) that loads
+   automatically based on files touched.
+
+7. **Developer reports implementation complete** to Test
+   Engineer and Security Engineer. Both must provide their
+   sign-offs before the task can proceed.
+
+8. **Test Engineer reads all test files again** — confirms
+   tests were not skipped, weakened, or removed during
+   implementation. Sends **test sign-off** to Developer.
+
+9. **Security Engineer reviews the Developer's code** —
+   checks for vulnerabilities, missing input validation,
+   auth gaps. Sends **security sign-off** to Developer.
+
+10. **Developer reports task completion** to Architect —
+    having received both sign-offs, marks the task
+    completed via TaskUpdate and sends a summary via
+    SendMessage.
+
+11. **Architect notifies lead** that the task is ready for
+    review.
+
+### Review
+
+12. **Lead sends to Reviewer.** Reviewer evaluates
+    correctness, security, test coverage, design, and
+    language idioms.
+
+13. **If rejected:** Reviewer sends specific findings to
+    Developer, Test Engineer, and Security Engineer. All
+    three receive findings so they can coordinate the fix.
+    Developer fixes. Return to step 7 — both sign-offs
+    are required again after fixes, because changes during
+    a fix can introduce new issues.
+
+14. **If approved:** Reviewer reports approval to lead
+    with a summary of what was reviewed and why it passes.
+
+### Commit
+
+15. **User checkpoint** — the lead presents the completed
+    work to the user and asks them to confirm the commit.
+    This ensures the user sees and approves every change
+    before it enters the git history.
+
+16. **Lead sends file list and commit message to
+    Committer.** Committer stages the specified files,
+    commits with the provided message, and reports the
+    short SHA back to the lead. Lead tells Architect the
+    task is committed, and the Architect feeds the next
+    task slice (loop to step 1).
+
+## Completion Criteria
+
+The workflow is complete when:
+
+- All task slices from the Architect's plan are committed
+- Each slice received both Test Engineer and Security
+  Engineer sign-offs before review
+- Each slice passed Reviewer approval before commit
+- All tests pass across the full project after the final
+  commit
+- The user approved each commit at the user checkpoint
