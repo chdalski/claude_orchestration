@@ -2,27 +2,5 @@
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
-  "plansDirectory": ".ai/plans/",
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo '## Mandatory Startup\n\nBefore doing anything else:\n\n1. Read .claude/CLAUDE.md for your session instructions.\n2. If you are the lead, execute the Startup section immediately — spawn background agents, check for existing plans, and begin clarification. Do NOT skip any startup steps.\n3. If you are an agent (not the lead), follow the instructions in your agent definition file in .claude/agents/.\n\nDo NOT start working until you have completed your startup steps.'"
-          }
-        ]
-      }
-    ],
-    "PreCompact": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo 'Your context is about to be compacted. If you have spawned agents, message them with your current status. After compaction, re-read .claude/CLAUDE.md to recover your instructions — especially the Startup, Clarification, and Proposing the Approach sections.'"
-          }
-        ]
-      }
-    ]
-  }
+  "plansDirectory": ".ai/plans/"
 }
