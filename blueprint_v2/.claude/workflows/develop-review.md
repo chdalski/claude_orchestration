@@ -20,27 +20,24 @@ those directly or with a single agent.
 
 | Agent | Role |
 |-------|------|
+| **Architect** | Reads the codebase, writes plans, decomposes into task slices, and feeds tasks to the dev-team sequentially. Collects completion signals and sequences the next task. |
 | **Developer** | Implements all code (source + tests). Owns every code file. Uses WebSearch/WebFetch for API docs and library examples. |
 | **Test Engineer** | Advisory — designs test specifications (the test list), verifies Developer's tests match the spec before and after implementation. Does not write code. |
 | **Security Engineer** | Advisory — assesses security implications, flags vulnerabilities, provides pre- and post-implementation sign-offs. Does not write code. |
 | **Reviewer** | Independent quality gate — evaluates correctness, security, test coverage, design, and idioms. Reports approval or rejection to the lead. Does not commit. |
-
-### Shared
-
-| Agent | Role in This Workflow |
-|-------|----------------------|
-| **Architect** | Feeds task slices to the dev-team sequentially. Collects completion signals and sequences the next task. |
 | **Committer** | Stages and commits files when the lead sends a file list and commit message after user approval. |
 
 ## Team Lifecycle
 
-The lead creates one team with all workflow agents
-(Developer, Test Engineer, Security Engineer, Reviewer) at
-workflow start. The team persists across all task slices —
-agents are NOT re-spawned per task. This avoids the startup
-cost of re-reading agent definitions and rebuilding context
-for each slice. The Architect feeds tasks sequentially
-through the same agents.
+The lead creates one team via `TeamCreate` with all
+workflow agents (Architect, Developer, Test Engineer,
+Security Engineer, Reviewer, Committer) at workflow start.
+The team persists across all task slices — agents are NOT
+re-spawned per task. This avoids the startup cost of
+re-reading agent definitions and rebuilding context for
+each slice, and ensures all agents can communicate via
+`SendMessage` from the start. The Architect feeds tasks
+sequentially through the same agents.
 
 ## Flow
 

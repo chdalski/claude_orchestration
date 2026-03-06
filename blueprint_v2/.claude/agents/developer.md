@@ -121,7 +121,12 @@ Regardless of cadence:
     security sign-off**
 - After receiving both sign-offs, report task completion
   to the Architect via TaskUpdate (mark the task
-  completed) and SendMessage.
+  completed) and SendMessage. Use the task ID the
+  Architect included in the task message when calling
+  TaskUpdate. If no ID was provided, call TaskList to
+  find the correct entry — never guess or construct task
+  IDs, because a wrong ID causes "task not found" errors
+  that cascade into workflow disruption.
 - Do NOT commit. The Committer handles all commits,
   coordinated by the lead.
 

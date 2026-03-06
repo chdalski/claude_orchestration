@@ -29,9 +29,10 @@ Available workflows:
   implementation.
 
 For Solo, the lead implements directly. For Develop-Review
-and TDD, the lead spawns the Architect to read the codebase
-and write a plan, presents the plan for approval, then
-executes per the workflow definition.
+and TDD, the lead creates a team via `TeamCreate` with all
+workflow agents (including the Architect), sends the
+clarified request to the Architect, presents the plan for
+approval, then executes per the workflow definition.
 
 ### Startup
 
@@ -43,9 +44,10 @@ executes per the workflow definition.
 4. Once clarified, lead presents workflow options.
 5. User chooses a workflow.
 6. For Solo: lead handles work directly.
-7. For Develop-Review / TDD: lead spawns the Architect,
-   Architect writes the plan, lead presents the plan for
-   approval, then executes per workflow.
+7. For Develop-Review / TDD: lead creates a team with all
+   workflow agents, sends clarified request to the
+   Architect, Architect writes the plan, lead presents the
+   plan for approval, then executes per workflow.
 
 ### Agents
 
@@ -60,22 +62,14 @@ executes per the workflow definition.
 | **Security Engineer** | sonnet | Advisory — checks security gaps | No |
 | **Reviewer** | sonnet | Independent quality gate — reviews completed work | No |
 
-The Architect spans both planning (pre-workflow) and
-execution (during workflow). It writes the plan, then
-feeds tasks to whichever agents the chosen workflow
-provides.
-
-The Auditor and Plan Init run at session start — the
+The Auditor and Plan Init are session-start agents — the
 Auditor catches stale instructions, Plan Init ensures the
 `.ai/plans/` directory and its format guide exist (copied
-from `.claude/templates/plan-format.md`). The Committer is
-a shared utility — any workflow can use it to commit work
-without bundling commit logic into review or implementation
-agents.
-
-Developer, Test Engineer, Security Engineer, and Reviewer
-are workflow-specific agents used by the Develop-Review
-and TDD workflows.
+from `.claude/templates/plan-format.md`). All other agents
+(Architect, Committer, Developer, Test Engineer, Security
+Engineer, Reviewer) are workflow-specific — each workflow
+lists which agents it needs, and the lead creates a team
+with them via `TeamCreate`.
 
 ### Workflows
 
@@ -86,7 +80,7 @@ criteria. Adding a new workflow requires no changes to
 CLAUDE.md — just add a file.
 
 See `.claude/workflows/CLAUDE.md` for the required format
-and the list of shared agents available to all workflows.
+and the list of session-start agents.
 
 #### Solo
 

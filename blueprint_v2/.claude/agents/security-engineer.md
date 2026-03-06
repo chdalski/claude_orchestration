@@ -9,7 +9,6 @@ tools:
   - Grep
   - Bash
   - SendMessage
-  - TaskUpdate
   - TaskList
   - TaskGet
 ---

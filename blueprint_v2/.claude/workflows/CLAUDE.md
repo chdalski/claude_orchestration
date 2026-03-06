@@ -31,7 +31,7 @@ reason about which workflow fits.
 
 Which agents this workflow requires. Reference agent
 names from `.claude/agents/` — this ensures the lead
-spawns the right agents with the right tool sets and
+creates the right agents with the right tool sets and
 instructions. For each agent, note its role in this
 specific workflow, since the same agent may serve
 different purposes in different workflows.
@@ -79,32 +79,9 @@ unnecessary iterations.
 ## Shared Agents
 
 Some agents in `.claude/agents/` are not workflow-specific
-— they provide utility functions that any workflow can use.
-Workflow authors should use these rather than reinventing
-their capabilities.
-
-- **Architect** (`agents/architect.md`) — reads the
-  codebase, writes plans, decomposes into vertical task
-  slices, and feeds tasks to agents during execution. The
-  lead spawns the Architect after clarification; it
-  persists through both planning and execution phases.
-  Workflows do not spawn the Architect — the lead does.
-  During execution, the lead tells the Architect which
-  agents the workflow provides, and the Architect feeds
-  tasks to them sequentially via TaskList. Workflow authors
-  should assume the Architect is available and define their
-  agents and flow accordingly.
-
-- **Committer** (`agents/committer.md`) — stages specified
-  files and commits with a provided message. Use this
-  agent whenever a workflow needs to commit work. The
-  Committer is a mechanical executor: it does not review,
-  judge, or modify content. Pass it the exact file list
-  and commit message; it reports back with the SHA or an
-  error. This keeps commit logic consistent across
-  workflows and separates the "should we commit?" decision
-  (the workflow's job) from the "execute the commit" action
-  (the Committer's job).
+— they provide utility functions used at session start,
+outside of any workflow. Workflow authors should not spawn
+these agents — the lead handles them.
 
 - **Plan Init** (`agents/plan-init.md`) — ensures
   `.ai/plans/` directory and its `CLAUDE.md` format guide
@@ -119,6 +96,15 @@ their capabilities.
   spawns this at session start, not as part of a workflow.
   Listed here for awareness — workflow authors should not
   spawn the Auditor themselves.
+
+All other agents (Architect, Committer, Developer, Test
+Engineer, Security Engineer, Reviewer) are workflow-specific
+— each workflow that needs them lists them in its own Agents
+table. For multi-agent workflows (Develop-Review, TDD), the
+lead creates one team via `TeamCreate` with all listed
+agents so they can communicate via `SendMessage`. For Solo,
+the lead spawns individual agents (e.g., Committer) as
+needed without creating a team.
 
 ## Conventions
 

@@ -63,7 +63,7 @@ claude_orchestration/
 │   │   │   └── lang-typescript.md  # TypeScript idioms + testing
 │   │   ├── templates/        # Canonical templates copied at runtime
 │   │   └── workflows/       # Workflow definitions + format guide
-│   │       ├── CLAUDE.md          # Workflow format guide + shared agents
+│   │       ├── CLAUDE.md          # Workflow format guide + session-start agents
 │   │       ├── develop-review.md  # Dev-team + review workflow
 │   │       ├── solo.md            # Lead handles work directly
 │   │       └── tdd-user-in-the-loop.md  # TDD with user approval at phase transitions
@@ -120,11 +120,11 @@ Committer handles all git commits.
 **Agents:**
 
 - Lead (clarification + coordination)
-- Architect (codebase analysis + plan writing + task
-  decomposition + task feeding)
-- Auditor (background — checks CLAUDE.md structural claims)
-- Plan Init (background — ensures .ai/plans/ and format guide exist)
-- Committer (utility — stages and commits specified files)
+- Architect (workflow-specific — codebase analysis + plan
+  writing + task decomposition + task feeding)
+- Auditor (session-start — checks CLAUDE.md structural claims)
+- Plan Init (session-start — ensures .ai/plans/ and format guide exist)
+- Committer (workflow-specific — stages and commits specified files)
 - Developer (implements all code — source and tests)
 - Test Engineer (advisory — designs test specs, verifies
   coverage)

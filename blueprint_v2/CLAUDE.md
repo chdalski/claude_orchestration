@@ -22,7 +22,7 @@ forced default.
 ### Workflow-agnostic
 
 The blueprint does not prescribe how code gets written. It
-defines a clarification phase and a set of shared agents, then
+defines a clarification phase and a set of agents, then
 defers execution to workflow files. Each workflow defines
 its own agents, step order, and completion criteria. Adding
 a new workflow requires no changes to CLAUDE.md, agents, or
@@ -94,7 +94,7 @@ blueprint_v2/
 │   ├── templates/         ← Canonical templates copied at runtime
 │   │   └── plan-format.md ← Plan format guide (copied to .ai/plans/ by Plan Init)
 │   └── workflows/         ← Workflow definitions
-│       ├── CLAUDE.md      ← Workflow format guide + shared agents
+│       ├── CLAUDE.md      ← Workflow format guide + session-start agents
 │       ├── develop-review.md ← Dev-team + review workflow
 │       ├── solo.md        ← Lead handles work directly
 │       └── tdd-user-in-the-loop.md ← Strict Red-Green-Refactor with user approval
@@ -115,8 +115,10 @@ with user access.
 agent's model, tools, and instructions via YAML frontmatter
 and markdown body. The frontmatter is machine-parsed by
 Claude Code; the body is the agent's instruction set.
-Agents are shared across workflows — the Architect and
-Committer serve any workflow.
+The Architect and Committer are workflow-specific — each
+workflow that needs them includes them in its Agents table
+and team. Plan Init and Auditor are session-start utilities
+spawned by the lead, not part of any workflow team.
 
 **Rules** (`.claude/rules/*.md`) provide guidance that
 Claude Code injects into agent context automatically.
@@ -213,9 +215,8 @@ No changes to `.claude/CLAUDE.md`, agents, or workflows.
 1. Create `.claude/workflows/<name>.md` following the
    format in `.claude/workflows/CLAUDE.md`
 2. Define which agents the workflow needs — reference
-   existing shared agents (Architect, Committer) and
-   define new workflow-specific agents in
-   `.claude/agents/` if needed
+   existing agents from `.claude/agents/` (e.g., Architect,
+   Committer, Developer) and define new agents if needed
 3. If new agents are added, update `blueprint_contracts.py`
    with their expected frontmatter
 4. Run tests
@@ -223,9 +224,8 @@ No changes to `.claude/CLAUDE.md`, agents, or workflows.
 No changes to `.claude/CLAUDE.md` or existing rules.
 
 See `develop-review.md` for a concrete example — it uses
-four workflow-specific agents (Developer, Test Engineer,
-Security Engineer, Reviewer) alongside the shared Architect
-and Committer.
+six workflow-specific agents (Architect, Developer, Test
+Engineer, Security Engineer, Reviewer, Committer).
 
 ## Prompt Caching Alignment
 

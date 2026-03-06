@@ -69,15 +69,15 @@ AGENT_TOOLS: dict[str, set[str]] = {
     },
     "Reviewer": {
         "Read", "Glob", "Grep", "Bash", "SendMessage",
-        "TaskUpdate", "TaskList", "TaskGet",
+        "TaskList", "TaskGet",
     },
     "Test Engineer": {
         "Read", "Glob", "Grep", "Bash", "SendMessage",
-        "TaskUpdate", "TaskList", "TaskGet",
+        "TaskList", "TaskGet",
     },
     "Security Engineer": {
         "Read", "Glob", "Grep", "Bash", "SendMessage",
-        "TaskUpdate", "TaskList", "TaskGet",
+        "TaskList", "TaskGet",
     },
 }
 
