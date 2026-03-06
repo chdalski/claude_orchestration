@@ -50,7 +50,7 @@ ambiguities with the user.
 
 2. **Write the plan** — create a plan file in `.ai/plans/`
    following the format in `.ai/plans/CLAUDE.md` (created
-   at session start by Plan Init from the canonical template
+   at session start by Session Init from the canonical template
    in `.claude/templates/plan-format.md`). The plan captures
    what needs to happen and why, the codebase context you
    discovered, and the steps needed.

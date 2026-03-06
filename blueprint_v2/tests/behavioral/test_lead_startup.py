@@ -30,7 +30,7 @@ async def test_lead_follows_startup_sequence(fixture_project, tool_log):
     """The lead should follow the startup sequence instead of jumping to work.
 
     The startup sequence requires the lead to spawn background agents
-    (Auditor, Plan Init) and clarify with the user before any
+    (Session Init) and clarify with the user before any
     implementation. This test verifies the lead uses Agent tool or
     AskUserQuestion in its first actions — not implementation tools.
 

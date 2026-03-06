@@ -16,7 +16,9 @@ chooses how work gets done — not the lead.
 
 Available workflows:
 
-- **Solo** — the lead handles work directly. Best for
+- **Solo** — the lead handles work directly, with a
+  Reviewer quality check (including CLAUDE.md drift
+  detection) before presenting to the user. Best for
   trivial-to-small tasks (1-5 files, mechanical changes).
   No Architect, no plan, no multi-agent overhead.
 - **Develop-Review (Supervised)** — full development cycle
@@ -40,14 +42,15 @@ workflow definition.
 
 ### Startup
 
-1. Lead spawns the Auditor and Plan Init in the background
-   — Auditor checks CLAUDE.md integrity, Plan Init ensures
-   `.ai/plans/` and its format guide exist.
+1. Lead spawns Session Init in the background — it audits
+   CLAUDE.md integrity, ensures `.ai/plans/` and its format
+   guide exist, and generates project context if missing.
 2. Lead checks for existing plans from previous sessions.
 3. Lead begins clarification with the user.
 4. Once clarified, lead presents workflow options.
 5. User chooses a workflow.
-6. For Solo: lead handles work directly.
+6. For Solo: lead handles work directly, spawns Reviewer
+   for quality check, then presents to user.
 7. For Develop-Review (Supervised or Autonomous) / TDD: lead creates a team with all
    workflow agents, sends clarified request to the
    Architect, Architect writes the plan, lead presents the
@@ -58,22 +61,22 @@ workflow definition.
 | Agent | Model | Role | Writes Code |
 |-------|-------|------|-------------|
 | **Architect** | opus | Reads codebase, writes plans, decomposes and feeds tasks | No (plans only) |
-| **Auditor** | haiku | Checks CLAUDE.md accuracy | No (read-only) |
-| **Plan Init** | haiku | Ensures .ai/plans/ and format guide exist | No (writes template only) |
+| **Session Init** | sonnet | Audits CLAUDE.md, ensures plan dir, generates project context | No (bootstrap only) |
 | **Committer** | haiku | Stages and commits files | No (git only) |
 | **Developer** | sonnet | Implements all code (source + tests) | Yes |
 | **Test Engineer** | sonnet | Advisory — designs test specs, verifies coverage | No |
 | **Security Engineer** | sonnet | Advisory — checks security gaps | No |
 | **Reviewer** | sonnet | Independent quality gate — reviews completed work | No |
 
-The Auditor and Plan Init are session-start agents — the
-Auditor catches stale instructions, Plan Init ensures the
-`.ai/plans/` directory and its format guide exist (copied
-from `.claude/templates/plan-format.md`). All other agents
-(Architect, Committer, Developer, Test Engineer, Security
-Engineer, Reviewer) are workflow-specific — each workflow
-lists which agents it needs, and the lead creates a team
-with them via `TeamCreate`.
+Session Init is a session-start agent — it audits CLAUDE.md
+structural claims, ensures `.ai/plans/` and its format guide
+exist (copied from `.claude/templates/plan-format.md`), and
+generates project context via the preloaded `/project-init`
+skill if `CLAUDE.md` is missing at the project root. All
+other agents (Architect, Committer, Developer, Test
+Engineer, Security Engineer, Reviewer) are workflow-specific
+— each workflow lists which agents it needs, and the lead
+creates a team with them via `TeamCreate`.
 
 ### Workflows
 
@@ -91,8 +94,10 @@ and the list of session-start agents.
 The Solo workflow is for trivial-to-small tasks where the
 user prefers directness over process. The lead handles all
 work directly — reading files, implementing changes, running
-tests — then presents the result for user approval before
-committing via the Committer.
+tests — then spawns the Reviewer for an independent quality
+check (including CLAUDE.md drift detection) before presenting
+the result for user approval and committing via the
+Committer.
 
 See `.claude/workflows/solo.md` for the full flow and
 completion criteria.
@@ -188,6 +193,24 @@ loading or agent configuration needed.
 
 Adding a new language is just adding a file — no changes
 to CLAUDE.md or agent definitions required.
+
+### Project Initialization
+
+After copying `.claude/` to a new project, Session Init
+auto-generates `CLAUDE.md` at the project root on the
+first session. This scans the project for languages,
+frameworks, and structure, then maps findings to the
+blueprint's conditional rule files. Auto-detected sections
+are filled in; human-curated sections (Overview,
+Architecture, Code Exemplars, Anti-Patterns, Trusted
+Sources) are left as TODOs for you to complete.
+
+For projects with git-repository subdirectories, the skill
+also generates a `CLAUDE.md` in each subdirectory that has
+its own `.git/`, scanned independently.
+
+To regenerate after major project changes, run
+`/project-init` manually.
 
 ### Conventional Commits
 

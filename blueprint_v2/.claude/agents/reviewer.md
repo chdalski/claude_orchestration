@@ -145,6 +145,46 @@ Critical and High findings must be fixed before approval.
 Medium findings should be fixed. Low findings are at the
 dev-team's discretion.
 
+## CLAUDE.md Drift Detection
+
+After reviewing code quality, check whether the current
+changes have made any `CLAUDE.md` file stale. Stale
+CLAUDE.md files mislead all agents in future sessions —
+they trust these files as ground truth, so drift compounds
+silently until someone debugs a confusing agent decision.
+
+### 1. Manifest changes
+
+If any manifest file was modified or added (package.json,
+Cargo.toml, pyproject.toml, go.mod, tsconfig.json, etc.),
+compare the root `CLAUDE.md` against current manifest
+content. Flag if languages, frameworks, dependencies, or
+build/test commands listed in `CLAUDE.md` no longer match
+what the manifests declare.
+
+### 2. Directory changes
+
+If directories were added, removed, or renamed, verify any
+Project Structure section in `CLAUDE.md` files still
+reflects reality. A stale structure diagram sends agents to
+paths that no longer exist.
+
+### 3. File path references
+
+Scan `CLAUDE.md` files for file path references affected by
+the current changes — verify referenced files still exist.
+Broken path references in CLAUDE.md cause agents to fail on
+Read calls and lose trust in the instructions.
+
+### Reporting drift
+
+If drift is found, include it in review findings at
+severity **High** — stale CLAUDE.md is a systemic issue
+that affects every future session, not just the current
+task. Tell the Developer which `CLAUDE.md` file(s) need
+updating and what specifically is stale. The Developer
+updates CLAUDE.md as part of the same task, before commit.
+
 ## What Not to Review
 
 - Formatting and style caught by linters

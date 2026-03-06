@@ -14,17 +14,22 @@ REQUIRED_DIRECTORIES: list[str] = [
     ".claude",
     ".claude/agents",
     ".claude/rules",
+    ".claude/skills",
+    ".claude/skills/project-init",
     ".claude/templates",
     ".claude/workflows",
 ]
 
 # Required files relative to blueprint root (outside .claude/)
 REQUIRED_ROOT_FILES: list[str] = [
+    ".claude/skills/project-init/SKILL.md",
     ".claude/templates/plan-format.md",
+    ".claude/templates/project-context.md",
     ".claude/workflows/CLAUDE.md",
     ".claude/workflows/solo.md",
     ".claude/workflows/develop-review-supervised.md",
     ".claude/workflows/develop-review-autonomous.md",
+    ".claude/workflows/tdd-user-in-the-loop.md",
 ]
 
 # Settings.json required configuration
@@ -45,11 +50,10 @@ DYNAMIC_CONTENT_PATTERNS: list[str] = [
 # Agent definitions — filename must match exactly
 AGENT_FILES: dict[str, str] = {
     "Architect": "architect.md",
-    "Auditor": "auditor.md",
     "Committer": "committer.md",
-    "Plan Init": "plan-init.md",
     "Developer": "developer.md",
     "Reviewer": "reviewer.md",
+    "Session Init": "session-init.md",
     "Test Engineer": "test-engineer.md",
     "Security Engineer": "security-engineer.md",
 }
@@ -61,9 +65,10 @@ AGENT_TOOLS: dict[str, set[str]] = {
         "SendMessage", "TaskCreate", "TaskUpdate",
         "TaskList", "TaskGet",
     },
-    "Auditor": {"Read", "Glob", "Grep", "SendMessage"},
     "Committer": {"Read", "Glob", "Bash", "SendMessage"},
-    "Plan Init": {"Read", "Glob", "Write", "Bash", "SendMessage"},
+    "Session Init": {
+        "Read", "Glob", "Grep", "Write", "Bash", "SendMessage",
+    },
     "Developer": {
         "Read", "Write", "Edit", "Bash", "Glob", "Grep",
         "WebSearch", "WebFetch", "SendMessage", "TaskUpdate",
@@ -86,9 +91,8 @@ AGENT_TOOLS: dict[str, set[str]] = {
 # Agent models — required model for each agent
 AGENT_MODELS: dict[str, str] = {
     "Architect": "opus",
-    "Auditor": "haiku",
     "Committer": "haiku",
-    "Plan Init": "haiku",
+    "Session Init": "sonnet",
     "Developer": "sonnet",
     "Reviewer": "sonnet",
     "Test Engineer": "sonnet",

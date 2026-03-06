@@ -1,6 +1,6 @@
-"""Behavioral tests verifying Plan Init creates .ai/plans/ and its format guide.
+"""Behavioral tests verifying Session Init creates .ai/plans/ and its format guide.
 
-These tests spawn a real Claude Code session as the Plan Init agent
+These tests spawn a real Claude Code session as the Session Init agent
 in a tmp project that has no .ai/ directory. The agent should read
 the canonical template from .claude/templates/plan-format.md and
 write it to .ai/plans/CLAUDE.md, creating the directory if needed.
@@ -17,10 +17,10 @@ from behavioral.conftest import NESTED_SESSION_ENV
 
 pytestmark = pytest.mark.behavioral
 
-# The agent file tells Plan Init what to do, but in a test we
+# The agent file tells Session Init what to do, but in a test we
 # give it an explicit prompt to avoid relying on SessionStart hooks.
-PLAN_INIT_PROMPT = (
-    "You are Plan Init. Follow your agent instructions exactly:\n"
+SESSION_INIT_PROMPT = (
+    "You are Session Init. Follow your agent instructions exactly:\n"
     "1. Check if .ai/plans/ exists — create it if missing.\n"
     "2. Read .claude/templates/plan-format.md (the canonical template).\n"
     "3. Check if .ai/plans/CLAUDE.md exists.\n"
@@ -32,8 +32,8 @@ PLAN_INIT_PROMPT = (
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(120)
-async def test_plan_init_creates_plans_directory_and_format_guide(fixture_project):
-    """Plan Init should create .ai/plans/CLAUDE.md from the template when it doesn't exist."""
+async def test_session_init_creates_plans_directory_and_format_guide(fixture_project):
+    """Session Init should create .ai/plans/CLAUDE.md from the template when it doesn't exist."""
     plans_dir = fixture_project / ".ai" / "plans"
     format_guide = plans_dir / "CLAUDE.md"
     template = fixture_project / ".claude" / "templates" / "plan-format.md"
@@ -49,24 +49,24 @@ async def test_plan_init_creates_plans_directory_and_format_guide(fixture_projec
         permission_mode="bypassPermissions",
     )
 
-    async for _ in query(prompt=PLAN_INIT_PROMPT, options=options):
+    async for _ in query(prompt=SESSION_INIT_PROMPT, options=options):
         pass
 
     # Postconditions
-    assert plans_dir.is_dir(), "Plan Init should have created .ai/plans/"
-    assert format_guide.is_file(), "Plan Init should have written .ai/plans/CLAUDE.md"
+    assert plans_dir.is_dir(), "Session Init should have created .ai/plans/"
+    assert format_guide.is_file(), "Session Init should have written .ai/plans/CLAUDE.md"
 
     expected = template.read_text()
     actual = format_guide.read_text()
     assert actual == expected, (
-        "Plan Init should copy the template verbatim to .ai/plans/CLAUDE.md"
+        "Session Init should copy the template verbatim to .ai/plans/CLAUDE.md"
     )
 
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(120)
-async def test_plan_init_updates_outdated_format_guide(fixture_project):
-    """Plan Init should overwrite .ai/plans/CLAUDE.md when it differs from the template."""
+async def test_session_init_updates_outdated_format_guide(fixture_project):
+    """Session Init should overwrite .ai/plans/CLAUDE.md when it differs from the template."""
     plans_dir = fixture_project / ".ai" / "plans"
     format_guide = plans_dir / "CLAUDE.md"
     template = fixture_project / ".claude" / "templates" / "plan-format.md"
@@ -82,20 +82,20 @@ async def test_plan_init_updates_outdated_format_guide(fixture_project):
         permission_mode="bypassPermissions",
     )
 
-    async for _ in query(prompt=PLAN_INIT_PROMPT, options=options):
+    async for _ in query(prompt=SESSION_INIT_PROMPT, options=options):
         pass
 
     expected = template.read_text()
     actual = format_guide.read_text()
     assert actual == expected, (
-        "Plan Init should have overwritten the outdated format guide with the template"
+        "Session Init should have overwritten the outdated format guide with the template"
     )
 
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(120)
-async def test_plan_init_leaves_current_format_guide_unchanged(fixture_project):
-    """Plan Init should not rewrite .ai/plans/CLAUDE.md when it already matches the template."""
+async def test_session_init_leaves_current_format_guide_unchanged(fixture_project):
+    """Session Init should not rewrite .ai/plans/CLAUDE.md when it already matches the template."""
     plans_dir = fixture_project / ".ai" / "plans"
     format_guide = plans_dir / "CLAUDE.md"
     template = fixture_project / ".claude" / "templates" / "plan-format.md"
@@ -115,7 +115,7 @@ async def test_plan_init_leaves_current_format_guide_unchanged(fixture_project):
 
     # Collect text output to verify it reports "ready" not "created/updated"
     text_output = []
-    async for message in query(prompt=PLAN_INIT_PROMPT, options=options):
+    async for message in query(prompt=SESSION_INIT_PROMPT, options=options):
         if isinstance(message, AssistantMessage):
             for block in message.content:
                 if isinstance(block, TextBlock):
@@ -124,5 +124,5 @@ async def test_plan_init_leaves_current_format_guide_unchanged(fixture_project):
     # The file should still match
     actual = format_guide.read_text()
     assert actual == template_content, (
-        "Plan Init should not have changed a format guide that already matches"
+        "Session Init should not have changed a format guide that already matches"
     )

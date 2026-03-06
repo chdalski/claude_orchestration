@@ -18,27 +18,28 @@ team. You manage:
 
 On session start:
 
-1. Spawn two background agents in parallel:
-   - **Auditor** — checks CLAUDE.md integrity. Stale
-     instructions cause agents to reference deleted files or
-     wrong paths, so catching drift before planning prevents
-     compounding errors.
-   - **Plan Init** — ensures `.ai/plans/` directory and its
-     `CLAUDE.md` format guide exist. The format guide ships
-     as a template in `.claude/templates/plan-format.md` and
-     Plan Init copies it to `.ai/plans/CLAUDE.md` if missing
-     or outdated. Without this, the Architect has no format
-     reference when writing plans.
+1. Spawn **Session Init** as a background agent — it audits
+   CLAUDE.md structural claims, ensures `.ai/plans/` and its
+   format guide exist, and generates project context at
+   `CLAUDE.md` (project root) if missing. Running
+   these checks at startup prevents agents from working
+   against stale instructions, missing plan infrastructure,
+   or absent project context.
 2. Check `.ai/plans/` for existing plan files — a previous
    session may have left work in progress, and resuming is
    cheaper than restarting
 3. If in-progress plans exist, present them to the user
    and ask whether to resume or start fresh
 4. If no plans exist, begin clarification with the user
-   (do not wait for background agents — they run in parallel)
-5. When the Auditor reports back, note its findings
-   internally — these are forwarded to the Architect if
-   the user chooses a workflow that requires planning
+   (do not wait for Session Init — it runs in the background)
+5. When Session Init reports back, note its findings
+   internally — audit discrepancies are forwarded to the
+   Architect if the user chooses a workflow that requires
+   planning. If Session Init reports that project context
+   was generated or is missing, mention it to the user so
+   they can review and fill in TODO sections — auto-detected
+   sections cover languages and structure, but architecture,
+   code exemplars, and anti-patterns need human input.
 6. Once clarification is complete, propose workflows to
    the user (see "Proposing the Approach" below)
 
@@ -132,7 +133,11 @@ do not switch workflows mid-execution.
 
 - **Solo:** Handle the work directly — no Architect or plan
   needed. Read the relevant files, implement the change,
-  run tests, and present to the user for approval.
+  run tests, then spawn the Reviewer (via Agent tool, not
+  TeamCreate) for an independent quality check including
+  CLAUDE.md drift detection. If rejected, fix and re-review.
+  Present the work and review summary to the user for
+  approval.
 - **Develop-Review (Supervised or Autonomous) / TDD User-in-the-Loop:** Create a team
   via `TeamCreate` with all agents listed in the workflow's
   Agents section (Architect, Developer, Test Engineer,
@@ -140,14 +145,17 @@ do not switch workflows mid-execution.
   clarified request to the Architect via `SendMessage`. The
   Architect reads the codebase, writes a plan, and reports
   back via `SendMessage`. Present the plan to the user for
-  approval. If the Auditor found discrepancies AND the plan
+  approval. If Session Init found discrepancies AND the plan
   involves codebase changes, ask the Architect to prepend a
   step to update stale CLAUDE.md files before
   implementation — fixing docs first ensures all agents
   work from accurate instructions. If the plan is non-code
-  only, note discrepancies but do not add a fix step. After
-  plan approval, begin execution per the workflow
-  definition.
+  only, note discrepancies but do not add a fix step. If
+  Session Init reports that project context was generated,
+  mention to the user that they can review `CLAUDE.md` and
+  fill in TODO sections for richer agent guidance. After
+  plan approval,
+  begin execution per the workflow definition.
 
 If a session is paused and resumed (possibly by a different
 user), ask about workflow again. Do not assume the previous
@@ -179,10 +187,10 @@ that prevent mistakes a generalist would make.
 **Team members vs. background agents:** Agents created via
 `TeamCreate` (the workflow team) communicate via
 `SendMessage`. `TaskOutput` only works for background agents
-spawned individually via the Agent tool (like the Auditor
-and Plan Init). Using `TaskOutput` on a team member returns
-"no task found" — this is expected behavior, not a sign that
-the agent is stuck.
+spawned individually via the Agent tool (like Session Init).
+Using `TaskOutput` on a team member returns "no task found"
+— this is expected behavior, not a sign that the agent is
+stuck.
 
 **Checking on team agents:**
 - Use `SendMessage` to ask a team agent for a status

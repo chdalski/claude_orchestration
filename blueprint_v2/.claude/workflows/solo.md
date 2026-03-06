@@ -16,29 +16,41 @@ issues a single perspective would miss.
 
 ## Agents
 
-None workflow-specific. The lead handles all work directly.
-The Committer is available for commits — separating commit
-execution from implementation keeps the workflow consistent
-with other workflows and avoids bundling git logic into the
-lead's responsibilities.
+- **Reviewer** — independent quality gate, including
+  CLAUDE.md drift detection. Spawned individually (via
+  Agent tool, not TeamCreate) after the lead completes
+  implementation, same pattern as the Committer.
+- **Committer** — stages and commits files. Spawned
+  individually after user approval.
+
+Separating review and commit from implementation keeps Solo
+consistent with other workflows and catches drift that a
+single perspective would miss.
 
 ## Flow
 
 1. Lead reads relevant files to understand current state
 2. Lead implements the change directly
 3. Lead runs tests and linters if applicable — catching
-   regressions before presenting to the user avoids
+   regressions before presenting to the Reviewer avoids
    wasted review cycles
-4. **User checkpoint** — lead presents the completed work
-   for review
-5. If approved, lead spawns the Committer to stage and
+4. Lead spawns the Reviewer — Reviewer performs full review
+   including CLAUDE.md drift detection. Even small changes
+   can introduce drift (e.g., renaming a directory that
+   CLAUDE.md references), and Solo has the least process,
+   making undetected drift most likely here.
+5. If rejected: lead fixes issues and returns to step 3
+6. **User checkpoint** — lead presents the completed work
+   and review summary for user approval
+7. If approved, lead spawns the Committer to stage and
    commit
-6. If changes are needed, lead adjusts and returns to
-   step 4
+8. If changes are needed, lead adjusts and returns to
+   step 3
 
 ## Completion Criteria
 
 - Change implemented as requested
 - Tests pass (if applicable)
+- Reviewer has approved the result (including drift check)
 - User has approved the result
 - Work committed via Committer

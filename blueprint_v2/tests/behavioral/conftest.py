@@ -69,7 +69,7 @@ def fixture_project(tmp_path: Path) -> Path:
     """Copy the minimal project and blueprint .claude/ into a tmp directory.
 
     Returns the tmp project root, ready for Claude Code sessions.
-    The .ai/plans/ directory is created at runtime by Plan Init,
+    The .ai/plans/ directory is created at runtime by Session Init,
     so it does not need to be copied from the blueprint.
     """
     # Copy minimal project files

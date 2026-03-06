@@ -83,28 +83,26 @@ Some agents in `.claude/agents/` are not workflow-specific
 outside of any workflow. Workflow authors should not spawn
 these agents — the lead handles them.
 
-- **Plan Init** (`agents/plan-init.md`) — ensures
-  `.ai/plans/` directory and its `CLAUDE.md` format guide
-  exist. Copies the canonical template from
-  `.claude/templates/plan-format.md` if the format guide
-  is missing or outdated. The lead spawns this at session
-  start alongside the Auditor, not as part of a workflow.
-  Workflow authors should not spawn Plan Init themselves.
-
-- **Auditor** (`agents/auditor.md`) — checks CLAUDE.md
-  structural claims against the filesystem. The lead
-  spawns this at session start, not as part of a workflow.
-  Listed here for awareness — workflow authors should not
-  spawn the Auditor themselves.
+- **Session Init** (`agents/session-init.md`) — bootstraps
+  the session by auditing CLAUDE.md structural claims,
+  ensuring `.ai/plans/` and its format guide exist, and
+  generating project context if missing. The lead spawns
+  this at session start as a background agent, not as part
+  of any workflow. Workflow authors should not spawn
+  Session Init themselves.
 
 All other agents (Architect, Committer, Developer, Test
 Engineer, Security Engineer, Reviewer) are workflow-specific
 — each workflow that needs them lists them in its own Agents
-table. For multi-agent workflows (Develop-Review variants, TDD), the
-lead creates one team via `TeamCreate` with all listed
-agents so they can communicate via `SendMessage`. For Solo,
-the lead spawns individual agents (e.g., Committer) as
-needed without creating a team.
+table. The Reviewer appears in every workflow as an
+independent quality gate (including CLAUDE.md drift
+detection), ensuring consistent review coverage regardless
+of workflow choice. For multi-agent workflows
+(Develop-Review variants, TDD), the lead creates one team
+via `TeamCreate` with all listed agents so they can
+communicate via `SendMessage`. For Solo, the lead spawns
+individual agents (Reviewer, Committer) as needed without
+creating a team.
 
 ## Conventions
 

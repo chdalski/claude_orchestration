@@ -47,9 +47,12 @@ claude_orchestration/
 │   ├── .claude/
 │   │   ├── CLAUDE.md        # Lead instructions
 │   │   ├── settings.json    # Agent teams
-│   │   ├── agents/          # Architect, Auditor, Committer,
-│   │   │                    # Developer, Plan Init, Reviewer,
-│   │   │                    # Test Engineer, Security Engineer
+│   │   ├── agents/          # Architect, Committer, Developer,
+│   │   │                    # Reviewer, Security Engineer,
+│   │   │                    # Session Init, Test Engineer
+│   │   ├── skills/          # Skill definitions
+│   │   │   └── project-init/
+│   │   │       └── SKILL.md # Project scanning + context generation
 │   │   ├── rules/           # Unconditional + conditional rules
 │   │   │   ├── simplicity.md       # KISS, YAGNI, Reveals Intent (unconditional)
 │   │   │   ├── code-principles.md  # SOLID, Kent Beck (source files)
@@ -62,6 +65,8 @@ claude_orchestration/
 │   │   │   ├── lang-rust.md        # Rust idioms + testing
 │   │   │   └── lang-typescript.md  # TypeScript idioms + testing
 │   │   ├── templates/        # Canonical templates copied at runtime
+│   │   │   ├── plan-format.md       # Plan format guide (copied to .ai/plans/)
+│   │   │   └── project-context.md   # Project context template (filled by /project-init)
 │   │   └── workflows/       # Workflow definitions + format guide
 │   │       ├── CLAUDE.md          # Workflow format guide + session-start agents
 │   │       ├── develop-review-supervised.md  # Dev-team + review (user approves commits)
@@ -108,10 +113,11 @@ post-implementation sign-offs before review.
 **Clarify-first, the lead owns clarification and workflow
 proposal. The user chooses how work gets done.**
 
-The lead spawns an Auditor and Plan Init agent in the
-background, clarifies the task with the user, then presents
-workflow options. The user chooses a workflow: Solo for
-simple tasks (lead handles directly), or Develop-Review
+The lead spawns a Session Init agent in the background
+(audits CLAUDE.md, ensures `.ai/plans/` exists, generates
+project context), clarifies the task with the user, then
+presents workflow options. The user chooses a workflow: Solo
+for simple tasks (lead handles directly), or Develop-Review
 (Supervised or Autonomous) / TDD for complex tasks
 (Architect writes a plan, user approves, then workflow
 agents execute). Workflows are
@@ -124,8 +130,8 @@ Committer handles all git commits.
 - Lead (clarification + coordination)
 - Architect (workflow-specific — codebase analysis + plan
   writing + task decomposition + task feeding)
-- Auditor (session-start — checks CLAUDE.md structural claims)
-- Plan Init (session-start — ensures .ai/plans/ and format guide exist)
+- Session Init (session-start — audits CLAUDE.md, ensures
+  plan dir, generates project context)
 - Committer (workflow-specific — stages and commits specified files)
 - Developer (implements all code — source and tests)
 - Test Engineer (advisory — designs test specs, verifies
