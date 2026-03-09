@@ -88,9 +88,9 @@ for committing approved work — it has full context from
 the review to write an accurate commit message. The lead
 creates one team via `TeamCreate` with all listed agents
 so they can communicate via `SendMessage`. This applies
-to all workflows including Solo, where a one-agent team
-allows the Reviewer to receive the commit signal after the
-user checkpoint.
+to all workflows including Direct-Review, where a one-agent
+team allows the Reviewer to receive the commit signal after
+the user checkpoint.
 
 ## Conventions
 

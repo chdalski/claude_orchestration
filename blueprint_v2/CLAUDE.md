@@ -13,7 +13,7 @@ rules, workflows, agents). For user-facing setup and usage, see
 Every session starts with clarification. The lead
 understands the task through structured dialogue with the
 user, then presents workflow options. The user chooses how
-work gets done — Solo for simple tasks, Develop-Review (Supervised or
+work gets done — Direct-Review for simple tasks, Develop-Review (Supervised or
 Autonomous) or TDD for complex ones. Planning via the Architect happens
 when the user selects a workflow that needs it, not as a
 forced default.
@@ -98,7 +98,7 @@ blueprint_v2/
 │       ├── CLAUDE.md      ← Workflow format guide + session-start agents
 │       ├── develop-review-supervised.md ← Dev-team + review (user approves commits)
 │       ├── develop-review-autonomous.md ← Dev-team + review (auto-commit after Reviewer)
-│       ├── solo.md        ← Lead handles work + Reviewer quality gate
+│       ├── direct-review.md ← Lead handles work + Reviewer quality gate
 │       └── tdd-user-in-the-loop.md ← Strict Red-Green-Refactor with user approval
 └── tests/                 ← Blueprint verification tests
     ├── blueprint_contracts.py  ← Single source of truth for structure
@@ -124,7 +124,7 @@ All agents are general-purpose building blocks — no agent
 runs automatically. Each workflow declares which agents it
 needs in its Agents table. For multi-agent workflows, the
 lead creates a team via `TeamCreate` with all listed agents.
-For Solo, the lead creates a one-agent team with the
+For Direct-Review, the lead creates a one-agent team with the
 Reviewer via `TeamCreate` so it can receive the commit
 signal after the user checkpoint.
 

@@ -2,6 +2,7 @@
 name: Architect
 description: Reads codebase, writes plans, decomposes into task slices, feeds tasks to agents
 model: opus
+color: orange
 skills:
   - ensure-plans-dir
 tools:

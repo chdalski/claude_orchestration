@@ -47,9 +47,8 @@ claude_orchestration/
 │   ├── .claude/
 │   │   ├── CLAUDE.md        # Lead instructions
 │   │   ├── settings.json    # Agent teams
-│   │   ├── agents/          # Architect, Committer, Developer,
-│   │   │                    # Reviewer, Security Engineer,
-│   │   │                    # Test Engineer
+│   │   ├── agents/          # Architect, Developer, Reviewer,
+│   │   │                    # Security Engineer, Test Engineer
 │   │   ├── skills/          # Skill definitions
 │   │   │   ├── ensure-plans-dir/
 │   │   │   │   └── SKILL.md # Create .ai/plans/ and format guide if missing
@@ -72,7 +71,7 @@ claude_orchestration/
 │   │       ├── CLAUDE.md          # Workflow format guide + session-start agents
 │   │       ├── develop-review-supervised.md  # Dev-team + review (user approves commits)
 │   │       ├── develop-review-autonomous.md # Dev-team + review (auto-commit after Reviewer)
-│   │       ├── solo.md            # Lead handles work directly
+│   │       ├── direct-review.md   # Lead handles work directly
 │   │       └── tdd-user-in-the-loop.md  # TDD with user approval at phase transitions
 │   └── tests/               # Blueprint verification tests
 │       ├── blueprint_contracts.py  # Single source of truth
@@ -117,8 +116,8 @@ proposal. The user chooses how work gets done.**
 The lead checks for project context at startup (invokes
 `/project-init` if `CLAUDE.md` is missing), clarifies the
 task with the user, then presents workflow options. The user
-chooses a workflow: Solo for simple tasks (lead handles
-directly), or Develop-Review (Supervised or Autonomous) / TDD
+chooses a workflow: Direct-Review for simple tasks (lead
+handles directly), or Develop-Review (Supervised or Autonomous) / TDD
 for complex tasks (Architect writes a plan, user approves,
 then workflow agents execute). Workflows are defined as
 separate files in `.claude/workflows/` — adding a new
@@ -139,7 +138,7 @@ handles both quality review and git commits.
 
 **Workflows:**
 
-- Solo — lead handles work directly for simple tasks
+- Direct-Review — lead handles work directly for simple tasks
 - Develop-Review (Supervised) — test-list-driven development
   with security review and independent quality gate; user
   approves each commit

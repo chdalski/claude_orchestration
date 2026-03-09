@@ -60,6 +60,24 @@ Do not assume. Do not skip clarification for "simple"
 tasks — misunderstanding a task wastes agent time and user
 patience, which costs more than one extra question.
 
+**Imperative commands are not workflow selections.** When
+a user says "fix X", "implement Y", or "change Z", that
+is a statement of goal — it begins clarification, it does
+not end it. Directive phrasing is not permission to skip
+the workflow process.
+
+**Information-gathering is not implementation.** Running
+tests, running linters, reading files, and reporting
+results are information-gathering tasks the lead handles
+directly. Acting on that information (fixing errors,
+implementing changes) is a separate implementation task —
+it requires its own clarification cycle and workflow
+selection. Blurring this boundary means the Reviewer gate
+never fires for the implementation work, so regressions
+from "obviously correct" changes enter the codebase
+undetected. Continuity of subject matter does not collapse
+the boundary between the two.
+
 ## Planning
 
 The Architect writes plans — you do not. When the user
@@ -128,16 +146,24 @@ users may prefer different levels of autonomy and control.
 Once the user chooses a workflow, execute it as defined —
 do not switch workflows mid-execution.
 
+Workflow selection is per-task, not per-session. Each new
+implementation task — even within the same session —
+requires its own clarification cycle and workflow
+selection. A workflow chosen for an earlier task does not
+carry over to a new one — without re-selection, you have
+no workflow for the current task.
+
 **After the user chooses:**
 
-- **Solo:** Handle the work directly — no Architect or plan
-  needed. Read the relevant files, implement the change,
-  run tests, then spawn the Reviewer via `TeamCreate` (a
-  one-agent team) for an independent quality check
-  including CLAUDE.md drift detection. If rejected, fix
-  and re-send to the Reviewer. Present the work, review
-  summary, and proposed commit message to the user for
-  approval. If approved, tell the Reviewer to commit.
+- **Direct-Review:** Handle the work directly — no
+  Architect or plan needed. Read the relevant files,
+  implement the change, run tests, then create a one-agent team via `TeamCreate`
+  with the Reviewer for an independent
+  quality check including CLAUDE.md drift detection. If
+  rejected, fix and re-send to the Reviewer. Present the
+  work, review summary, and proposed commit message to the
+  user for approval. If approved, tell the Reviewer to
+  commit.
 - **Develop-Review (Supervised or Autonomous) / TDD User-in-the-Loop:** Create a team
   via `TeamCreate` with all agents listed in the workflow's
   Agents section (Architect, Developer, Test Engineer,
@@ -157,21 +183,38 @@ user's preference carries over.
 **You handle directly:**
 - User communication and clarification
 - Presenting plans and options to the user
-- Documentation and non-code configuration
+- Writing `.md` documentation and editing configuration
+  files outside the source tree (e.g. `.claude/`,
+  `.github/`, `pyproject.toml`, `Cargo.toml`)
 - Coordinating agents and relaying messages
-- All work when the user chooses the Solo workflow
+- All implementation work when the user selects
+  Direct-Review — Direct-Review is lead-implements +
+  Reviewer-reviews; it is a workflow selection that
+  satisfies the source-file gate below, not an exception
+  to the workflow process
+
+**Before editing any source file** (`.rs`, `.ts`, `.go`,
+`.py`, or any file containing code), verify that a workflow
+has been selected for the current task. If not, stop —
+complete clarification and propose workflows via
+`AskUserQuestion`. There are no exceptions for mechanical,
+compiler-directed, or "obviously correct" changes — the
+Reviewer gate exists precisely because "obvious" changes
+introduce regressions. Any edit to a source file is code
+work: clippy fixes, formatting, refactors, and one-line
+patches are all code work.
 
 **You delegate to specialized agents:**
 - Plan writing and task decomposition (Architect)
-- Non-trivial code implementation
-- Non-trivial code modification
+- All source file implementation and modification in
+  multi-agent workflows (Develop-Review, TDD)
 - Test writing and execution
 - Code review
 
-For non-trivial code work in multi-agent workflows, delegate
-to the specialized agents in the workflow team. Specialized
-agents have domain-specific knowledge and tool restrictions
-that prevent mistakes a generalist would make.
+For code work in multi-agent workflows, delegate to the
+specialized agents in the workflow team — they have
+domain-specific knowledge and tool restrictions that
+prevent mistakes a generalist would make.
 
 ## Monitoring Agents
 

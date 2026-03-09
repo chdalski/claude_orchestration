@@ -28,7 +28,7 @@ REQUIRED_ROOT_FILES: list[str] = [
     ".claude/templates/plan-format.md",
     ".claude/templates/project-context.md",
     ".claude/workflows/CLAUDE.md",
-    ".claude/workflows/solo.md",
+    ".claude/workflows/direct-review.md",
     ".claude/workflows/develop-review-supervised.md",
     ".claude/workflows/develop-review-autonomous.md",
     ".claude/workflows/tdd-user-in-the-loop.md",

@@ -1,4 +1,4 @@
-# Solo
+# Direct-Review
 
 ## When to Use
 
@@ -34,12 +34,13 @@ approval rather than re-spawning a new agent.
 3. Lead runs tests and linters if applicable — catching
    regressions before presenting to the Reviewer avoids
    wasted review cycles
-4. Lead spawns the Reviewer via TeamCreate — Reviewer
-   performs full review including CLAUDE.md drift
-   detection. Even small changes can introduce drift
+4. Lead creates a one-agent team via TeamCreate with the
+   Reviewer — Reviewer performs full review including
+   CLAUDE.md drift detection. Even small changes can
+   introduce drift
    (e.g., renaming a directory that CLAUDE.md references),
-   and Solo has the least process, making undetected drift
-   most likely here.
+   and Direct-Review has the least process, making
+   undetected drift most likely here.
 5. If rejected: lead fixes issues and re-sends to Reviewer
 6. **User checkpoint** — lead presents the completed work,
    Reviewer's summary, and proposed commit message for

@@ -16,8 +16,8 @@ chooses how work gets done — not the lead.
 
 Available workflows:
 
-- **Solo** — the lead handles work directly, with a
-  Reviewer quality check (including CLAUDE.md drift
+- **Direct-Review** — the lead handles work directly, with
+  a Reviewer quality check (including CLAUDE.md drift
   detection) before presenting to the user. Best for
   trivial-to-small tasks (1-5 files, mechanical changes).
   No Architect, no plan, no multi-agent overhead.
@@ -33,7 +33,7 @@ Available workflows:
   the user wants maximum visibility and control over
   implementation.
 
-For Solo, the lead implements directly. For the
+For Direct-Review, the lead implements directly. For the
 Develop-Review variants and TDD, the lead creates a team
 via `TeamCreate` with all workflow agents (including the
 Architect), sends the clarified request to the Architect,
@@ -49,9 +49,9 @@ workflow definition.
 3. Lead begins clarification with the user.
 4. Once clarified, lead presents workflow options.
 5. User chooses a workflow.
-6. For Solo: lead handles work directly, spawns Reviewer
-   via TeamCreate, then presents to user for approval
-   before telling the Reviewer to commit.
+6. For Direct-Review: lead handles work directly, spawns
+   Reviewer via TeamCreate, then presents to user for
+   approval before telling the Reviewer to commit.
 7. For Develop-Review (Supervised or Autonomous) / TDD: lead creates a team with all
    workflow agents, sends clarified request to the
    Architect, Architect writes the plan, lead presents the
@@ -71,8 +71,8 @@ All agents are general-purpose building blocks — no agent
 runs automatically. Each workflow declares which agents it
 needs. The lead creates a team via `TeamCreate` with all
 listed agents — this applies to all workflows including
-Solo, where a one-agent team keeps the Reviewer alive to
-receive the commit signal after the user checkpoint.
+Direct-Review, where a one-agent team keeps the Reviewer
+alive to receive the commit signal after the user checkpoint.
 
 ### Workflows
 
@@ -85,18 +85,19 @@ CLAUDE.md — just add a file.
 See `.claude/workflows/CLAUDE.md` for the required format
 and the list of session-start agents.
 
-#### Solo
+#### Direct-Review
 
-The Solo workflow is for trivial-to-small tasks where the
-user prefers directness over process. The lead handles all
-work directly — reading files, implementing changes, running
-tests — then spawns the Reviewer for an independent quality
-check (including CLAUDE.md drift detection) before presenting
-the result for user approval, then tells the Reviewer
-to commit.
+The Direct-Review workflow is for trivial-to-small tasks
+where the user prefers directness over process. The lead
+handles all work directly — reading files, implementing
+changes, running tests — then creates a one-agent team
+via TeamCreate with the Reviewer for an independent
+quality check (including CLAUDE.md drift detection)
+before presenting the result for user approval, then
+tells the Reviewer to commit.
 
-See `.claude/workflows/solo.md` for the full flow and
-completion criteria.
+See `.claude/workflows/direct-review.md` for the full flow
+and completion criteria.
 
 #### Develop-Review (Supervised)
 

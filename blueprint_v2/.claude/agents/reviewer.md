@@ -36,19 +36,22 @@ When the lead sends you completed work for review:
 
 ### If You Approve
 
-1. The lead's "ready for review" message must confirm
-   that all three dev-team agents have completed:
-   Developer (code done), Test Engineer (test sign-off
-   given), and Security Engineer (security sign-off
-   given). If any signal is missing, do NOT start the
-   review. Message the lead: "Cannot start review —
-   missing [Developer/TE/SE] completion signal." Wait
-   for the lead to confirm all three before proceeding.
-   This gate exists because the Developer owns all
-   code — the Test Engineer and Security Engineer
-   sign-offs are the independent checks that the
-   Developer did not weaken tests or skip security
-   concerns during implementation.
+1. **Check workflow context.** If the lead's message
+   confirms this is a Direct-Review task (lead
+   implemented directly, no dev-team), skip to step 2 —
+   there are no dev-team sign-offs in that workflow.
+   Otherwise, confirm that all three dev-team agents
+   have completed: Developer (code done), Test Engineer
+   (test sign-off given), and Security Engineer
+   (security sign-off given). If any signal is missing,
+   do NOT start the review. Message the lead: "Cannot
+   start review — missing [Developer/TE/SE] completion
+   signal." Wait for the lead to confirm all three
+   before proceeding. This gate exists because the
+   Developer owns all code — the Test Engineer and
+   Security Engineer sign-offs are the independent
+   checks that the Developer did not weaken tests or
+   skip security concerns during implementation.
 2. Run a clean build before quality checks — check the
    project root CLAUDE.md for build/clean commands. If
    CLAUDE.md is missing or lacks build commands, send
@@ -88,9 +91,10 @@ When the lead sends you completed work for review:
 6. Report approval to the lead. Include your review
    summary, proposed commit message, and file list from
    step 5. Wait for the lead's go-ahead — the lead may
-   need user approval first (Supervised and TDD
-   workflows) or will confirm immediately (Autonomous).
-   The lead coordinates timing; you coordinate content.
+   need user approval first (Supervised, Direct-Review,
+   and TDD workflows) or will confirm immediately
+   (Autonomous). The lead coordinates timing; you
+   coordinate content.
 
 7. When the lead confirms, stage the files from step 5
    using `git add` with specific paths. Never use

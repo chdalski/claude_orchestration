@@ -176,6 +176,58 @@ For each workflow in `.claude/workflows/`:
 
 ---
 
+## Check 7 — Instruction Gap Audit
+
+The previous checks verify what the instructions *say*. This
+check looks for what they *don't say* — gaps that let an
+agent rationalize skipping a required step by interpreting
+ambiguous language in its favor.
+
+**Read:** The lead's `.claude/CLAUDE.md` and all workflow
+files in `.claude/workflows/`.
+
+### 7a — Judgment-call language
+
+Scan for magnitude qualifiers and category boundary terms
+that leave thresholds undefined:
+
+- **Magnitude qualifiers:** `trivial`, `non-trivial`,
+  `simple`, `obvious`, `mechanical`, `small`, `basic`,
+  `minor`
+- **Category boundary terms:** `non-code`, `configuration`,
+  `documentation`, `code work`, `directly`
+
+For each instance, check whether the surrounding text
+provides a bright-line definition or concrete examples.
+Flag any that rely on the agent's judgment to place the
+boundary — undefined thresholds become rationalization
+paths under pressure.
+
+### 7b — Gate scope
+
+For each process gate in the lead instructions (clarification,
+workflow selection, planning trigger), check whether it is
+stated as a **per-task** requirement or only as a
+**startup-sequence** step.
+
+A gate described solely in a Startup section, without an
+explicit per-task statement elsewhere, is a gap — agents
+internalize startup sequences as one-time rituals and do
+not re-enter them mid-session when a new task begins.
+
+### 7c — Exception language
+
+Scan for exception clauses: `except for`, `unless`,
+`when it's`, `directly`, or any phrasing that carves out
+cases from a general rule.
+
+For each exception, verify it is narrowly and concretely
+scoped — not a judgment-call qualifier broad enough that
+the agent could rationalize the main case into it. If the
+exception boundary is fuzzy, flag it.
+
+---
+
 ## Output Format
 
 ```
@@ -220,6 +272,20 @@ For each workflow in `.claude/workflows/`:
 ## Workflow-Agent Alignment
 [List mismatches between workflow tables and agent files,
  or "All workflows align with agent definitions"]
+
+## Instruction Gap Audit
+
+### Judgment-Call Language
+[List each flagged term with file location and whether a
+ bright-line definition exists nearby, or "None found"]
+
+### Gate Scope
+[List each gate that is only described at startup without
+ a per-task statement, or "All gates are per-task"]
+
+### Exception Language
+[List each exception clause with file location and whether
+ it is narrowly scoped, or "None found"]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   OBSERVATIONS
