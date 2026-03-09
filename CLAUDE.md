@@ -56,8 +56,7 @@ claude_orchestration/
 │   │   ├── rules/           # Unconditional + conditional rules
 │   │   │   ├── simplicity.md       # KISS, YAGNI, Reveals Intent (unconditional)
 │   │   │   ├── code-principles.md  # SOLID, Kent Beck (source files)
-│   │   │   ├── cargo-lints.md      # Rust Cargo.toml lints
-│   │   │   ├── code-mass.md        # APP refactoring metric
+│   │   │   │   ├── code-mass.md        # APP refactoring metric
 │   │   │   ├── documentation.md    # Documentation principles
 │   │   │   ├── functional-style.md # FP principles (TS/Py/Rust)
 │   │   │   ├── lang-go.md          # Go idioms + testing

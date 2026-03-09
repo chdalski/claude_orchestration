@@ -95,7 +95,7 @@ listing them helps users understand what guidance is active.
 |---|---|
 | TypeScript / TSX | `lang-typescript.md`, `functional-style.md` |
 | Python | `lang-python.md`, `functional-style.md` |
-| Rust | `lang-rust.md`, `cargo-lints.md`, `functional-style.md` |
+| Rust | `lang-rust.md`, `functional-style.md` |
 | Go | `lang-go.md` |
 | All source code | `code-principles.md`, `code-mass.md` |
 
@@ -119,31 +119,38 @@ listing them helps users understand what guidance is active.
    extract language versions, dependencies, and framework
    information.
 
-5. **Detect mono-repo** — check for workspace fields,
+5. **Apply Cargo lints** (Rust projects only) — if Rust was
+   detected, read `.claude/skills/project-init/rust-init.md`
+   and follow its instructions to update all `Cargo.toml` files
+   in the project.
+
+6. **Detect mono-repo** — check for workspace fields,
    multiple manifest directories, or git submodules. If
    detected, catalog sub-projects with their paths,
    languages, and inferred purposes.
 
-6. **Map to rules** — use the language-to-rule mapping
+7. **Map to rules** — use the language-to-rule mapping
    table to determine which conditional rule files are
    active for this project.
 
-7. **Fill template** — replace auto-detected sections
+8. **Fill template** — replace auto-detected sections
    (Languages and Frameworks, Project Structure, Active
    Rules, Build and Test, Sub-Projects if applicable) with
    actual findings. Keep `<!-- TODO: ... -->` placeholders
    for human-curated sections (Overview, Architecture, Code
    Exemplars, Anti-Patterns, Trusted Sources).
 
-8. **Write context** — write the filled template to
+9. **Write context** — write the filled template to
    `CLAUDE.md` at the project root. Then check for
    subdirectories with their own `.git/` — for each one,
-   scan it independently (repeat steps 3-7 scoped to that
+   scan it independently (repeat steps 3-8 scoped to that
    subdirectory) and write its own `CLAUDE.md`. Check for
    existing `CLAUDE.md` in each location before writing.
 
-9. **Present summary** — report to the user:
-   - Languages and frameworks detected
-   - Whether mono-repo structure was found
-   - Which rule files are active
-   - Which sections need human curation (the TODO sections)
+10. **Present summary** — report to the user:
+    - Languages and frameworks detected
+    - Whether mono-repo structure was found
+    - Which rule files are active
+    - Which sections need human curation (the TODO sections)
+    - Which `Cargo.toml` files were updated with lints (Rust
+      projects only)

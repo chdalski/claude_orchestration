@@ -92,7 +92,6 @@ blueprint_v2/
 │   │   ├── functional-style.md   ← [conditional: *.ts, *.py, *.rs]
 │   │   ├── documentation.md      ← [conditional: README*, docs/**]
 │   │   ├── code-mass.md          ← [conditional: source files]
-│   │   └── cargo-lints.md        ← [conditional: Cargo.toml]
 │   ├── templates/         ← Canonical templates copied at runtime
 │   │   ├── plan-format.md ← Plan format guide (copied to .ai/plans/ by Session Init)
 │   │   └── project-context.md ← Project context template (filled by /project-init)

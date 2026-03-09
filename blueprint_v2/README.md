@@ -189,7 +189,6 @@ loading or agent configuration needed.
 | `functional-style.md` | `*.ts`, `*.tsx`, `*.py`, `*.rs` | FP principles (not Go) |
 | `documentation.md` | `README*`, `docs/**/*.md` | Documentation principles |
 | `code-mass.md` | `*.ts`, `*.tsx`, `*.py`, `*.rs`, `*.go` | APP refactoring metric |
-| `cargo-lints.md` | `Cargo.toml` | Required Clippy lints |
 
 Adding a new language is just adding a file — no changes
 to CLAUDE.md or agent definitions required.
