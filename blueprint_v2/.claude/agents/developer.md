@@ -127,8 +127,9 @@ Regardless of cadence:
   find the correct entry — never guess or construct task
   IDs, because a wrong ID causes "task not found" errors
   that cascade into workflow disruption.
-- Do NOT commit. The Committer handles all commits,
-  coordinated by the lead.
+- Do NOT commit. The Reviewer stages and commits after
+  completing its quality review — committing before review
+  would bypass the quality gate.
 
 ## Before Reporting Done
 

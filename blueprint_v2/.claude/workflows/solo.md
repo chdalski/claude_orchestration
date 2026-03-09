@@ -17,15 +17,15 @@ issues a single perspective would miss.
 ## Agents
 
 - **Reviewer** — independent quality gate, including
-  CLAUDE.md drift detection. Spawned individually (via
-  Agent tool, not TeamCreate) after the lead completes
-  implementation, same pattern as the Committer.
-- **Committer** — stages and commits files. Spawned
-  individually after user approval.
+  CLAUDE.md drift detection. Spawned via TeamCreate (a
+  one-agent team) so it can receive the commit signal
+  after the user checkpoint. The Reviewer composes the
+  commit message and commits approved work.
 
-Separating review and commit from implementation keeps Solo
-consistent with other workflows and catches drift that a
-single perspective would miss.
+Keeping the Reviewer alive across the user checkpoint is
+why TeamCreate is used even for this single-agent case —
+it allows the lead to send a "commit" message after user
+approval rather than re-spawning a new agent.
 
 ## Flow
 
@@ -34,16 +34,17 @@ single perspective would miss.
 3. Lead runs tests and linters if applicable — catching
    regressions before presenting to the Reviewer avoids
    wasted review cycles
-4. Lead spawns the Reviewer — Reviewer performs full review
-   including CLAUDE.md drift detection. Even small changes
-   can introduce drift (e.g., renaming a directory that
-   CLAUDE.md references), and Solo has the least process,
-   making undetected drift most likely here.
-5. If rejected: lead fixes issues and returns to step 3
-6. **User checkpoint** — lead presents the completed work
-   and review summary for user approval
-7. If approved, lead spawns the Committer to stage and
-   commit
+4. Lead spawns the Reviewer via TeamCreate — Reviewer
+   performs full review including CLAUDE.md drift
+   detection. Even small changes can introduce drift
+   (e.g., renaming a directory that CLAUDE.md references),
+   and Solo has the least process, making undetected drift
+   most likely here.
+5. If rejected: lead fixes issues and re-sends to Reviewer
+6. **User checkpoint** — lead presents the completed work,
+   Reviewer's summary, and proposed commit message for
+   user approval
+7. If approved, lead tells Reviewer to commit
 8. If changes are needed, lead adjusts and returns to
    step 3
 
@@ -53,4 +54,4 @@ single perspective would miss.
 - Tests pass (if applicable)
 - Reviewer has approved the result (including drift check)
 - User has approved the result
-- Work committed via Committer
+- Work committed by Reviewer

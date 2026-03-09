@@ -15,6 +15,7 @@ REQUIRED_DIRECTORIES: list[str] = [
     ".claude/agents",
     ".claude/rules",
     ".claude/skills",
+    ".claude/skills/ensure-plans-dir",
     ".claude/skills/project-init",
     ".claude/templates",
     ".claude/workflows",
@@ -22,6 +23,7 @@ REQUIRED_DIRECTORIES: list[str] = [
 
 # Required files relative to blueprint root (outside .claude/)
 REQUIRED_ROOT_FILES: list[str] = [
+    ".claude/skills/ensure-plans-dir/SKILL.md",
     ".claude/skills/project-init/SKILL.md",
     ".claude/templates/plan-format.md",
     ".claude/templates/project-context.md",
@@ -50,10 +52,8 @@ DYNAMIC_CONTENT_PATTERNS: list[str] = [
 # Agent definitions — filename must match exactly
 AGENT_FILES: dict[str, str] = {
     "Architect": "architect.md",
-    "Committer": "committer.md",
     "Developer": "developer.md",
     "Reviewer": "reviewer.md",
-    "Session Init": "session-init.md",
     "Test Engineer": "test-engineer.md",
     "Security Engineer": "security-engineer.md",
 }
@@ -65,10 +65,6 @@ AGENT_TOOLS: dict[str, set[str]] = {
         "SendMessage", "TaskCreate", "TaskUpdate",
         "TaskList", "TaskGet",
     },
-    "Committer": {"Read", "Glob", "Bash", "SendMessage"},
-    "Session Init": {
-        "Read", "Glob", "Grep", "Write", "Bash", "SendMessage",
-    },
     "Developer": {
         "Read", "Write", "Edit", "Bash", "Glob", "Grep",
         "WebSearch", "WebFetch", "SendMessage", "TaskUpdate",
@@ -76,7 +72,6 @@ AGENT_TOOLS: dict[str, set[str]] = {
     },
     "Reviewer": {
         "Read", "Glob", "Grep", "Bash", "SendMessage",
-        "TaskList", "TaskGet",
     },
     "Test Engineer": {
         "Read", "Glob", "Grep", "Bash", "SendMessage",
@@ -91,8 +86,6 @@ AGENT_TOOLS: dict[str, set[str]] = {
 # Agent models — required model for each agent
 AGENT_MODELS: dict[str, str] = {
     "Architect": "opus",
-    "Committer": "haiku",
-    "Session Init": "sonnet",
     "Developer": "sonnet",
     "Reviewer": "sonnet",
     "Test Engineer": "sonnet",

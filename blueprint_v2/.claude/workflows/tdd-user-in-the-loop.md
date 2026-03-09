@@ -35,14 +35,13 @@ the same quality with fewer interruptions.
 | **Developer** | Implements all code (source + tests). Activates one test at a time from the test list and executes the Red-Green-Refactor cycle for each. |
 | **Test Engineer** | Advisory — designs the full test list upfront, verifies each test as the Developer writes it, and provides post-implementation sign-off after all cycles complete. Does not write code. |
 | **Security Engineer** | Advisory — provides pre-implementation security assessment and post-implementation sign-off. Does not write code. |
-| **Reviewer** | Independent quality gate — evaluates the completed task for correctness, security, test coverage, design, and idioms. Does not commit. |
-| **Committer** | Stages and commits files when the lead sends a file list and commit message after user approval. |
+| **Reviewer** | Independent quality gate — evaluates the completed task for correctness, security, test coverage, design, and idioms. Composes the commit message and commits approved work after the user checkpoint. |
 
 ## Team Lifecycle
 
 The lead creates one team via `TeamCreate` with all
 workflow agents (Architect, Developer, Test Engineer,
-Security Engineer, Reviewer, Committer) at workflow start.
+Security Engineer, Reviewer) at workflow start.
 The team persists across all task slices — agents are NOT
 re-spawned per task. This avoids the startup cost of
 re-reading agent definitions and rebuilding context for
@@ -209,24 +208,23 @@ test list.
     changes during a fix can introduce new issues.
 
 18. **If approved:** Reviewer reports approval to lead
-    with a summary of what was reviewed and why it
-    passes.
+    with review summary, proposed commit message, and
+    file list.
 
 ### Commit
 
 19. **User checkpoint — commit approval.** The lead
-    presents the completed work to the user and asks
-    them to confirm the commit. Even though the user
-    approved each phase individually, this final
+    presents the completed work, Reviewer's summary, and
+    proposed commit message to the user. Even though the
+    user approved each phase individually, this final
     checkpoint covers the aggregate — the user sees the
     full changeset before it enters git history.
 
-20. **Lead sends file list and commit message to
-    Committer.** Committer stages the specified files,
-    commits with the provided message, and reports the
-    short SHA back to the lead. Lead tells Architect the
-    task is committed, and the Architect feeds the next
-    task slice (loop to step 1).
+20. **Lead tells Reviewer to commit.** Reviewer stages
+    the files and commits with the prepared message,
+    reports the short SHA to the lead. Lead tells Architect
+    the task is committed, and the Architect feeds the
+    next task slice (loop to step 1).
 
 ## Completion Criteria
 

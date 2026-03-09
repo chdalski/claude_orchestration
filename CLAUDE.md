@@ -49,8 +49,10 @@ claude_orchestration/
 │   │   ├── settings.json    # Agent teams
 │   │   ├── agents/          # Architect, Committer, Developer,
 │   │   │                    # Reviewer, Security Engineer,
-│   │   │                    # Session Init, Test Engineer
+│   │   │                    # Test Engineer
 │   │   ├── skills/          # Skill definitions
+│   │   │   ├── ensure-plans-dir/
+│   │   │   │   └── SKILL.md # Create .ai/plans/ and format guide if missing
 │   │   │   └── project-init/
 │   │   │       └── SKILL.md # Project scanning + context generation
 │   │   ├── rules/           # Unconditional + conditional rules
@@ -112,32 +114,28 @@ post-implementation sign-offs before review.
 **Clarify-first, the lead owns clarification and workflow
 proposal. The user chooses how work gets done.**
 
-The lead spawns a Session Init agent in the background
-(audits CLAUDE.md, ensures `.ai/plans/` exists, generates
-project context), clarifies the task with the user, then
-presents workflow options. The user chooses a workflow: Solo
-for simple tasks (lead handles directly), or Develop-Review
-(Supervised or Autonomous) / TDD for complex tasks
-(Architect writes a plan, user approves, then workflow
-agents execute). Workflows are
-defined as separate files in `.claude/workflows/` — adding
-a new workflow requires no changes to CLAUDE.md. The
-Committer handles all git commits.
+The lead checks for project context at startup (invokes
+`/project-init` if `CLAUDE.md` is missing), clarifies the
+task with the user, then presents workflow options. The user
+chooses a workflow: Solo for simple tasks (lead handles
+directly), or Develop-Review (Supervised or Autonomous) / TDD
+for complex tasks (Architect writes a plan, user approves,
+then workflow agents execute). Workflows are defined as
+separate files in `.claude/workflows/` — adding a new
+workflow requires no changes to CLAUDE.md. The Reviewer
+handles both quality review and git commits.
 
 **Agents:**
 
 - Lead (clarification + coordination)
 - Architect (workflow-specific — codebase analysis + plan
   writing + task decomposition + task feeding)
-- Session Init (session-start — audits CLAUDE.md, ensures
-  plan dir, generates project context)
-- Committer (workflow-specific — stages and commits specified files)
 - Developer (implements all code — source and tests)
 - Test Engineer (advisory — designs test specs, verifies
   coverage)
 - Security Engineer (advisory — checks security)
-- Reviewer (independent quality gate — reviews, does not
-  commit)
+- Reviewer (independent quality gate — reviews and commits
+  approved work)
 
 **Workflows:**
 

@@ -1,12 +1,12 @@
 """Behavioral tests verifying the lead follows its startup procedure.
 
 The startup sequence is defined in .claude/CLAUDE.md and instructs the
-lead to spawn background agents, check for existing plans, and clarify
+lead to check for project context, check for existing plans, and clarify
 with the user before proposing a workflow.
 
 These tests verify observable startup behavior:
-1. The lead follows the startup sequence (spawns background agents,
-   clarifies with user) instead of jumping to implementation
+1. The lead follows the startup sequence (reads context, clarifies with
+   user) instead of jumping to implementation
 """
 
 import pytest
@@ -29,15 +29,15 @@ def tool_log():
 async def test_lead_follows_startup_sequence(fixture_project, tool_log):
     """The lead should follow the startup sequence instead of jumping to work.
 
-    The startup sequence requires the lead to spawn background agents
-    (Session Init) and clarify with the user before any
-    implementation. This test verifies the lead uses Agent tool or
-    AskUserQuestion in its first actions — not implementation tools.
+    The startup sequence requires the lead to check for project context
+    and clarify with the user before any implementation. This test
+    verifies the lead uses read tools or AskUserQuestion in its first
+    actions — not implementation tools.
 
     We check that within the first few tool calls, the lead either:
-    - Spawns agents (Agent tool)
     - Reads files to understand context (Read, Glob, Grep)
     - Asks the user for clarification (AskUserQuestion)
+    - Spawns agents if needed (Agent tool)
 
     And does NOT:
     - Jump straight to writing code (Write, Edit)

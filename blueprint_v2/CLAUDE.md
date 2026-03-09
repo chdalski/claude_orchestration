@@ -2,8 +2,7 @@
 
 This file describes how the blueprint is designed and why.
 It targets sessions working *on* the blueprint (adding
-rules, workflows, agents) and the Session Init agent that
-checks structural consistency. For user-facing setup and usage, see
+rules, workflows, agents). For user-facing setup and usage, see
 `README.md`. For lead behavior during a session, see
 `.claude/CLAUDE.md`.
 
@@ -73,13 +72,13 @@ blueprint_v2/
 │   ├── settings.json      ← Agent teams
 │   ├── agents/            ← Agent definitions (frontmatter + instructions)
 │   │   ├── architect.md   ← Reads codebase, writes plans, feeds tasks
-│   │   ├── committer.md   ← Stages and commits specified files
 │   │   ├── developer.md   ← Implements all code (source + tests)
-│   │   ├── reviewer.md    ← Independent quality gate (review only)
+│   │   ├── reviewer.md    ← Independent quality gate + commits approved work
 │   │   ├── security-engineer.md ← Advisory — security assessment
-│   │   ├── session-init.md      ← Session bootstrap (audit + plans + context)
 │   │   └── test-engineer.md     ← Advisory — test design + verification
 │   ├── skills/            ← Skill definitions (preloaded into agents)
+│   │   ├── ensure-plans-dir/
+│   │   │   └── SKILL.md   ← Create .ai/plans/ and format guide if missing
 │   │   └── project-init/
 │   │       └── SKILL.md   ← Project scanning + context generation
 │   ├── rules/             ← Unconditional + conditional rules
@@ -93,7 +92,7 @@ blueprint_v2/
 │   │   ├── documentation.md      ← [conditional: README*, docs/**]
 │   │   ├── code-mass.md          ← [conditional: source files]
 │   ├── templates/         ← Canonical templates copied at runtime
-│   │   ├── plan-format.md ← Plan format guide (copied to .ai/plans/ by Session Init)
+│   │   ├── plan-format.md ← Plan format guide (copied to .ai/plans/ by /ensure-plans-dir)
 │   │   └── project-context.md ← Project context template (filled by /project-init)
 │   └── workflows/         ← Workflow definitions
 │       ├── CLAUDE.md      ← Workflow format guide + session-start agents
@@ -104,7 +103,10 @@ blueprint_v2/
 └── tests/                 ← Blueprint verification tests
     ├── blueprint_contracts.py  ← Single source of truth for structure
     ├── conftest.py             ← Shared fixtures + helpers
-    └── static/                 ← Structure, caching, agent tests
+    ├── static/                 ← Structure, caching, agent tests
+    ├── behavioral/             ← SDK-based runtime tests
+    └── fixtures/
+        └── minimal_project/    ← Minimal project for behavioral tests
 ```
 
 ### How Components Relate
@@ -118,19 +120,22 @@ with user access.
 agent's model, tools, and instructions via YAML frontmatter
 and markdown body. The frontmatter is machine-parsed by
 Claude Code; the body is the agent's instruction set.
-The Architect and Committer are workflow-specific — each
-workflow that needs them includes them in its Agents table
-and team. Session Init is a session-start utility spawned by
-the lead as a background agent, not part of any workflow
-team.
+All agents are general-purpose building blocks — no agent
+runs automatically. Each workflow declares which agents it
+needs in its Agents table. For multi-agent workflows, the
+lead creates a team via `TeamCreate` with all listed agents.
+For Solo, the lead creates a one-agent team with the
+Reviewer via `TeamCreate` so it can receive the commit
+signal after the user checkpoint.
 
 **Skills** (`.claude/skills/*/SKILL.md`) define reusable
-procedures that can be preloaded into agents via the
-`skills` frontmatter field. The skill's content is injected
-into the agent's system prompt, avoiding the "subagents
-cannot spawn other subagents" constraint. Currently:
-`project-init` (preloaded into Session Init for project
-context generation).
+procedures. Agents preload them via the `skills` frontmatter
+field; the lead invokes them autonomously when the
+conversation context matches. Currently: `ensure-plans-dir`
+(preloaded into the Architect — creates `.ai/plans/` and its
+format guide on first use) and `project-init` (invoked by
+the lead at startup if `CLAUDE.md` is missing, and
+user-invocable to regenerate context).
 
 **Rules** (`.claude/rules/*.md`) provide guidance that
 Claude Code injects into agent context automatically.
@@ -147,11 +152,10 @@ reference agents but do not define them.
 
 **Templates** (`.claude/templates/*.md`) are canonical
 source files that get copied to their runtime locations by
-utility agents or filled by skills. Currently:
-`plan-format.md` (copied to `.ai/plans/CLAUDE.md` by
-Session Init) and `project-context.md` (filled by
-`/project-init` and written to the project root as
-`CLAUDE.md`). Templates ship with
+skills. Currently: `plan-format.md` (copied to
+`.ai/plans/CLAUDE.md` by `/ensure-plans-dir`) and
+`project-context.md` (filled by `/project-init` and written
+to the project root as `CLAUDE.md`). Templates ship with
 the `.claude/` directory so users don't need to remember
 to copy additional directories.
 
@@ -231,7 +235,7 @@ No changes to `.claude/CLAUDE.md`, agents, or workflows.
    format in `.claude/workflows/CLAUDE.md`
 2. Define which agents the workflow needs — reference
    existing agents from `.claude/agents/` (e.g., Architect,
-   Committer, Developer) and define new agents if needed
+   Developer, Reviewer) and define new agents if needed
 3. If new agents are added, update `blueprint_contracts.py`
    with their expected frontmatter
 4. Run tests
@@ -239,8 +243,8 @@ No changes to `.claude/CLAUDE.md`, agents, or workflows.
 No changes to `.claude/CLAUDE.md` or existing rules.
 
 See `develop-review-supervised.md` for a concrete example — it uses
-six workflow-specific agents (Architect, Developer, Test
-Engineer, Security Engineer, Reviewer, Committer).
+five workflow-specific agents (Architect, Developer, Test
+Engineer, Security Engineer, Reviewer).
 
 ## Prompt Caching Alignment
 

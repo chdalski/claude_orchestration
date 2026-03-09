@@ -147,19 +147,13 @@ listing them helps users understand what guidance is active.
    subdirectory) and write its own `CLAUDE.md`. Check for
    existing `CLAUDE.md` in each location before writing.
 
-10. **Present summary** — report to the user:
+10. **Present summary** — report to the caller:
     - Languages and frameworks detected
     - Whether mono-repo structure was found
     - Which rule files are active
     - Which sections need human curation (the TODO sections)
     - Which `Cargo.toml` files were updated with lints (Rust
       projects only)
-
-11. **Offer project cleanup** — if any files were modified
-    during this run, ask the user: "Would you like me to fix
-    any issues these changes may have introduced?" Explain what
-    was changed and what likely needs addressing (e.g. new
-    Clippy lints may surface warnings or errors across the
-    codebase). If the user agrees, create a task with
-    TaskCreate describing the cleanup work, then present
-    workflow options following the standard lead workflow.
+    - Whether any files beyond `CLAUDE.md` were modified
+      (e.g. Cargo.toml lint updates) — the lead uses this
+      to decide whether to offer cleanup during clarification

@@ -31,14 +31,13 @@ those directly or with a single agent.
 | **Developer** | Implements all code (source + tests). Owns every code file. Uses WebSearch/WebFetch for API docs and library examples. |
 | **Test Engineer** | Advisory — designs test specifications (the test list), verifies Developer's tests match the spec before and after implementation. Does not write code. |
 | **Security Engineer** | Advisory — assesses security implications, flags vulnerabilities, provides pre- and post-implementation sign-offs. Does not write code. |
-| **Reviewer** | Independent quality gate — evaluates correctness, security, test coverage, design, and idioms. Reports approval or rejection to the lead. Does not commit. |
-| **Committer** | Stages and commits files when the lead sends a file list and commit message after Reviewer approval. |
+| **Reviewer** | Independent quality gate — evaluates correctness, security, test coverage, design, and idioms. Composes the commit message and commits approved work immediately after approval. |
 
 ## Team Lifecycle
 
 The lead creates one team via `TeamCreate` with all
 workflow agents (Architect, Developer, Test Engineer,
-Security Engineer, Reviewer, Committer) at workflow start.
+Security Engineer, Reviewer) at workflow start.
 The team persists across all task slices — agents are NOT
 re-spawned per task. This avoids the startup cost of
 re-reading agent definitions and rebuilding context for
@@ -124,16 +123,16 @@ sequentially through the same agents.
     a fix can introduce new issues.
 
 14. **If approved:** Reviewer reports approval to lead
-    with a summary of what was reviewed and why it passes.
+    with review summary, proposed commit message, and
+    file list.
 
 ### Commit
 
-15. **Lead sends file list and commit message to
-    Committer.** Committer stages the specified files,
-    commits with the provided message, and reports the
-    short SHA back to the lead. Lead tells Architect the
-    task is committed, and the Architect feeds the next
-    task slice (loop to step 1).
+15. **Lead immediately tells Reviewer to commit.**
+    Reviewer stages the files and commits with the
+    prepared message, reports the short SHA to the lead.
+    Lead tells Architect the task is committed, and the
+    Architect feeds the next task slice (loop to step 1).
 
 ## Completion Criteria
 

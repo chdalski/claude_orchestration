@@ -118,10 +118,12 @@ step.
 - Use plain markdown. No frontmatter — plans are runtime
   artifacts, not agent configuration, so frontmatter
   parsing adds complexity with no benefit.
-- File names should be descriptive:
-  `add-user-authentication.md`, not `plan-001.md` —
-  descriptive names let the lead scan the directory and
-  present plans to the user without opening each file.
+- File names use a date prefix followed by a descriptive
+  slug: `YYYY-MM-DD-add-user-authentication.md`. The date
+  prefix (YYYY-MM-DD) establishes chronological order
+  across sessions; the slug lets the lead scan the
+  directory and present plans to the user without opening
+  each file.
 - One plan per task or feature. Don't combine unrelated
   work into a single plan — mixed plans make progress
   tracking ambiguous and complicate resumption.

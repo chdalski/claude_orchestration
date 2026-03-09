@@ -42,15 +42,16 @@ workflow definition.
 
 ### Startup
 
-1. Lead spawns Session Init in the background — it audits
-   CLAUDE.md integrity, ensures `.ai/plans/` and its format
-   guide exist, and generates project context if missing.
+1. Lead checks for project context — if `CLAUDE.md` is
+   missing at the project root, it invokes `/project-init`
+   to generate it.
 2. Lead checks for existing plans from previous sessions.
 3. Lead begins clarification with the user.
 4. Once clarified, lead presents workflow options.
 5. User chooses a workflow.
 6. For Solo: lead handles work directly, spawns Reviewer
-   for quality check, then presents to user.
+   via TeamCreate, then presents to user for approval
+   before telling the Reviewer to commit.
 7. For Develop-Review (Supervised or Autonomous) / TDD: lead creates a team with all
    workflow agents, sends clarified request to the
    Architect, Architect writes the plan, lead presents the
@@ -61,22 +62,17 @@ workflow definition.
 | Agent | Model | Role | Writes Code |
 |-------|-------|------|-------------|
 | **Architect** | opus | Reads codebase, writes plans, decomposes and feeds tasks | No (plans only) |
-| **Session Init** | sonnet | Audits CLAUDE.md, ensures plan dir, generates project context | No (bootstrap only) |
-| **Committer** | haiku | Stages and commits files | No (git only) |
 | **Developer** | sonnet | Implements all code (source + tests) | Yes |
 | **Test Engineer** | sonnet | Advisory — designs test specs, verifies coverage | No |
 | **Security Engineer** | sonnet | Advisory — checks security gaps | No |
-| **Reviewer** | sonnet | Independent quality gate — reviews completed work | No |
+| **Reviewer** | sonnet | Independent quality gate — reviews completed work and commits approved changes | No (review + git only) |
 
-Session Init is a session-start agent — it audits CLAUDE.md
-structural claims, ensures `.ai/plans/` and its format guide
-exist (copied from `.claude/templates/plan-format.md`), and
-generates project context via the preloaded `/project-init`
-skill if `CLAUDE.md` is missing at the project root. All
-other agents (Architect, Committer, Developer, Test
-Engineer, Security Engineer, Reviewer) are workflow-specific
-— each workflow lists which agents it needs, and the lead
-creates a team with them via `TeamCreate`.
+All agents are general-purpose building blocks — no agent
+runs automatically. Each workflow declares which agents it
+needs. The lead creates a team via `TeamCreate` with all
+listed agents — this applies to all workflows including
+Solo, where a one-agent team keeps the Reviewer alive to
+receive the commit signal after the user checkpoint.
 
 ### Workflows
 
@@ -96,8 +92,8 @@ user prefers directness over process. The lead handles all
 work directly — reading files, implementing changes, running
 tests — then spawns the Reviewer for an independent quality
 check (including CLAUDE.md drift detection) before presenting
-the result for user approval and committing via the
-Committer.
+the result for user approval, then tells the Reviewer
+to commit.
 
 See `.claude/workflows/solo.md` for the full flow and
 completion criteria.
@@ -120,7 +116,7 @@ Flow per task slice:
    Developer implements
 3. Test Engineer and Security Engineer give sign-offs
 4. Reviewer evaluates → approves or rejects
-5. User confirms commit → Committer commits
+5. User confirms commit → Reviewer commits
 
 See `.claude/workflows/develop-review-supervised.md` for
 the full step-by-step flow and completion criteria.
@@ -128,7 +124,7 @@ the full step-by-step flow and completion criteria.
 #### Develop-Review (Autonomous)
 
 Same as the Supervised variant, but after Reviewer approval
-the lead sends directly to the Committer — no user
+the lead immediately tells the Reviewer to commit — no user
 checkpoint. The user trusts the agent quality gates (Test
 Engineer sign-off, Security Engineer sign-off, Reviewer
 approval) to ensure correctness.
@@ -158,7 +154,7 @@ Flow per task slice:
    Test Engineer verifies
 3. Test Engineer and Security Engineer give sign-offs
 4. Reviewer evaluates → approves or rejects
-5. User confirms commit → Committer commits
+5. User confirms commit → Reviewer commits
 
 See `.claude/workflows/tdd-user-in-the-loop.md` for the
 full step-by-step flow and completion criteria.
@@ -195,9 +191,9 @@ to CLAUDE.md or agent definitions required.
 
 ### Project Initialization
 
-After copying `.claude/` to a new project, Session Init
+After copying `.claude/` to a new project, the lead
 auto-generates `CLAUDE.md` at the project root on the
-first session. This scans the project for languages,
+first session by invoking `/project-init`. This scans the project for languages,
 frameworks, and structure, then maps findings to the
 blueprint's conditional rule files. Auto-detected sections
 are filled in; human-curated sections (Overview,
@@ -214,9 +210,10 @@ To regenerate after major project changes, run
 ### Conventional Commits
 
 All commits use conventional prefixes (`feat:`, `fix:`,
-`chore:`, etc.) for scannable git history. The Committer
-receives the full commit message from its caller — it
-does not choose the prefix or message itself.
+`chore:`, etc.) for scannable git history. The Reviewer
+composes the commit message after review — it has the full
+context of what changed and why, making it the right agent
+to write an accurate, informative message.
 
 ## Setup
 
