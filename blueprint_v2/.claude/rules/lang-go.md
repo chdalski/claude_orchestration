@@ -424,6 +424,67 @@ in the same package. This co-location keeps tests close to
 the code they verify and lets tests access unexported
 identifiers when needed.
 
+### Design for Testability
+
+Keep business logic free of direct I/O — functions that call
+`fmt.Println` or write to files directly embed an effect
+that tests cannot observe or redirect without capturing
+stdout, making them slow and fragile.
+
+Accept `io.Writer` for output instead — the standard library
+uses this pattern everywhere, and tests can pass a
+`bytes.Buffer` as a zero-cost in-memory sink:
+
+```go
+// Hard to test — output is embedded
+func printReport(orders []Order) {
+    for _, o := range orders {
+        fmt.Printf("Order %d: %s\n", o.ID, o.Status)
+    }
+}
+
+// Testable — caller controls where output goes
+func writeReport(w io.Writer, orders []Order) error {
+    for _, o := range orders {
+        if _, err := fmt.Fprintf(
+            w, "Order %d: %s\n", o.ID, o.Status,
+        ); err != nil {
+            return err
+        }
+    }
+    return nil
+}
+
+// In tests
+var buf bytes.Buffer
+err := writeReport(&buf, orders)
+require.NoError(t, err)
+assert.Contains(t, buf.String(), "Order 1: pending")
+```
+
+For decision logic, return a struct describing what to do
+and let the caller execute it — the test verifies the
+decision without any I/O setup:
+
+```go
+type PricingDecision struct {
+    ApplyDiscount bool
+    DiscountPct   int
+}
+
+func evaluateOrder(order Order) PricingDecision {
+    if order.Total > 100 {
+        return PricingDecision{ApplyDiscount: true, DiscountPct: 10}
+    }
+    return PricingDecision{}
+}
+```
+
+This aligns with Go's "Accept Interfaces, Return Structs"
+idiom and is the same principle as the package-level state
+pitfall in the table below — injectable dependencies over
+hardcoded effects.
+
 ## Code Style and Tooling
 
 ### Required Tools

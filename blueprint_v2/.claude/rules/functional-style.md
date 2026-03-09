@@ -46,6 +46,11 @@ explicit:
 - Mark functions with side effects clearly (naming, types)
 - Keep side effects at the boundaries (adapters, I/O layer)
 - Return values instead of mutating state
+- **Return decisions, not actions** — encode what should
+  happen as a data structure (an enum of possible actions,
+  an intermediate result type) rather than performing the
+  action inside the function; callers handle the effect,
+  tests verify the decision without triggering any I/O
 
 ### Immutable Data
 

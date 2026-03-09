@@ -114,6 +114,18 @@ the test body:
 See the language-specific rule files for naming syntax
 conventions per language.
 
+### Deterministic Randomness
+
+Seed random number generators explicitly in tests — unseeded
+PRNGs produce different sequences on every run, making
+failures non-reproducible and converting flakey tests into
+noise that cannot be debugged. Use a fixed seed (a constant
+or one derived from the test name) so any failure can be
+reproduced exactly by re-running with the same seed. When
+using property-based or fuzz testing libraries, verify that
+the library persists failing seeds automatically (most do)
+so a CI failure is always replayable locally.
+
 ## Red Flags
 
 These patterns often signal design problems — investigate
