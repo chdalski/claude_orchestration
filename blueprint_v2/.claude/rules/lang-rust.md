@@ -83,6 +83,48 @@ enum OrderStatus {
 }
 ```
 
+### Enums Over Boolean Parameters
+
+Replace boolean parameters with enums — boolean arguments
+at call sites are unreadable and easy to swap accidentally:
+
+```rust
+// Unclear — what does `true` mean at the call site?
+fn connect(host: &str, secure: bool) { /* ... */ }
+connect("example.com", true);
+
+// Explicit — intent is self-documenting and swap-proof
+enum ConnectionMode { Secure, Plaintext }
+fn connect(host: &str, mode: ConnectionMode) { /* ... */ }
+connect("example.com", ConnectionMode::Secure);
+```
+
+### Exhaustive Struct Initialization
+
+Avoid `..Default::default()` or struct update syntax when
+constructing a value for the first time — it silently
+ignores new fields as they are added, hiding every place
+that needs updating:
+
+```rust
+// Fragile — new Config fields are silently defaulted
+let config = Config {
+    host: "localhost".to_string(),
+    ..Default::default()
+};
+
+// Robust — compiler warns when Config gains a new field
+let config = Config {
+    host: "localhost".to_string(),
+    port: 5432,
+    timeout: Duration::from_secs(30),
+};
+```
+
+Exception: struct update syntax is appropriate when the
+intent is genuinely "copy all other fields from an existing
+instance" (e.g., `let updated = Config { port: 9000, ..existing }`).
+
 ### Result and Option
 
 - Use `Result<T, E>` for operations that can fail
@@ -150,6 +192,27 @@ async fn fetch_order(
 ```
 
 ## Functional Patterns
+
+### Slice Patterns Over Indexing
+
+Use slice patterns instead of direct indexing — indexing
+panics at runtime if the length assumption is wrong, while
+patterns force explicit handling of every case at compile
+time:
+
+```rust
+// Panics at runtime if items is empty or too short
+let first = items[0];
+let second = items[1];
+
+// Compiler-enforced — all lengths must be handled
+match items.as_slice() {
+    [] => handle_empty(),
+    [only] => handle_one(only),
+    [first, second] => handle_two(first, second),
+    [first, rest @ ..] => handle_many(first, rest),
+}
+```
 
 ### Iterator Chains Over Loops
 
@@ -447,3 +510,6 @@ hide errors:
 | Complex generics | Hard to read | Simplify bounds |
 | Premature `unsafe` | Undermines safety | Profile first |
 | Ignoring warnings | Hides design issues | Fix all clippy warnings |
+| Boolean parameters | Unreadable at call sites | Replace with enums |
+| `..Default::default()` in construction | Silently hides new fields | Initialize all fields explicitly |
+| Direct indexing (`items[0]`) | Panics at runtime | Use slice patterns |
