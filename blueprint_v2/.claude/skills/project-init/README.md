@@ -17,6 +17,9 @@ major structural changes.
    that has its own `.git/`
 5. Reports which rule files are active and which sections still
    need human input
+6. If files were modified, offers to fix any issues introduced
+   (e.g. compiler warnings surfaced by new lint rules) by
+   creating a task and routing it into the standard workflow
 
 ## Extending for a new language
 
