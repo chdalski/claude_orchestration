@@ -12,15 +12,16 @@ workspace definition already covers it. Otherwise add:
 
 ```toml
 [lints.clippy]
-all = "warn"             # -W clippy::all (enabled by default, but good to be explicit)
-pedantic = "warn"        # -W clippy::pedantic
-nursery = "warn"         # -W clippy::nursery
-indexing_slicing = "deny"          # panics on out-of-bounds — use .get() instead
-fallible_impl_from = "deny"        # From impls that can panic — use TryFrom
-wildcard_enum_match_arm = "deny"   # silently ignores new variants when enum grows
-unneeded_field_pattern = "deny"    # dead pattern arms that hide refactoring bugs
-fn_params_excessive_bools = "deny" # boolean params are easy to swap — use enums
-must_use_candidate = "deny"        # functions whose return value should not be ignored
+# https://github.com/rust-lang/cargo/issues/12918
+all = { level = "warn", priority = -1 }      # -W clippy::all (enabled by default, but good to be explicit)
+pedantic = { level = "warn", priority = -1 } # -W clippy::pedantic
+nursery = { level = "warn", priority = -1 }  # -W clippy::nursery
+indexing_slicing = "deny"                    # panics on out-of-bounds — use .get() instead
+fallible_impl_from = "deny"                  # From impls that can panic — use TryFrom
+wildcard_enum_match_arm = "deny"             # silently ignores new variants when enum grows
+unneeded_field_pattern = "deny"              # dead pattern arms that hide refactoring bugs
+fn_params_excessive_bools = "deny"           # boolean params are easy to swap — use enums
+must_use_candidate = "deny"                  # functions whose return value should not be ignored
 
 [lints.rust]
 warnings = "deny" # -D warnings
@@ -30,9 +31,10 @@ warnings = "deny" # -D warnings
 
 ```toml
 [workspace.lints.clippy]
-all = "warn"
-pedantic = "warn"
-nursery = "warn"
+# https://github.com/rust-lang/cargo/issues/12918
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -1 }
 indexing_slicing = "deny"
 fallible_impl_from = "deny"
 wildcard_enum_match_arm = "deny"
