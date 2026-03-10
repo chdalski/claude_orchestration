@@ -3,10 +3,11 @@
 ## When to Use
 
 Use this workflow for tasks where the user
-prefers directness over process, and the change is
-well-understood. Examples: fixing a typo, updating a config
-value, adding a simple function, renaming a variable,
-adjusting documentation.
+prefers directness over process, and the scope is clear,
+the change touches a small number of files, and no
+cross-cutting design decisions are required. Examples:
+fixing a typo, updating a config value, adding a simple
+function, renaming a variable, adjusting documentation.
 
 Not appropriate for cross-cutting design decisions,
 security-sensitive changes, or when independent review is
@@ -16,8 +17,8 @@ issues a single perspective would miss.
 ## Agents
 
 - **Reviewer** — independent quality gate, including
-  CLAUDE.md drift detection. Spawned via TeamCreate (a
-  one-agent team) so it can receive the commit signal
+  CLAUDE.md drift detection. Created via `TeamCreate` as a
+  one-agent team so it can receive the commit signal
   after the user checkpoint. The Reviewer composes the
   commit message and commits approved work.
 

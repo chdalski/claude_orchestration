@@ -57,7 +57,7 @@ claude_orchestration/
 │   │   ├── rules/           # Unconditional + conditional rules
 │   │   │   ├── simplicity.md       # KISS, YAGNI, Reveals Intent (unconditional)
 │   │   │   ├── code-principles.md  # SOLID, Kent Beck (source files)
-│   │   │   │   ├── code-mass.md        # APP refactoring metric
+│   │   │   ├── code-mass.md        # APP refactoring metric
 │   │   │   ├── documentation.md    # Documentation principles
 │   │   │   ├── functional-style.md # FP principles (TS/Py/Rust)
 │   │   │   ├── lang-go.md          # Go idioms + testing
@@ -68,7 +68,7 @@ claude_orchestration/
 │   │   │   ├── plan-format.md       # Plan format guide (copied to .ai/plans/)
 │   │   │   └── project-context.md   # Project context template (filled by /project-init)
 │   │   └── workflows/       # Workflow definitions + format guide
-│   │       ├── CLAUDE.md          # Workflow format guide + session-start agents
+│   │       ├── CLAUDE.md          # Workflow format guide
 │   │       ├── develop-review-supervised.md  # Dev-team + review (user approves commits)
 │   │       ├── develop-review-autonomous.md # Dev-team + review (auto-commit after Reviewer)
 │   │       ├── direct-review.md   # Lead handles work directly

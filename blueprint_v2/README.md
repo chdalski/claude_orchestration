@@ -18,8 +18,10 @@ Available workflows:
 
 - **Direct-Review** — the lead handles work directly, with
   a Reviewer quality check (including CLAUDE.md drift
-  detection) before presenting to the user. Best for
-  trivial-to-small tasks (1-5 files, mechanical changes).
+  detection) before presenting to the user. For tasks
+  where the user prefers directness over process and the
+  change is well-scoped. Not appropriate for cross-cutting
+  design decisions or security-sensitive changes.
   No Architect, no plan, no multi-agent overhead.
 - **Develop-Review (Supervised)** — full development cycle
   with Architect planning, test-list-driven development,
@@ -82,13 +84,12 @@ needs, the step-by-step execution flow, and completion
 criteria. Adding a new workflow requires no changes to
 CLAUDE.md — just add a file.
 
-See `.claude/workflows/CLAUDE.md` for the required format
-and the list of session-start agents.
+See `.claude/workflows/CLAUDE.md` for the required format.
 
 #### Direct-Review
 
-The Direct-Review workflow is for trivial-to-small tasks
-where the user prefers directness over process. The lead
+The Direct-Review workflow is for tasks where the user
+prefers directness over process. The lead
 handles all work directly — reading files, implementing
 changes, running tests — then creates a one-agent team
 via TeamCreate with the Reviewer for an independent

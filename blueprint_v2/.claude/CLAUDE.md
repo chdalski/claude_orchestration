@@ -271,20 +271,6 @@ When you find existing plans in `.ai/plans/`:
 
 ## Conventional Commits
 
-This blueprint uses conventional commit prefixes to
-categorize changes — this makes git history scannable and
-supports automated tooling (changelogs, version bumps).
-
-Use the following types:
-
-- `feat:` — new functionality
-- `fix:` — bug fixes
-- `refactor:` — code restructuring without behavior change
-- `test:` — test additions or modifications
-- `docs:` — documentation changes
-- `chore:` — housekeeping (dependency updates, CLAUDE.md
-  sync, config changes, CI tweaks)
-
-CLAUDE.md sync steps use `chore:` because keeping
-instructions accurate is maintenance work, not a feature
-or fix.
+This blueprint uses conventional commit prefixes. The
+Reviewer composes and makes all commits — commit type
+definitions live in the Reviewer's agent file.

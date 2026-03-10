@@ -95,7 +95,7 @@ blueprint_v2/
 │   │   ├── plan-format.md ← Plan format guide (copied to .ai/plans/ by /ensure-plans-dir)
 │   │   └── project-context.md ← Project context template (filled by /project-init)
 │   └── workflows/         ← Workflow definitions
-│       ├── CLAUDE.md      ← Workflow format guide + session-start agents
+│       ├── CLAUDE.md      ← Workflow format guide
 │       ├── develop-review-supervised.md ← Dev-team + review (user approves commits)
 │       ├── develop-review-autonomous.md ← Dev-team + review (auto-commit after Reviewer)
 │       ├── direct-review.md ← Lead handles work + Reviewer quality gate
@@ -127,6 +127,35 @@ lead creates a team via `TeamCreate` with all listed agents.
 For Direct-Review, the lead creates a one-agent team with the
 Reviewer via `TeamCreate` so it can receive the commit
 signal after the user checkpoint.
+
+#### Agent Design Principle
+
+Agent files define **role, domain expertise, and capability** —
+what the agent is and how it does its work. Agents communicate
+generically: "the requester" or "whoever sent the task" —
+never hardcoded teammate names.
+
+**Team composition, coordination sequences, and sign-off
+requirements belong in workflow files**, not agent files —
+that is what workflow files are for. An agent that names
+specific teammates and assumes a fixed sign-off sequence
+cannot be reused in a workflow with different composition;
+workflow-agnostic agents are general-purpose building blocks
+in fact, not just in name.
+
+What belongs in an agent file:
+- The agent's purpose and domain expertise
+- How the agent does its work (process, checklist)
+- Generic communication: "notify the requester," "send
+  findings to whoever requested the review"
+- Tool usage and constraints
+
+What does NOT belong in an agent file:
+- Named teammates ("send to Developer and Test Engineer")
+- Sign-off sequences ("wait for both TE and SE sign-offs")
+- Workflow-specific coordination steps ("report to Architect
+  via TaskUpdate, then SendMessage")
+- Conditionals based on workflow context
 
 **Skills** (`.claude/skills/*/SKILL.md`) define reusable
 procedures. Agents preload them via the `skills` frontmatter
