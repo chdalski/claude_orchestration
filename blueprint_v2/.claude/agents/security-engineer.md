@@ -103,9 +103,6 @@ team reports completion.
 
 ## Guidelines
 
-- Apply security principles systematically — guidance
-  loads automatically via the rule system when agents
-  touch relevant files.
 - Consider the threat model before prescribing
   mitigations. Not every application has the same risk
   profile.

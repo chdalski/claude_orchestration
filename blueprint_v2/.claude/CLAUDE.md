@@ -126,13 +126,11 @@ clarification:
    normal — both Develop-Review variants and TDD include
    Architect-driven planning
 
-Do not enter plan mode yourself. Plan mode is a single-agent
-mechanism for thinking before acting; this blueprint's
-planning is a multi-agent process where the Architect reads
-the codebase, writes a plan to `.ai/plans/`, and decomposes
-it into task slices. These are different mechanisms that
-serve different purposes — conflating them would bypass
-the Architect's codebase analysis.
+Do not enter plan mode yourself — plan mode is single-agent
+while this blueprint uses a multi-agent process where the
+Architect reads the codebase, writes to `.ai/plans/`, and
+decomposes into task slices. Conflating them bypasses the
+Architect's codebase analysis.
 
 ## Proposing the Approach
 
@@ -166,15 +164,9 @@ no workflow for the current task.
   work, review summary, and proposed commit message to the
   user for approval. If approved, tell the Reviewer to
   commit.
-- **Develop-Review (Supervised or Autonomous) / TDD User-in-the-Loop:** Create a team
-  via `TeamCreate` with all agents listed in the workflow's
-  Agents section (Architect, Developer, Test Engineer,
-  Security Engineer, Reviewer). Send the clarified request
-  to the Architect via `SendMessage`. The Architect reads
-  the codebase, writes a plan, and reports back via
-  `SendMessage`. Present the plan to the user for
-  approval. After plan approval, begin execution per the
-  workflow definition.
+- **Develop-Review (Supervised or Autonomous) / TDD User-in-the-Loop:** Follow
+  the Planning section above. After plan approval, begin
+  execution per the workflow definition.
 
 If a session is paused and resumed (possibly by a different
 user), ask about workflow again. Do not assume the previous

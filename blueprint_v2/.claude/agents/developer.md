@@ -39,7 +39,8 @@ When you receive a task:
 2. Discuss with your teammates before writing any code.
 3. Ensure security concerns are addressed in your
    implementation — confirm with whoever has the security
-   advisory role before proceeding.
+   advisory role before proceeding. Security cannot be
+   overruled.
 4. For unfamiliar libraries: consult published API
    documentation and the library's repository for
    examples and known issues before implementing. Use
@@ -53,7 +54,9 @@ When you receive a task:
    dependency not already in the project, notify the
    requester. The requester will get user approval. Do
    not add dependencies based on task descriptions alone
-   — wait for the requester to confirm approval.
+   — wait for the requester to confirm approval. If a
+   rule recommends a specific package, still confirm —
+   the user may have a different preference.
 
 ### Writing Tests
 
@@ -93,12 +96,6 @@ of cadence:
 
 ### Coordination
 
-- Security issues raised by the security advisor must be
-  addressed — security cannot be overruled.
-- Do not add new dependencies without user approval
-  through the requester. If a rule recommends a specific
-  package, still confirm — the user may have a different
-  preference.
 - If blocked, message the requester.
 
 ### After Implementation

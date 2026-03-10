@@ -34,14 +34,9 @@ for documentation or configuration changes.
 ## Team Lifecycle
 
 The lead creates one team via `TeamCreate` with all
-workflow agents (Architect, Developer, Test Engineer,
-Security Engineer, Reviewer) at workflow start.
-The team persists across all task slices — agents are NOT
-re-spawned per task. This avoids the startup cost of
-re-reading agent definitions and rebuilding context for
-each slice, and ensures all agents can communicate via
-`SendMessage` from the start. The Architect feeds tasks
-sequentially through the same agents.
+workflow agents at workflow start. The team persists
+across all task slices — re-spawning per task incurs
+startup cost and breaks `SendMessage` communication.
 
 ## Flow
 
