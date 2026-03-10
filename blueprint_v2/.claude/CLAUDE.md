@@ -136,12 +136,14 @@ the Architect's codebase analysis.
 
 ## Proposing the Approach
 
-After clarification is complete, read the workflow files in
-`.claude/workflows/` and use `AskUserQuestion` to present
-the available workflows. For each option, include its name,
-a brief description of when it fits, and the trade-offs.
-The workflow choice is a **user preference** — different
-users may prefer different levels of autonomy and control.
+After clarification is complete, read all workflow files
+from `.claude/workflows/` — skip `CLAUDE.md` in that
+directory, which is the format guide, not a workflow — and
+use `AskUserQuestion` to present them as options. For each
+option, include its name, a brief description of when it
+fits, and the trade-offs. The workflow choice is a **user
+preference** — different users may prefer different levels
+of autonomy and control.
 
 Once the user chooses a workflow, execute it as defined —
 do not switch workflows mid-execution.
