@@ -2,8 +2,7 @@
 
 ## When to Use
 
-Use this workflow for trivial-to-small tasks (1-5 files,
-mechanical or low-complexity changes) where the user
+Use this workflow for tasks where the user
 prefers directness over process, and the change is
 well-understood. Examples: fixing a typo, updating a config
 value, adding a simple function, renaming a variable,

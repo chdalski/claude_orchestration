@@ -45,7 +45,7 @@ mechanical to detect.
 - `<blueprint>/CLAUDE.md` (design reference)
 - `<blueprint>/README.md` (user-facing docs)
 - All files in `<blueprint>/.claude/agents/`
-- All files in `<blueprint>/.claude/workflows/`
+- All files in `<blueprint>/.claude/workflows/` (if present)
 - All files in `<blueprint>/.claude/rules/`
 - All files in `<blueprint>/.claude/templates/`
 - Root `/CLAUDE.md` (project-level description)
@@ -57,12 +57,12 @@ mechanical to detect.
 Two files giving conflicting guidance on the same topic.
 Common patterns:
 - Agent role described differently in the agent file vs.
-  the workflow file vs. the lead instructions
+  the lead instructions (or workflow file, if present)
 - Communication mechanism described inconsistently (e.g.,
   one file says `SendMessage`, another says `TaskOutput`
   for the same agent type)
 - Different agent lists in the lead instructions vs.
-  workflow files vs. README
+  README (or workflow files, if present)
 - Conflicting lifecycle descriptions (who creates whom,
   when agents are created, how they communicate)
 
@@ -76,7 +76,7 @@ Common patterns:
 - Agent names that don't match `.claude/agents/*.md`
   filenames
 - Workflow names that don't match
-  `.claude/workflows/*.md` filenames
+  `.claude/workflows/*.md` filenames (if present)
 - References to removed sections or renamed concepts
 - Structure diagrams (code trees) that don't match actual
   directory layout
@@ -91,7 +91,7 @@ Common patterns:
 - "shared" vs. "session-start" vs. "utility" for
   non-workflow agents
 - "workflow-specific" vs. "team" vs. "workflow" for agents
-  listed in workflow files
+  listed in workflow files (if present)
 - Agent role labels differing between workflow tables and
   agent definition files
 
@@ -138,7 +138,7 @@ Check that the three documentation layers agree:
 For each, verify:
 - Agent lists match the actual `.claude/agents/` contents
 - Workflow lists match the actual `.claude/workflows/`
-  contents (excluding `CLAUDE.md` format guide)
+  contents, if present (excluding `CLAUDE.md` format guide)
 - Structure diagrams match the actual directory layout
 - Agent role descriptions are consistent across all three
 
@@ -162,6 +162,8 @@ For each agent in `.claude/agents/`:
 
 ## Check 6 — Workflow-Agent Alignment
 
+Skip if the blueprint has no `.claude/workflows/` directory.
+
 For each workflow in `.claude/workflows/`:
 
 1. Read the workflow's Agents table
@@ -183,8 +185,8 @@ check looks for what they *don't say* — gaps that let an
 agent rationalize skipping a required step by interpreting
 ambiguous language in its favor.
 
-**Read:** The lead's `.claude/CLAUDE.md` and all workflow
-files in `.claude/workflows/`.
+**Read:** The lead's `.claude/CLAUDE.md` and workflow
+files in `.claude/workflows/` (if present).
 
 ### 7a — Judgment-call language
 
@@ -205,10 +207,10 @@ paths under pressure.
 
 ### 7b — Gate scope
 
-For each process gate in the lead instructions (clarification,
-workflow selection, planning trigger), check whether it is
-stated as a **per-task** requirement or only as a
-**startup-sequence** step.
+For each process gate in the lead instructions (e.g.
+clarification, planning trigger, or any gate the blueprint
+defines), check whether it is stated as a **per-task**
+requirement or only as a **startup-sequence** step.
 
 A gate described solely in a Startup section, without an
 explicit per-task statement elsewhere, is a gap — agents

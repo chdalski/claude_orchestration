@@ -94,6 +94,18 @@ the user checkpoint.
 
 ## Conventions
 
+- "When to Use" sections describe the workflow from the
+  user's perspective — the user selects the workflow, the
+  lead presents options. Describe what gates the workflow
+  provides, what autonomy level it offers, what the user
+  sees and approves. Do not use magnitude qualifiers
+  (`trivial`, `simple`, `complex`, `large`, etc.) or
+  agent-gating phrases that imply the agent judges task
+  size — that judgment belongs to the user. If the
+  workflow is structurally wrong for a task category
+  (not wrong because of size), state it concretely:
+  "Not appropriate for non-code tasks."
+
 - One workflow per file — mixing workflows in one file
   makes it harder for the lead to present individual
   options to the user.

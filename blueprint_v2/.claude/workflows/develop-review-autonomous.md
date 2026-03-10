@@ -17,9 +17,8 @@ For the same workflow with a user checkpoint before each
 commit, see `develop-review-supervised.md` — the user
 approves every change before it enters git history.
 
-Not appropriate for documentation-only changes or
-single-file non-code changes — the lead handles those
-with Direct-Review.
+Not appropriate for non-code tasks — use Direct-Review
+for documentation or configuration changes.
 
 ## Agents
 

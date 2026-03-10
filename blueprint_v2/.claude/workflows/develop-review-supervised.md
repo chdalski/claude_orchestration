@@ -7,20 +7,17 @@ bug fixes, refactors, or any change that touches source
 files and tests. It provides a full development cycle with
 test-list-driven development, security review, and
 independent quality review before each commit. The user
-approves each commit before it enters git history — this
-is the right choice when the user wants to see and confirm
-every change. The overhead is justified when the task
-involves design decisions, multiple files, or code that
-needs to be correct and secure.
+approves each commit before it enters git history — the
+right choice when the user wants visibility and sign-off
+over every change.
 
 For the same workflow without user commit checkpoints, see
-`develop-review-autonomous.md` — it sends directly to the
-Committer after Reviewer approval, relying on the agent
-quality gates alone.
+`develop-review-autonomous.md` — it commits automatically
+after Reviewer approval, relying on the agent quality
+gates alone.
 
-Not appropriate for documentation-only changes or
-single-file non-code changes — the lead handles those
-with Direct-Review.
+Not appropriate for non-code tasks — use Direct-Review
+for documentation or configuration changes.
 
 ## Agents
 
