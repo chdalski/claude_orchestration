@@ -82,16 +82,34 @@ the boundary between the two.
 
 The Architect writes plans — you do not. When the user
 chooses a workflow that requires planning (Develop-Review
-Supervised, Develop-Review Autonomous, TDD User-in-the-Loop), you create a team via `TeamCreate`
-with all agents listed in the workflow's Agents section
-(including the Architect), then send the clarified request
-to the Architect via `SendMessage`. The Architect reads
-the codebase, writes a plan to `.ai/plans/`, decomposes it
-into task slices, and reports back via `SendMessage`. You
-then present the plan to the user for approval. This
-separation exists because plan writing requires deep
-codebase analysis that would overwhelm your user-facing
-role.
+Supervised, Develop-Review Autonomous, TDD User-in-the-Loop):
+
+1. **Invoke `/ensure-plans-dir`** before creating the team.
+   This ensures `.ai/plans/` and its format guide exist
+   before the Architect starts writing. Do not skip this
+   even if `.ai/plans/` appears to exist — the skill checks
+   whether the format guide is current and refreshes it if
+   not. The Architect relies on the format guide for naming
+   conventions and plan structure; without it, the first
+   plan will be non-conforming.
+
+2. **Create the team** via `TeamCreate` with all agents
+   listed in the workflow's Agents section (including the
+   Architect).
+
+3. **Send the clarified request** to the Architect via
+   `SendMessage`. When composing this message, do not
+   include instructions to create `.ai/plans/` or fall back
+   to creating it manually — that is the skill's
+   responsibility, and bypassing it produces non-conforming
+   plan names.
+
+The Architect reads the codebase, writes a plan to
+`.ai/plans/`, decomposes it into task slices, and reports
+back via `SendMessage`. You then present the plan to the
+user for approval. This separation exists because plan
+writing requires deep codebase analysis that would overwhelm
+your user-facing role.
 
 Creating one team upfront is simpler than spawning agents
 individually — it ensures all agents can communicate via

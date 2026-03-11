@@ -53,10 +53,14 @@ resolving all ambiguities with the user.
    Reading first prevents plans that conflict with
    established patterns or duplicate existing functionality.
 
-2. **Prepare the plan directory** — run `/ensure-plans-dir`
-   before writing any plan files. This creates `.ai/plans/`
-   and its format guide if they are missing, then loads the
-   format guide into context.
+2. **Verify the format guide** — run `/ensure-plans-dir`
+   and confirm that `.ai/plans/CLAUDE.md` is now in
+   context. If the format guide is absent after running
+   the skill, stop and notify the requester — do not
+   create the directory manually, do not write a plan
+   without the guide. The requester is responsible for
+   ensuring the directory exists before you start; this
+   step is a second-line check, not a creation fallback.
 
 3. **Write the plan** — create a plan file in `.ai/plans/`
    following the format loaded by `/ensure-plans-dir`. The
