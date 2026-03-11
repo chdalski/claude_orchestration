@@ -34,3 +34,20 @@ fi
 echo "$SEP"
 echo "Claude settings initialized"
 echo "$SEP"
+
+echo "$SEP"
+echo "Initializing Git Identity"
+echo "$SEP"
+
+NAMES=("Claus Coder" "Claudia Coder" "Mr. Robot" "Mrs. Robot")
+SELECTED="${NAMES[$((RANDOM % ${#NAMES[@]}))]}"
+
+FIRST=$(echo "$SELECTED" | awk '{print $1}' | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9')
+SECOND=$(echo "$SELECTED" | awk '{print $2}' | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9')
+EMAIL="${FIRST}.${SECOND}@codecentric.de"
+
+git config --global user.name "$SELECTED"
+git config --global user.email "$EMAIL"
+
+echo "Git identity set: $SELECTED <$EMAIL>"
+echo "$SEP"

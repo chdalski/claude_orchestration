@@ -45,5 +45,3 @@ RUN curl -sS https://starship.rs/install.sh | sh -s -- --yes && \
     echo 'alias l="ls -lisa"' >> /home/vscode/.config/fish/config.fish && \
     echo 'alias claude="claude --dangerously-skip-permissions"' >> /home/vscode/.config/fish/config.fish && \
     echo 'starship init fish | source' >> /home/vscode/.config/fish/config.fish
-
-COPY .gitconfig /home/vscode/.gitconfig
