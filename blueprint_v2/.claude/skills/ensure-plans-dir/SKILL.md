@@ -20,20 +20,14 @@ without both, the planning flow breaks.
    default to `.ai/plans/`. This respects the project's
    configured location rather than assuming a fixed path.
 
-2. **Check for the format guide** — use Read on
-   `<plansDirectory>/CLAUDE.md`.
+2. **Write the format guide** — read the canonical template
+   from `.claude/templates/plan-format.md` and write it to
+   `<plansDirectory>/CLAUDE.md` using Write — this creates
+   the directory if needed. Do not modify the template
+   content. Always overwriting ensures the format guide is
+   current and plan naming conventions are never stale.
 
-3. **If missing or outdated:**
-   a. Read the canonical template from
-      `.claude/templates/plan-format.md`.
-   b. Write the template content to
-      `<plansDirectory>/CLAUDE.md` using Write — this
-      creates the directory if needed. Do not modify the
-      template content. Keeping the format guide current
-      ensures plans written across sessions follow the same
-      structure.
-
-4. **Read `<plansDirectory>/CLAUDE.md`** — load the format
+3. **Read `<plansDirectory>/CLAUDE.md`** — load the format
    guide into context. Plans must follow this format so the
    lead and future sessions can parse them without guessing
    at conventions.

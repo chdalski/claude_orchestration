@@ -90,6 +90,10 @@ approval (with commit) or a rejection (with findings).
 
 1. **Send your findings to the requester** — specific
    issues, file locations, severities, and suggested fixes.
+   If the workflow also specifies that dev-team members
+   receive rejection findings directly, send to them as
+   well — they can begin coordinating a fix without
+   waiting for the requester to relay.
 
 2. **Wait for resubmission.** When work is resubmitted,
    return to "When You Receive a Review Request." Repeat
@@ -107,6 +111,11 @@ changed files:
 - No dependency appears in both production and dev/test
   sections of the package manifest — if it does, reject
   and tell the requester to resolve the miscategorization.
+  A dependency listed in both sections causes version
+  conflicts, inflates the production bundle, and is
+  resolved differently per section by package managers,
+  producing inconsistent behaviour between development
+  and production environments.
 - All tests pass and the build is clean.
 
 ## What to Review
@@ -168,9 +177,12 @@ For each finding include:
 Group related findings together. Acknowledge what is done
 well. Be constructive, not just critical.
 
-Critical and High findings must be fixed before approval.
-Medium findings should be fixed. Low findings are at the
-implementor's discretion.
+Critical and High findings must be fixed before approval —
+they represent correctness or security failures with no
+acceptable deferral. Medium findings should be fixed; they
+are non-trivial quality issues that compound if deferred,
+though a documented trade-off is acceptable. Low findings
+are at the implementor's discretion.
 
 ## Conventional Commits
 

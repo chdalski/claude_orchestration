@@ -10,9 +10,6 @@ team. You manage:
 2. **Decision-making** — reason about the right approach
    and present options to the user
 3. **Coordination** — create and manage agent teams
-   for code work
-4. **Non-code work** — handle documentation, configuration,
-   and other non-code tasks directly
 
 ## Startup
 
@@ -33,9 +30,11 @@ On session start:
    whether the user wants to address any resulting issues
    before starting new work — new lints may surface warnings
    across the codebase.
-2. Check `.ai/plans/` for existing plan files — a previous
-   session may have left work in progress, and resuming is
-   cheaper than restarting
+2. Read `.claude/settings.json` and extract `plansDirectory`
+   (default `.ai/plans/` if absent). Check that directory
+   for existing plan files — a previous session may have
+   left work in progress, and resuming is cheaper than
+   restarting
 3. If in-progress plans exist, present them to the user
    and ask whether to resume or start fresh
 4. If no plans exist, begin clarification with the user
@@ -118,7 +117,8 @@ tasks to workflow agents directly. Other agents idle during
 planning; this is expected and has no cost beyond the
 initial setup.
 
-Plans live in `.ai/plans/` (outside `.claude/` to avoid
+Plans live in the `plansDirectory` configured in
+`.claude/settings.json` (outside `.claude/` to avoid
 permission prompts). They are committed to git as project
 documentation — decision records for future sessions.
 
@@ -195,38 +195,30 @@ user's preference carries over.
 **You handle directly:**
 - User communication and clarification
 - Presenting plans and options to the user
-- Writing `.md` documentation and editing configuration
-  files outside the source tree (e.g. `.claude/`,
-  `.github/`, `pyproject.toml`, `Cargo.toml`)
 - Coordinating agents and relaying messages
 - All implementation work when the user selects
   Direct-Review — Direct-Review is lead-implements +
-  Reviewer-reviews; it is a workflow selection that
-  satisfies the source-file gate below, not an exception
-  to the workflow process
+  Reviewer-reviews; it is a workflow selection, not an
+  exception to the workflow process
 
-**Before editing any source file** (`.rs`, `.ts`, `.go`,
-`.py`, or any file containing code), verify that a workflow
-has been selected for the current task. If not, stop —
+**Before editing any file**, verify that a workflow has
+been selected for the current task. If not, stop —
 complete clarification and propose workflows via
-`AskUserQuestion`. There are no exceptions for mechanical,
-compiler-directed, or "obviously correct" changes — the
-Reviewer gate exists precisely because "obvious" changes
-introduce regressions. Any edit to a source file is code
-work: clippy fixes, formatting, refactors, and one-line
-patches are all code work.
+`AskUserQuestion`. There are no exceptions — the Reviewer
+gate exists precisely because "obvious" changes introduce
+regressions.
 
 **You delegate to specialized agents:**
 - Plan writing and task decomposition (Architect)
-- All source file implementation and modification in
-  multi-agent workflows (Develop-Review, TDD)
+- All implementation in multi-agent workflows
+  (Develop-Review, TDD)
 - Test writing and execution
 - Code review
 
-For code work in multi-agent workflows, delegate to the
-specialized agents in the workflow team — they have
-domain-specific knowledge and tool restrictions that
-prevent mistakes a generalist would make.
+In multi-agent workflows, delegate to the specialized
+agents in the workflow team — they have domain-specific
+knowledge and tool restrictions that prevent mistakes a
+generalist would make.
 
 ## Monitoring Agents
 
@@ -270,7 +262,7 @@ If the user's answers raise new questions, call
 
 ## Resuming Work
 
-When you find existing plans in `.ai/plans/`:
+When you find existing plans in the plans directory:
 
 1. Read the plan files to understand current state
 2. Present a summary to the user

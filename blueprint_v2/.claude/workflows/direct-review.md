@@ -2,17 +2,25 @@
 
 ## When to Use
 
-Use this workflow for tasks where the user
-prefers directness over process, and the scope is clear,
-the change touches a small number of files, and no
-cross-cutting design decisions are required. Examples:
-fixing a typo, updating a config value, adding a simple
-function, renaming a variable, adjusting documentation.
+Use this workflow for tasks where the user prefers
+directness over process, and the change meets both criteria:
 
-Not appropriate for cross-cutting design decisions,
-security-sensitive changes, or when independent review is
-needed — those benefit from specialized agents that catch
-issues a single perspective would miss.
+1. **No security ramifications** — the change does not
+   touch auth, input validation, cryptography, access
+   control, or data handling that could introduce
+   vulnerabilities
+2. **Tests already cover it, or no tests are needed** —
+   existing tests validate the behavior being changed,
+   or the change is non-behavioral (typo, comment,
+   documentation, config value)
+
+Examples: fixing a typo, updating a config value,
+renaming a variable, adjusting documentation.
+
+Not appropriate when either criterion is not met — those
+benefit from specialized agents (Test Engineer, Security
+Engineer) that catch issues a single perspective would
+miss.
 
 ## Agents
 

@@ -1,5 +1,10 @@
 # Develop-Review (Autonomous)
 
+<!-- SYNC NOTE: The Flow section (steps 1–14) is identical to
+     develop-review-supervised.md. When editing the dev-team
+     flow, apply the same change to the other file. Only the
+     Commit section (step 15) differs between the two. -->
+
 ## When to Use
 
 Use this workflow for tasks that produce code — features,
@@ -95,10 +100,9 @@ startup cost and breaks `SendMessage` communication.
    checks for vulnerabilities, missing input validation,
    auth gaps. Sends **security sign-off** to Developer.
 
-10. **Developer reports task completion** to Architect —
-    having received both sign-offs, marks the task
-    completed via TaskUpdate and sends a summary via
-    SendMessage.
+10. **Developer reports implementation complete** to
+    Architect — having received both sign-offs, sends a
+    summary via SendMessage.
 
 11. **Architect notifies lead** that the task is ready for
     review.
@@ -125,8 +129,10 @@ startup cost and breaks `SendMessage` communication.
 15. **Lead immediately tells Reviewer to commit.**
     Reviewer stages the files and commits with the
     prepared message, reports the short SHA to the lead.
-    Lead tells Architect the task is committed, and the
-    Architect feeds the next task slice (loop to step 1).
+    Lead tells Architect the task is committed. Architect
+    marks the task completed via TaskUpdate, updates the
+    plan file, and feeds the next task slice (loop to
+    step 1).
 
 ## Completion Criteria
 

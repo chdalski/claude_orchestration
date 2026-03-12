@@ -54,8 +54,8 @@ resolving all ambiguities with the user.
 2. **Write the plan** — read `.claude/settings.json` to
    find `plansDirectory` (default `.ai/plans/`), then
    create a plan file there following the format guide in
-   `<plansDirectory>/CLAUDE.md` (loaded automatically by
-   Claude Code). The plan captures what needs to happen and
+   `<plansDirectory>/CLAUDE.md` (auto-loaded by Claude Code
+   when you access that directory). The plan captures what needs to happen and
    why, the codebase context you discovered, and the steps
    needed.
 
@@ -101,16 +101,15 @@ the other agents in your team.
    prevents merge conflicts and ensures each task builds on
    committed work from the previous one.
 
-3. **Collect completion signals** — when agents report a
-   task is done, update the TaskList entry and your plan
-   file (mark the step complete). Then notify the requester
-   that the task is ready for the next workflow step
-   (review, commit, etc. — the workflow defines what
-   happens next).
+3. **Collect implementation signals** — when agents report
+   implementation complete (with required sign-offs), notify
+   the requester that the task is ready for review.
 
-4. **Sequence the next task** — after the requester
-   confirms the previous task is handled, send the next
-   task to agents. Repeat until all slices are complete.
+4. **Mark task complete** — when the requester confirms the
+   task is committed, mark it completed via TaskUpdate and
+   update the plan file (check off the completed step).
+   Then send the next task to agents. Repeat until all
+   slices are complete.
 
 5. **Report completion** — when all tasks are done, message
    the requester with a summary of what was accomplished.

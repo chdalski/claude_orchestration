@@ -80,7 +80,9 @@ blueprint_v2/
 │   │   ├── ensure-plans-dir/
 │   │   │   └── SKILL.md   ← Create .ai/plans/ and format guide if missing
 │   │   └── project-init/
-│   │       └── SKILL.md   ← Project scanning + context generation
+│   │       ├── SKILL.md   ← Project scanning + context generation
+│   │       ├── README.md  ← Extension guide (add <language>-init.md for new languages)
+│   │       └── rust-init.md ← Rust-specific init (Cargo lints)
 │   ├── rules/             ← Unconditional + conditional rules
 │   │   ├── simplicity.md         ← [unconditional] KISS, YAGNI, etc.
 │   │   ├── code-principles.md    ← [conditional: source files] SOLID, Kent Beck
@@ -158,13 +160,13 @@ What does NOT belong in an agent file:
 - Conditionals based on workflow context
 
 **Skills** (`.claude/skills/*/SKILL.md`) define reusable
-procedures. Agents preload them via the `skills` frontmatter
-field; the lead invokes them autonomously when the
-conversation context matches. Currently: `ensure-plans-dir`
-(preloaded into the Architect — creates `.ai/plans/` and its
-format guide on first use) and `project-init` (invoked by
-the lead at startup if `CLAUDE.md` is missing, and
-user-invocable to regenerate context).
+procedures invoked by the lead when the conversation context
+matches. Currently: `ensure-plans-dir` (invoked by the lead
+before creating the team — writes the format guide to
+`<plansDirectory>/CLAUDE.md` so Claude Code auto-loads it
+when the Architect first accesses the plans directory) and
+`project-init` (invoked by the lead at startup if `CLAUDE.md`
+is missing, and user-invocable to regenerate context).
 
 **Rules** (`.claude/rules/*.md`) provide guidance that
 Claude Code injects into agent context automatically.

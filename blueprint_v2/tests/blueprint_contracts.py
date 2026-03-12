@@ -67,7 +67,7 @@ AGENT_TOOLS: dict[str, set[str]] = {
     },
     "Developer": {
         "Read", "Write", "Edit", "Bash", "Glob", "Grep",
-        "WebSearch", "WebFetch", "SendMessage", "TaskUpdate",
+        "WebSearch", "WebFetch", "SendMessage",
         "TaskList", "TaskGet",
     },
     "Reviewer": {

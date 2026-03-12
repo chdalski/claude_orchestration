@@ -181,10 +181,9 @@ test list.
     missing input validation, auth gaps. Sends sign-off
     to Developer.
 
-14. **Developer reports task completion** to Architect —
-    having received both sign-offs, marks the task
-    completed via TaskUpdate and sends a summary via
-    SendMessage.
+14. **Developer reports implementation complete** to
+    Architect — having received both sign-offs, sends a
+    summary via SendMessage.
 
 15. **Architect notifies lead** that the task is ready
     for review.
@@ -218,8 +217,9 @@ test list.
 20. **Lead tells Reviewer to commit.** Reviewer stages
     the files and commits with the prepared message,
     reports the short SHA to the lead. Lead tells Architect
-    the task is committed, and the Architect feeds the
-    next task slice (loop to step 1).
+    the task is committed. Architect marks the task
+    completed via TaskUpdate, updates the plan file, and
+    feeds the next task slice (loop to step 1).
 
 ## Completion Criteria
 

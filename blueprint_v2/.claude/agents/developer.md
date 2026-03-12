@@ -13,7 +13,6 @@ tools:
   - WebSearch
   - WebFetch
   - SendMessage
-  - TaskUpdate
   - TaskList
   - TaskGet
 ---
@@ -104,14 +103,11 @@ of cadence:
   sign-offs from advisory team members before reporting
   task completion — the workflow defines which sign-offs
   are required.
-- After all required sign-offs are received, report task
-  completion to the requester via TaskUpdate (mark the
-  task completed) and SendMessage. Use the task ID the
-  requester included in the task message when calling
-  TaskUpdate. If no ID was provided, call TaskList to
-  find the correct entry — never guess or construct task
-  IDs, because a wrong ID causes "task not found" errors
-  that cascade into workflow disruption.
+- After all required sign-offs are received, report
+  implementation complete to the requester via SendMessage.
+  Do not mark the task completed — the requester does that
+  after the downstream review and commit confirm the work
+  is accepted.
 - Do NOT commit. A downstream quality review handles
   staging and committing — committing before review
   bypasses the quality gate.

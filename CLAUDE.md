@@ -31,7 +31,7 @@ claude_orchestration/
 │   └── skills/
 │       └── blueprint-audit/
 │           └── SKILL.md             # Audit blueprint consistency
-├── blueprint_testlist/      # Test-list blueprint (5 agents)
+├── blueprint_v1/            # Test-list blueprint (5 agents)
 │   ├── README.md            # Blueprint-specific docs
 │   ├── .claude/
 │   │   ├── CLAUDE.md        # Orchestration instructions
@@ -87,7 +87,10 @@ claude_orchestration/
 │   └── tests/               # Blueprint verification tests
 │       ├── blueprint_contracts.py  # Single source of truth
 │       ├── conftest.py      # Shared fixtures + helpers
-│       └── static/          # Structure, caching, agent tests
+│       ├── static/          # Structure, caching, agent tests
+│       ├── behavioral/      # SDK-based runtime tests
+│       └── fixtures/        # Minimal project for behavioral
+│           └── minimal_project/
 ├── devcontainer_template/   # Devcontainer for sandboxed runs
 │   ├── README.md            # Setup and configuration docs
 │   └── .devcontainer/
@@ -98,7 +101,7 @@ claude_orchestration/
 
 ## Blueprint
 
-### blueprint_testlist (5 agents)
+### blueprint_v1 (5 agents)
 
 **Test-list (spec-first), Architect handles task decomposition.**
 
@@ -254,6 +257,15 @@ different purposes:
   Claude Code's native term.
 - If the user says "orchestrator," gently remind them that
   the correct term is "lead."
+
+## Environment Setup
+
+This project runs in a Docker container. On first use, install `uv` if it
+is not already available — it is required to run the test suite:
+
+```bash
+which uv || curl -LsSf https://astral.sh/uv/install.sh | sh
+```
 
 ## Session Checklist
 
