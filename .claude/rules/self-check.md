@@ -51,7 +51,45 @@ directories, renamed concepts):
 - Update `blueprint_contracts.py` if required files or
   directories changed
 
-### 5. Caching compliance
+### 5. Procedural redundancy across agents
+
+For each setup or preparation step in an agent's
+instructions, ask: is this step already guaranteed to be
+done by a preceding agent in the same workflow, or by
+Claude Code automatically (e.g., via `settings.json`,
+auto-loaded `CLAUDE.md` files)?
+
+If yes, the step is redundant — remove it from the
+downstream agent. Redundant setup steps create unclear
+ownership: if two agents both "ensure" the same
+precondition, neither truly owns it, and future changes to
+the setup logic must be made in multiple places.
+
+Common patterns to catch:
+- An agent runs a skill that an earlier agent already ran
+  in the same workflow
+- An agent verifies a precondition (directory exists,
+  format guide loaded) that Claude Code handles
+  automatically based on `settings.json` or file naming
+  conventions (e.g., files named `CLAUDE.md` are loaded
+  into context automatically)
+- An agent re-reads or re-checks state that was already
+  established and hasn't changed since
+
+### 6. Hardcoded configuration values
+
+Any path, directory name, or setting that is owned by
+`settings.json` must not be hardcoded in agent or skill
+files — if `settings.json` changes, hardcoded copies break
+silently and the agent uses a stale value.
+
+After writing or editing agent or skill instructions, check:
+does any path or name in the instructions match a key in
+`settings.json` (e.g., `plansDirectory`)? If so, the
+instruction should tell the agent to read from
+`settings.json`, not reproduce the value inline.
+
+### 7. Caching compliance
 
 Rule files, CLAUDE.md, and agent definitions are cached at
 session start (prompt cache level 3). They must not contain

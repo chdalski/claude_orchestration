@@ -230,6 +230,30 @@ exception boundary is fuzzy, flag it.
 
 ---
 
+## Check 8 — Configuration Coupling
+
+**Read:** `<blueprint>/.claude/settings.json`
+
+For each key that specifies a path or name (e.g.,
+`plansDirectory`), search all agent files, skill files, and
+workflow files for hardcoded occurrences of that value
+using Grep.
+
+If a hardcoded string matches a configurable value in
+`settings.json`, it is a coupling violation — changing the
+setting breaks any agent that hardcoded the old value
+instead of reading from the config. The agent will silently
+use the wrong path.
+
+Report each violation with the file, the hardcoded value,
+and which `settings.json` key owns it.
+
+Add to the output report under a **Configuration Coupling**
+section:
+- List each violation, or "None found"
+
+---
+
 ## Output Format
 
 ```
@@ -288,6 +312,11 @@ exception boundary is fuzzy, flag it.
 ### Exception Language
 [List each exception clause with file location and whether
  it is narrowly scoped, or "None found"]
+
+## Configuration Coupling
+[List each hardcoded value that settings.json owns, with
+ file location and the key it should read instead,
+ or "None found"]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   OBSERVATIONS

@@ -16,10 +16,21 @@ claude_orchestration/
 ├── README.md                # User-facing documentation
 ├── pyproject.toml           # Test harness dependencies
 ├── .claude/
-│   └── rules/
-│       ├── prompt-caching.md    # Caching design constraints
-│       ├── reasoned-instructions.md  # Rationale requirement
-│       └── self-check.md        # Post-change verification
+│   ├── rules/
+│   │   ├── prompt-caching.md        # Caching design constraints
+│   │   ├── reasoned-instructions.md # Rationale requirement
+│   │   ├── self-check.md            # Post-change verification
+│   │   ├── agent-design.md          # Agent vs workflow separation
+│   │   ├── claude-code-guide.md     # Delegate Claude Code questions
+│   │   ├── simplicity.md            # KISS, YAGNI, Reveals Intent
+│   │   ├── code-principles.md       # SOLID, Kent Beck rules
+│   │   ├── code-mass.md             # APP refactoring metric
+│   │   ├── documentation.md         # Documentation principles
+│   │   ├── functional-style.md      # FP principles
+│   │   └── lang-python.md           # Python idioms
+│   └── skills/
+│       └── blueprint-audit/
+│           └── SKILL.md             # Audit blueprint consistency
 ├── blueprint_testlist/      # Test-list blueprint (5 agents)
 │   ├── README.md            # Blueprint-specific docs
 │   ├── .claude/
@@ -183,6 +194,41 @@ This project uses:
 - `.claude/rules/reasoned-instructions.md` — requires
   every directive in blueprint files to include its
   rationale so agents understand intent, not just rules
+- `.claude/rules/self-check.md` — post-change verification
+  checklist for blueprint edits
+- `.claude/rules/agent-design.md` — enforces separation
+  between agent role definitions and workflow coordination
+- `.claude/rules/claude-code-guide.md` — delegates Claude
+  Code questions to the built-in guide subagent
+- `.claude/rules/simplicity.md`, `code-principles.md`,
+  `code-mass.md`, `documentation.md`, `functional-style.md`,
+  `lang-python.md` — coding and documentation standards
+  that apply when editing source files in this repo
+
+### Skills (`.claude/skills/`)
+
+Project-level skills for working *on* blueprints. These are
+not part of any blueprint and are not copied to target
+projects — they are tooling for maintaining this repository.
+
+- `.claude/skills/blueprint-audit/` — audits a blueprint
+  for cross-file consistency, stale references,
+  contradictions, rationale completeness, and
+  documentation alignment
+
+### Two levels of `.claude/`
+
+This repository has two distinct `.claude/` locations with
+different purposes:
+
+- **Project-level** (`/.claude/`) — tooling for working
+  *on* this repository: rules and skills that govern how
+  blueprints are written and maintained. Never copied to
+  target projects.
+- **Blueprint-level** (`blueprint_*/. claude/`) — the
+  `.claude/` setup that gets copied into target projects.
+  These are the agent definitions, workflows, rules, and
+  templates that end users receive.
 
 ### Knowledge files (`knowledge/`)
 

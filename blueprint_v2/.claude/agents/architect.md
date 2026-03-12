@@ -3,8 +3,6 @@ name: Architect
 description: Reads codebase, writes plans, decomposes into task slices, feeds tasks to agents
 model: opus
 color: orange
-skills:
-  - ensure-plans-dir
 tools:
   - Read
   - Glob
@@ -53,21 +51,15 @@ resolving all ambiguities with the user.
    Reading first prevents plans that conflict with
    established patterns or duplicate existing functionality.
 
-2. **Verify the format guide** — run `/ensure-plans-dir`
-   and confirm that `.ai/plans/CLAUDE.md` is now in
-   context. If the format guide is absent after running
-   the skill, stop and notify the requester — do not
-   create the directory manually, do not write a plan
-   without the guide. The requester is responsible for
-   ensuring the directory exists before you start; this
-   step is a second-line check, not a creation fallback.
+2. **Write the plan** — read `.claude/settings.json` to
+   find `plansDirectory` (default `.ai/plans/`), then
+   create a plan file there following the format guide in
+   `<plansDirectory>/CLAUDE.md` (loaded automatically by
+   Claude Code). The plan captures what needs to happen and
+   why, the codebase context you discovered, and the steps
+   needed.
 
-3. **Write the plan** — create a plan file in `.ai/plans/`
-   following the format loaded by `/ensure-plans-dir`. The
-   plan captures what needs to happen and why, the codebase
-   context you discovered, and the steps needed.
-
-4. **Decompose into task slices** — break the plan's steps
+3. **Decompose into task slices** — break the plan's steps
    into vertical task slices within the plan file. Each
    slice should:
    - Be a coherent feature touching all layers needed
@@ -80,7 +72,7 @@ resolving all ambiguities with the user.
    create integration risk because nothing works end-to-end
    until the last slice is done.
 
-5. **Report to the requester** — send the plan summary
+4. **Report to the requester** — send the plan summary
    back via SendMessage. Include the plan file path and a
    brief overview of the task slices. The requester will
    present this to the user for approval.

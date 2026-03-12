@@ -1,11 +1,9 @@
 # Plan Format
 
-The Architect writes all plans in this directory. The lead
-reads them to present to the user but does not write them.
 Every plan file must follow this structure. Plans are living
-documents — the Architect updates them as work progresses.
-This consistency ensures any agent or user can pick up a
-plan mid-session and understand its state without guessing.
+documents — updated as work progresses. This consistency
+ensures any agent or user can pick up a plan mid-session
+and understand its state without guessing.
 
 ## Required Sections
 
@@ -55,24 +53,18 @@ checklist obscures status rather than revealing it.
 ### Tasks
 
 Vertical task slices decomposed from the steps above. Each
-task is a committable unit of work with acceptance criteria.
-The Architect writes these during planning; during execution,
-each becomes a TaskList entry fed to workflow agents.
+task is a committable unit of work with clear acceptance
+criteria.
 
 ```markdown
 ### Task 1: Add token model
 
-**What:** Create the JWT token data model with
-validation and serialization.
+Add a JWT token data model that validates and serializes
+tokens used by the auth service.
 
-**Acceptance Criteria:**
-- Token struct with required fields
-- Validation for expiration and signature
-- Unit tests for happy path and expired token
-
-**Files likely involved:**
-- `src/models/token.rs`
-- `tests/models/token_test.rs`
+- [ ] Token struct with required fields
+- [ ] Validates expiration and signature
+- [ ] Unit tests: happy path, expired token
 ```
 
 Order tasks by dependency — foundational work first. Use
@@ -109,9 +101,8 @@ Current state of the plan. One of:
 - **Completed** — all steps done
 - **Abandoned** — superseded or no longer needed
 
-A clear status lets the lead's startup check quickly
-identify which plans need attention without reading every
-step.
+A clear status lets any agent or session quickly identify
+which plans need attention without reading every step.
 
 ## Conventions
 
@@ -121,9 +112,8 @@ step.
 - File names use a date prefix followed by a descriptive
   slug: `YYYY-MM-DD-add-user-authentication.md`. The date
   prefix (YYYY-MM-DD) establishes chronological order
-  across sessions; the slug lets the lead scan the
-  directory and present plans to the user without opening
-  each file.
+  across sessions; the slug makes the plan's subject
+  visible without opening the file.
 - One plan per task or feature. Don't combine unrelated
   work into a single plan — mixed plans make progress
   tracking ambiguous and complicate resumption.
