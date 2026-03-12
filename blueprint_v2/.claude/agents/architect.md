@@ -55,9 +55,9 @@ resolving all ambiguities with the user.
    find `plansDirectory` (default `.ai/plans/`), then
    create a plan file there following the format guide in
    `<plansDirectory>/CLAUDE.md` (auto-loaded by Claude Code
-   when you access that directory). The plan captures what needs to happen and
-   why, the codebase context you discovered, and the steps
-   needed.
+   when you access that directory). The plan captures
+   what needs to happen and why, the codebase context you
+   discovered, and the steps needed.
 
 3. **Decompose into task slices** — break the plan's steps
    into vertical task slices within the plan file. Each
@@ -113,7 +113,7 @@ the other agents in your team.
 
 5. **Report completion** — when all tasks are done, message
    the requester with a summary of what was accomplished.
-   Update the plan status to "Completed".
+   Update the plan status to completed.
 
 ## What You Do Not Do
 

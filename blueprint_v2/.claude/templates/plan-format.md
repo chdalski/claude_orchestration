@@ -9,6 +9,34 @@ documents — updated as work progresses. This consistency
 ensures any agent or user can pick up a plan mid-session
 and understand its state without guessing.
 
+## Required Header
+
+Every plan file must begin with these fields:
+
+```markdown
+**Repository:** root
+**Status:** NotStarted
+**Created:** YYYY-MM-DD
+**Author:** <agent-or-role-name>
+```
+
+**Repository** — `root` for the main repo, or the subrepo
+path for subrepo work (e.g. `services/auth`). Plans for
+different repos live in the same plans directory, so this
+field lets any agent or user identify scope without opening
+every file.
+
+**Status** — current state of the plan. Update as work
+progresses — stale status misleads the next session:
+- `NotStarted` — plan written, execution not yet begun
+- `InProgress` — actively being worked on
+- `Completed (YYYY-MM-DD)` — all steps done; record the date
+- `Canceled` — superseded or no longer needed
+
+**Created** — date the plan was written (YYYY-MM-DD).
+
+**Author** — agent that wrote the plan.
+
 ## Required Sections
 
 ### Goal
@@ -96,18 +124,6 @@ would need to know. Skip obvious ones — documenting every
 micro-decision adds noise that makes important decisions
 harder to find.
 
-### Status
-
-Current state of the plan. One of:
-
-- **In Progress** — actively being worked on
-- **Paused** — work stopped, can be resumed
-- **Completed** — all steps done
-- **Abandoned** — superseded or no longer needed
-
-A clear status lets any agent or session quickly identify
-which plans need attention without reading every step.
-
 ## Conventions
 
 - Use plain markdown. No frontmatter — plans are runtime
@@ -121,9 +137,9 @@ which plans need attention without reading every step.
 - One plan per task or feature. Don't combine unrelated
   work into a single plan — mixed plans make progress
   tracking ambiguous and complicate resumption.
-- Update the status and checkboxes as work progresses —
-  stale plans mislead the next session into repeating or
-  skipping work.
+- Update the header Status and step checkboxes as work
+  progresses — stale plans mislead the next session into
+  repeating or skipping work.
 - Plans are committed to git alongside the code they
   describe — this ties decisions to the code that
   implemented them, making future archaeology easier.
