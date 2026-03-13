@@ -1,8 +1,5 @@
 FROM mcr.microsoft.com/devcontainers/base:ubuntu
 
-ARG TZ="UTC"
-ENV TZ="$TZ"
-
 # Install development tools
 # hadolint ignore=DL3009
 RUN apt-get update && apt-get install -y --no-install-recommends \
