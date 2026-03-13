@@ -236,6 +236,24 @@ behavior, not a sign that the agent is stuck.
   progress — the Architect creates entries there and agents
   update them as they complete work.
 
+**Handoff monitoring** — the Develop-Review workflows define
+lead-monitored transitions (see the Handoff Protocol section
+in the workflow file). At these transitions, peer-to-peer
+`SendMessage` between agents is unreliable — messages can be
+silently dropped due to name mismatches, with no error
+feedback to the sender. When a monitored transition occurs:
+
+1. Note the transition and start a 2-minute window
+2. Watch for an acknowledgment message from the recipient
+3. If no acknowledgment arrives within 2 minutes, relay the
+   message to the recipient yourself via `SendMessage`
+4. Do not wait passively for longer — undetected message
+   loss causes multi-minute stalls that compound per task
+
+This is not a fallback for exceptional cases — expect to
+relay at monitored transitions regularly until the platform
+adds delivery confirmation.
+
 **Recovery protocol** — if an agent appears unresponsive:
 1. Send a status check via `SendMessage` to the agent
 2. Check `TaskList` for recent updates — the agent may have

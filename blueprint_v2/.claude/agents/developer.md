@@ -1,5 +1,5 @@
 ---
-name: Developer
+name: developer
 description: Implements all code — source and tests
 model: sonnet
 color: green

@@ -1,5 +1,5 @@
 ---
-name: Reviewer
+name: reviewer
 description: Independent quality gate — reviews completed work and commits approved changes
 model: sonnet
 color: purple

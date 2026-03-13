@@ -56,6 +56,23 @@ agent files — those are workflow facts, not agent facts.
 The agent doesn't know which role sent the task; it only
 knows it received one.
 
+## Agent Naming Convention
+
+Agent `name:` fields in frontmatter must use lowercase,
+hyphenated forms: `developer`, `test-engineer`,
+`security-engineer` — not `Developer`, `Test Engineer`, or
+`Security Engineer`. This exists because `SendMessage`
+requires exact name matching and agents naturally guess
+hyphenated lowercase forms. When registered names used
+title case with spaces (e.g., `Test Engineer`), agents
+guessed `test-engineer`, messages were silently dropped,
+and handoffs stalled for minutes with no error feedback.
+Aligning registered names with the form agents guess
+eliminates this mismatch at the source.
+
+Agent filenames already follow this convention
+(`test-engineer.md`). The `name:` field must match.
+
 ## Scope
 
 This principle applies to all agent files in all blueprints

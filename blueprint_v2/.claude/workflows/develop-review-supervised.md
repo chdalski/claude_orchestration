@@ -43,6 +43,64 @@ workflow agents at workflow start. The team persists
 across all task slices — re-spawning per task incurs
 startup cost and breaks `SendMessage` communication.
 
+## Handoff Protocol
+
+Peer-to-peer `SendMessage` between team agents is
+unreliable — messages are silently dropped if the sender
+uses an incorrect agent name (e.g., `test-engineer` instead
+of `Test Engineer`), and `SendMessage` returns success when
+a message is queued, not when it is delivered. Senders have
+no way to detect failed delivery, which causes stalls that
+require lead intervention.
+
+### Team Roster
+
+The Architect includes the exact registered agent names in
+every task message so agents know how to address each other:
+
+```
+Team roster (use these exact names in SendMessage):
+- developer
+- test-engineer
+- security-engineer
+- reviewer
+```
+
+Agents must use these names exactly as shown — lowercase,
+hyphenated where multi-word. This convention exists because
+agents naturally guess hyphenated lowercase forms; using
+those as registered names eliminates the mismatch that
+causes silent message loss.
+
+### Acknowledgment Rule
+
+When an agent receives a handoff message (task assignment,
+completed work, verification request, sign-off), it must
+reply with a brief acknowledgment via `SendMessage` to the
+sender within 60 seconds. A simple "received, starting
+verification" suffices. Without acknowledgment, the sender
+cannot distinguish "processing" from "never received" — and
+the resulting stall is invisible until the lead notices.
+
+### Lead-Monitored Transitions
+
+At certain handoff points, silent message loss causes the
+longest stalls because the sender idles waiting for a
+response that will never come. The lead proactively checks
+for acknowledgment at these transitions:
+
+- **Step 4 → 5** — Developer sends completed tests to Test
+  Engineer for verification
+- **Step 7** — Developer reports implementation complete to
+  Test Engineer and Security Engineer
+- **Step 13** — Reviewer sends rejection findings to
+  Developer, Test Engineer, and Security Engineer
+
+If no acknowledgment arrives within 2 minutes of a
+monitored transition, the lead relays the message directly
+to the recipient. This adds one message hop but eliminates
+multi-minute stalls from undetected message loss.
+
 ## Flow
 
 ### Per Task Slice

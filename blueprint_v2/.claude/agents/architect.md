@@ -1,5 +1,5 @@
 ---
-name: Architect
+name: architect
 description: Reads codebase, writes plans, decomposes into task slices, feeds tasks to agents
 model: opus
 color: orange
