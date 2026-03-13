@@ -16,7 +16,7 @@ On first container build, `post-create.sh` creates `.devcontainer/.env.local`
 | Mode | `CLAUDE_AUTH` | What gets copied | Use case |
 |------|---------------|------------------|----------|
 | Proxy (default) | `proxy` | `settings.json` (with env vars) | Work account via API proxy (e.g. Portkey) |
-| OAuth | `oauth` | `.credentials.json` + `settings.json` (ANTHROPIC_* env vars and apiKeyHelper stripped) | Private Anthropic account |
+| OAuth | `oauth` | `.credentials.json` + `settings.json` (env block and apiKeyHelper stripped) | Private Anthropic account |
 
 ### Proxy mode (default)
 
@@ -26,8 +26,11 @@ the container, including any `env` block with proxy configuration.
 ### OAuth mode
 
 Requires `~/.claude/.credentials.json` from a prior `claude login` on the
-host. The script copies it into the container and strips `ANTHROPIC_*` env
-vars and `apiKeyHelper` from `settings.json` so OAuth credentials are used.
+host. The script copies it into the container and strips the entire `env`
+block and `apiKeyHelper` from `settings.json` so OAuth credentials are used
+and no proxy config leaks in. Any env vars needed in oauth mode (e.g.
+`CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS`) should be added to
+`.devcontainer/.env.local`.
 
 ### Switching modes
 
@@ -70,9 +73,10 @@ resolves this.
   `claude-code-config-{project-name}`. All devcontainers for the same project
   share history. Different projects have separate histories.
 
-- **Host config as template**: Your `~/.claude/` directory is mounted
-  read-only. On container startup, the post-start script copies the
-  appropriate files into the container volume based on `CLAUDE_AUTH`.
+- **Host config as template**: Your `~/.claude/` directory and `~/.claude.json`
+  are mounted read-only. On container startup, the post-start script copies
+  the appropriate files into the container volume based on `CLAUDE_AUTH`, and
+  copies `~/.claude.json` into the container home directory.
 
 ## Mounts
 
@@ -80,4 +84,5 @@ resolves this.
 |--------|--------|---------|
 | `claude-code-config-${project}` (volume) | `/home/vscode/.claude` | Project-scoped Claude config and history |
 | `~/.claude/` (bind, ro) | `/home/vscode/.claude-host/` | Host config template directory |
+| `~/.claude.json` (bind, ro) | `/home/vscode/.claude-host.json` | Host Claude config file (copied into container on startup) |
 | `claude-code-bashhistory-${id}` (volume) | `/commandhistory` | Shell history persistence |

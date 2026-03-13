@@ -6,8 +6,10 @@
 #   - "proxy"  (default): copies settings.json from host, which contains
 #     API proxy config (Portkey env vars, custom headers, etc.)
 #   - "oauth": copies .credentials.json from host, which contains
-#     Anthropic OAuth tokens. Copies settings.json with ANTHROPIC_*
-#     env vars and apiKeyHelper removed so OAuth credentials are used.
+#     Anthropic OAuth tokens. Copies settings.json with the entire env
+#     block and apiKeyHelper removed — the env block typically contains
+#     proxy config that conflicts with OAuth. Any env vars needed in
+#     oauth mode should be added to .devcontainer/.env.local instead.
 #
 # CLAUDE_AUTH is set via containerEnv in devcontainer.json (default: proxy).
 # Override locally via .devcontainer/.env.local (gitignored).
@@ -50,13 +52,14 @@ case "$CLAUDE_AUTH" in
       echo "WARNING: No .credentials.json found at $HOST_CREDENTIALS"
       echo "Run 'claude login' inside the container to authenticate."
     fi
-    # Copy settings.json if it exists, but strip ANTHROPIC_* env vars
-    # and apiKeyHelper so the OAuth credentials are used instead.
+    # Copy settings.json if it exists, but strip the entire env block
+    # and apiKeyHelper — the env block contains proxy config that conflicts
+    # with OAuth. Any env vars needed in oauth mode go in .env.local.
     HOST_SETTINGS="$HOST_DIR/settings.json"
     if [ -f "$HOST_SETTINGS" ]; then
-      echo "Copying host settings.json (stripping ANTHROPIC_* env vars and apiKeyHelper)"
+      echo "Copying host settings.json (stripping env block and apiKeyHelper)"
       if command -v jq &>/dev/null; then
-        jq 'del(.apiKeyHelper) | if .env then .env |= with_entries(select(.key | startswith("ANTHROPIC_") | not)) else . end | if .env == {} then del(.env) else . end' "$HOST_SETTINGS" > "$CONTAINER_DIR/settings.json"
+        jq 'del(.apiKeyHelper, .env)' "$HOST_SETTINGS" > "$CONTAINER_DIR/settings.json"
       else
         echo "WARNING: jq not available, copying settings.json as-is"
         echo "Proxy env vars may override OAuth credentials."
@@ -72,6 +75,14 @@ case "$CLAUDE_AUTH" in
     exit 1
     ;;
 esac
+
+HOST_CONFIG="/home/vscode/.claude-host.json"
+if [ -f "$HOST_CONFIG" ]; then
+  echo "Copying host .claude.json"
+  cp "$HOST_CONFIG" "/home/vscode/.claude.json"
+else
+  echo "WARNING: No .claude.json found at $HOST_CONFIG"
+fi
 
 echo "Written container settings to $CONTAINER_DIR"
 echo "$SEP"

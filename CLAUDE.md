@@ -96,7 +96,8 @@ claude_orchestration/
 │   └── .devcontainer/
 │       ├── devcontainer.json  # Container config
 │       ├── Dockerfile         # Image definition
-│       └── init-claude-settings.sh   # Startup script
+│       ├── post-create.sh     # One-time setup (pnpm, .env.local)
+│       └── post-start.sh     # Auth-mode config copy on each start
 ```
 
 ## Blueprint
@@ -167,8 +168,10 @@ handles both quality review and git commits.
 sandboxed agent execution.
 
 - Project-scoped Docker volume for Claude config and history
-- Host `~/.claude/settings.json` mounted read-only as template
-- Startup script copies host settings into the container
+- Host `~/.claude/` and `~/.claude.json` mounted read-only as templates
+- Dual auth mode (`proxy`/`oauth`) controlled by `CLAUDE_AUTH` env var
+- `post-start.sh` copies the appropriate config files into the container
+  on each start based on auth mode
 
 ## Conventions
 
