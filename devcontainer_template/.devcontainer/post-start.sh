@@ -1,38 +1,79 @@
 #!/usr/bin/env bash
 
-# Copy host settings into the container volume so Claude Code
-# picks up the user's configuration (model preferences, API
-# keys, etc.). The host file is bind-mounted read-only by
-# devcontainer.json; this script copies it to the writable
-# volume location that Claude Code reads at startup.
+# Copy host Claude configuration into the container volume.
 #
-# Permission bypass is handled by the shell alias in the
-# Dockerfile (--dangerously-skip-permissions), not here.
+# Auth mode is controlled by the CLAUDE_AUTH environment variable:
+#   - "proxy"  (default): copies settings.json from host, which contains
+#     API proxy config (Portkey env vars, custom headers, etc.)
+#   - "oauth": copies .credentials.json from host, which contains
+#     Anthropic OAuth tokens. Copies settings.json with ANTHROPIC_*
+#     env vars and apiKeyHelper removed so OAuth credentials are used.
+#
+# CLAUDE_AUTH is set via containerEnv in devcontainer.json (default: proxy).
+# Override locally via .devcontainer/.env.local (gitignored).
 
 set -euo pipefail
 
 SEP="============================================================"
-HOST_SETTINGS="/home/vscode/.claude-host-settings.json"
-CONTAINER_SETTINGS="/home/vscode/.claude/settings.json"
 
-echo "$SEP"
-echo "Initializing Claude Settings"
-echo "$SEP"
-
-mkdir -p "$(dirname "$CONTAINER_SETTINGS")"
-
-if [ -f "$HOST_SETTINGS" ]; then
-    echo "Copying host settings from $HOST_SETTINGS"
-    cp "$HOST_SETTINGS" "$CONTAINER_SETTINGS"
-    echo "Written container settings to $CONTAINER_SETTINGS"
-else
-    echo "No host settings found at $HOST_SETTINGS"
-    echo "Creating default settings"
-    echo '{}' > "$CONTAINER_SETTINGS"
+if [ -z "${CLAUDE_AUTH:-}" ]; then
+  echo "ERROR: CLAUDE_AUTH is not set. Set it in devcontainer.json containerEnv"
+  echo "or in .devcontainer/.env.local. Valid values: proxy, oauth"
+  exit 1
 fi
+HOST_DIR="/home/vscode/.claude-host"
+CONTAINER_DIR="/home/vscode/.claude"
 
 echo "$SEP"
-echo "Claude settings initialized"
+echo "Initializing Claude Settings (auth mode: $CLAUDE_AUTH)"
+echo "$SEP"
+
+mkdir -p "$CONTAINER_DIR"
+
+case "$CLAUDE_AUTH" in
+  proxy)
+    HOST_SETTINGS="$HOST_DIR/settings.json"
+    if [ -f "$HOST_SETTINGS" ]; then
+      echo "Copying host settings.json (proxy mode)"
+      cp "$HOST_SETTINGS" "$CONTAINER_DIR/settings.json"
+    else
+      echo "WARNING: No settings.json found at $HOST_SETTINGS"
+      echo '{}' > "$CONTAINER_DIR/settings.json"
+    fi
+    ;;
+  oauth)
+    HOST_CREDENTIALS="$HOST_DIR/.credentials.json"
+    if [ -f "$HOST_CREDENTIALS" ]; then
+      echo "Copying host .credentials.json (OAuth mode)"
+      cp "$HOST_CREDENTIALS" "$CONTAINER_DIR/.credentials.json"
+    else
+      echo "WARNING: No .credentials.json found at $HOST_CREDENTIALS"
+      echo "Run 'claude login' inside the container to authenticate."
+    fi
+    # Copy settings.json if it exists, but strip ANTHROPIC_* env vars
+    # and apiKeyHelper so the OAuth credentials are used instead.
+    HOST_SETTINGS="$HOST_DIR/settings.json"
+    if [ -f "$HOST_SETTINGS" ]; then
+      echo "Copying host settings.json (stripping ANTHROPIC_* env vars and apiKeyHelper)"
+      if command -v jq &>/dev/null; then
+        jq 'del(.apiKeyHelper) | if .env then .env |= with_entries(select(.key | startswith("ANTHROPIC_") | not)) else . end | if .env == {} then del(.env) else . end' "$HOST_SETTINGS" > "$CONTAINER_DIR/settings.json"
+      else
+        echo "WARNING: jq not available, copying settings.json as-is"
+        echo "Proxy env vars may override OAuth credentials."
+        cp "$HOST_SETTINGS" "$CONTAINER_DIR/settings.json"
+      fi
+    else
+      echo '{}' > "$CONTAINER_DIR/settings.json"
+    fi
+    ;;
+  *)
+    echo "ERROR: Unknown CLAUDE_AUTH value: $CLAUDE_AUTH"
+    echo "Valid values: proxy, oauth"
+    exit 1
+    ;;
+esac
+
+echo "Written container settings to $CONTAINER_DIR"
 echo "$SEP"
 
 echo "$SEP"
