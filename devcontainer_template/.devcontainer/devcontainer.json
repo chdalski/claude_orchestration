@@ -14,7 +14,8 @@
     "ghcr.io/devcontainers/features/go:1": {}
   },
   "remoteUser": "vscode",
-  // Authentication mode: see .devcontainer/.env.local (created by post-create.sh, gitignored).
+  // Authentication mode: see .devcontainer/.env.local (created by initializeCommand, gitignored).
+  "initializeCommand": "test -f .devcontainer/.env.local || echo 'CLAUDE_AUTH=proxy' > .devcontainer/.env.local",
   "runArgs": [
     "--env-file",
     ".devcontainer/.env.local"

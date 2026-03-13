@@ -96,7 +96,7 @@ claude_orchestration/
 │   └── .devcontainer/
 │       ├── devcontainer.json  # Container config
 │       ├── Dockerfile         # Image definition
-│       ├── post-create.sh     # One-time setup (pnpm, .env.local)
+│       ├── post-create.sh     # One-time setup (pnpm store ownership)
 │       └── post-start.sh     # Auth-mode config copy on each start
 ```
 
