@@ -1,6 +1,7 @@
 .claude/settings.local.json
 .claude-session/
 cache-proxy.log
+.devcontainer
 
 # Secrets
 .env.local
