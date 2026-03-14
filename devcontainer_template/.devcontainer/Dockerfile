@@ -14,7 +14,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     nano \
     vim \
     git \
-    fish
+    fish \
+    sox
 
 # Set `DEVCONTAINER` environment variable to help with orientation
 ENV DEVCONTAINER=true

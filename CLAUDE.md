@@ -32,7 +32,6 @@ claude_orchestration/
 │       └── blueprint-audit/
 │           └── SKILL.md             # Audit blueprint consistency
 ├── blueprint_v1/            # Test-list blueprint (5 agents)
-│   ├── README.md            # Blueprint-specific docs
 │   ├── .claude/
 │   │   ├── CLAUDE.md        # Orchestration instructions
 │   │   ├── settings.json    # Enables agent teams + hooks
@@ -54,7 +53,7 @@ claude_orchestration/
 │       └── fixtures/        # Minimal project for behavioral
 │           └── minimal_project/
 ├── blueprint_v2/            # V2 blueprint (clarify-first, workflow-based)
-│   ├── CLAUDE.md            # Blueprint design reference
+│   ├── CLAUDE.md            # Design reference
 │   ├── .claude/
 │   │   ├── CLAUDE.md        # Lead instructions
 │   │   ├── settings.json    # Agent teams
@@ -91,9 +90,33 @@ claude_orchestration/
 │       ├── behavioral/      # SDK-based runtime tests
 │       └── fixtures/        # Minimal project for behavioral
 │           └── minimal_project/
+├── blueprint_v3/            # V3 blueprint (autonomous lead)
+│   ├── CLAUDE.md            # Design reference
+│   ├── .claude/
+│   │   ├── CLAUDE.md        # Lead instructions
+│   │   ├── settings.json    # Agent teams
+│   │   ├── agents/          # Reviewer, Test Engineer,
+│   │   │                    # Security Engineer
+│   │   ├── rules/           # Unconditional + conditional rules
+│   │   └── skills/          # Skill definitions (with co-located templates)
+│   │       ├── ensure-plans-dir/
+│   │       │   ├── SKILL.md # Create .ai/plans/ and format guide
+│   │       │   └── plan-format.md  # Plan format template
+│   │       └── project-init/
+│   │           ├── SKILL.md # Project scanning + context generation
+│   │           ├── project-context.md  # Project context template
+│   │           ├── README.md  # Extension guide
+│   │           └── rust-init.md  # Rust-specific init (Cargo lints)
+│   └── tests/               # Blueprint verification tests
+│       ├── blueprint_contracts.py  # Single source of truth
+│       ├── conftest.py      # Shared fixtures + helpers
+│       ├── static/          # Structure, caching, agent tests
+│       ├── behavioral/      # SDK-based runtime tests
+│       └── fixtures/        # Minimal project for behavioral
+│           └── minimal_project/
 ├── devcontainer_template/   # Devcontainer for sandboxed runs
-│   ├── README.md            # Setup and configuration docs
 │   └── .devcontainer/
+│       ├── README.md          # Setup and configuration docs
 │       ├── devcontainer.json  # Container config
 │       ├── Dockerfile         # Image definition
 │       ├── post-create.sh     # One-time setup (pnpm store ownership)
@@ -161,6 +184,29 @@ handles both quality review and git commits.
   commits automatically after Reviewer approval
 - TDD User-in-the-Loop — strict Red-Green-Refactor with
   user approval at every phase transition
+
+### blueprint_v3 (autonomous lead)
+
+**Purely autonomous after clarification. The lead handles
+planning, implementation, and coordination.**
+
+The lead checks for project context at startup, clarifies
+the task with the user, writes a plan, decomposes into
+task slices, and executes autonomously. For each task, the
+lead assesses risk and uncertainty to decide whether to
+consult advisors (test-engineer, security-engineer), then
+implements and sends to the reviewer. The reviewer either
+approves and commits or rejects with findings for the lead
+to fix.
+
+**Agents:**
+
+- Lead (clarification + planning + implementation +
+  coordination)
+- Reviewer (independent quality gate — reviews and commits)
+- Test Engineer (advisory — test design on demand)
+- Security Engineer (advisory — security assessment on
+  demand)
 
 ## Devcontainer Template
 
@@ -276,5 +322,5 @@ Before ending a session that modified the blueprint:
 
 1. Verify that all changes are safe, sound and concise
 2. Verify `CLAUDE.md` (this file) reflects current structure
-3. Verify `README.md` matches current blueprints and workflow
+3. Verify root `README.md` matches current blueprints
 4. Update the project structure diagram if directories changed

@@ -2,8 +2,8 @@
 
 This file describes how the blueprint is designed and why.
 It targets sessions working *on* the blueprint (adding
-rules, workflows, agents). For user-facing setup and usage, see
-`README.md`. For lead behavior during a session, see
+rules, workflows, agents). For user-facing setup and usage,
+see the root `README.md`. For lead behavior during a session, see
 `.claude/CLAUDE.md`.
 
 ## Philosophy
@@ -66,7 +66,6 @@ three problems from the v1 approach:
 ```text
 blueprint_v2/
 ├── CLAUDE.md              ← You are here (design reference)
-├── README.md              ← Human-facing setup and usage
 ├── .claude/
 │   ├── CLAUDE.md          ← Lead instructions (session behavior)
 │   ├── settings.json      ← Agent teams
@@ -254,7 +253,7 @@ repeating the independence principle.
    pragmatic languages like Go)
 5. Add the language's extensions to `code-mass.md` and
    `code-principles.md` paths
-6. Update `README.md` and root `CLAUDE.md` structure
+6. Update root `CLAUDE.md` and root `README.md`
    diagram
 7. Run `uv run pytest blueprint_v2/tests/ -m static -v`
 

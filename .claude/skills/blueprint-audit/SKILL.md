@@ -43,7 +43,8 @@ mechanical to detect.
 **Read:** Every file that agents consume as instructions:
 - `<blueprint>/.claude/CLAUDE.md` (lead instructions)
 - `<blueprint>/CLAUDE.md` (design reference)
-- `<blueprint>/README.md` (user-facing docs)
+- Root `/README.md` (user-facing docs — consolidated for
+  all blueprints)
 - All files in `<blueprint>/.claude/agents/`
 - All files in `<blueprint>/.claude/workflows/` (if present)
 - All files in `<blueprint>/.claude/rules/`
@@ -132,8 +133,8 @@ Check that the three documentation layers agree:
 2. **`<blueprint>/CLAUDE.md`** — design reference
    (component architecture, how components relate,
    structure diagram)
-3. **`<blueprint>/README.md`** — user-facing docs (agent
-   table, workflow descriptions, setup instructions)
+3. **Root `/README.md`** — user-facing docs (blueprint
+   summaries, agent tables, setup instructions)
 
 For each, verify:
 - Agent lists match the actual `.claude/agents/` contents

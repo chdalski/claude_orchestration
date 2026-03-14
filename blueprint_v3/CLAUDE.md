@@ -1,0 +1,230 @@
+# Blueprint v3 — Design Reference
+
+This file describes how the blueprint is designed and why.
+It targets sessions working *on* the blueprint (adding
+rules, agents, modifying the flow). For user-facing setup
+and usage, see the root `README.md`. For lead behavior during a
+session, see `.claude/CLAUDE.md`.
+
+## Philosophy
+
+### Autonomous after clarification
+
+Every session starts with clarification and planning. Once
+the user approves the plan, execution is fully autonomous —
+the lead implements each task slice, consults advisors when
+warranted, and sends completed work to the reviewer for
+independent review and commit. No user checkpoints gate
+individual task slices.
+
+This trades user control for speed. Users who want
+per-commit approval should use blueprint_v2's Supervised
+workflow instead. V3 is for users who trust the quality
+gates (reviewer + advisors) and want maximum throughput.
+
+### Lead as implementor
+
+The lead absorbs the Architect and Developer roles from
+blueprint_v2. This eliminates:
+
+- **Handoff latency** — no waiting for relay messages
+  between Architect → lead → Developer
+- **Relay overhead** — no token cost for the lead to
+  forward messages between agents
+- **Coordination failure** — no peer-to-peer agent
+  communication that can silently drop messages
+
+The trade-off is that the lead runs on Opus (more expensive
+per token) and handles a larger cognitive load. This works
+because planning and implementation are sequential — the
+lead finishes planning before implementing, so it doesn't
+need to hold both in working memory simultaneously.
+
+### Selective advisor consultation
+
+Advisors (test-engineer, security-engineer) are consulted
+based on risk and uncertainty indicators, not on every task.
+This is informed by the retrospective finding that mandatory
+security review on low-risk tasks (pure functions, internal
+wiring) produces rubber-stamp sign-offs that dilute the
+signal when real issues arise.
+
+The framework:
+- **High uncertainty → test-engineer** — design trade-offs,
+  complex interactions, greenfield code, API surface changes.
+  When consulted, the test-engineer also verifies the
+  implementation against the test list post-implementation.
+- **High risk → security-engineer** — trust boundaries,
+  untrusted input, crypto, network-facing code, secrets,
+  permissions, data persistence. When consulted, the
+  security-engineer also reviews the implementation and
+  gives a post-implementation sign-off.
+- **Low risk + low uncertainty → skip advisors** — pure
+  functions, pattern-following, test-only, refactoring, docs
+
+## Component Architecture
+
+```text
+blueprint_v3/
+├── CLAUDE.md              ← You are here (design reference)
+├── .claude/
+│   ├── CLAUDE.md          ← Lead instructions (session behavior)
+│   ├── settings.json      ← Agent teams config
+│   ├── agents/            ← Agent definitions (3 agents)
+│   │   ├── reviewer.md    ← Independent quality gate + commits
+│   │   ├── test-engineer.md   ← Advisory — test design on demand
+│   │   └── security-engineer.md ← Advisory — security assessment on demand
+│   ├── rules/             ← Unconditional + conditional rules
+│   │   ├── simplicity.md         ← [unconditional] KISS, YAGNI, etc.
+│   │   ├── code-principles.md    ← [conditional: source files] SOLID, Kent Beck
+│   │   ├── lang-typescript.md    ← [conditional: *.ts, *.tsx]
+│   │   ├── lang-python.md        ← [conditional: *.py]
+│   │   ├── lang-go.md            ← [conditional: *.go]
+│   │   ├── lang-rust.md          ← [conditional: *.rs]
+│   │   ├── functional-style.md   ← [conditional: *.ts, *.py, *.rs]
+│   │   ├── documentation.md      ← [conditional: README*, docs/**]
+│   │   └── code-mass.md          ← [conditional: source files]
+│   └── skills/            ← Skill definitions (with co-located templates)
+│       ├── ensure-plans-dir/
+│       │   ├── SKILL.md   ← Create .ai/plans/ and format guide if missing
+│       │   └── plan-format.md  ← Plan format template
+│       └── project-init/
+│           ├── SKILL.md   ← Project scanning + context generation
+│           ├── README.md  ← Extension guide (add <language>-init.md)
+│           ├── rust-init.md ← Rust-specific init (Cargo lints)
+│           └── project-context.md ← Project context template
+└── tests/                 ← Blueprint verification tests
+    ├── blueprint_contracts.py  ← Single source of truth for structure
+    ├── conftest.py             ← Shared fixtures + helpers
+    ├── static/                 ← Structure, caching, agent tests
+    ├── behavioral/             ← SDK-based runtime tests
+    └── fixtures/
+        └── minimal_project/    ← Minimal project for behavioral tests
+```
+
+### How Components Relate
+
+**Lead instructions** (`.claude/CLAUDE.md`) define session
+behavior — startup, clarification, planning, implementation,
+advisor consultation, and reviewer coordination. The lead is
+the only agent with user access and the only agent that
+implements code.
+
+**Agent definitions** (`.claude/agents/*.md`) specify each
+agent's model, tools, and instructions via YAML frontmatter
+and markdown body. All three agents are general-purpose
+building blocks — they respond to consultation requests
+(advisors) or review requests (reviewer) without knowing
+which workflow or blueprint invoked them.
+
+#### Agent Design Principle
+
+Agent files define **role, domain expertise, and
+capability** — what the agent is and how it does its work.
+Agents communicate generically: "the requester" — never
+hardcoded teammate names.
+
+What belongs in an agent file:
+- The agent's purpose and domain expertise
+- How the agent does its work (process, checklist)
+- Generic communication: "notify the requester," "send
+  findings to whoever requested the review"
+- Tool usage and constraints
+
+What does NOT belong in an agent file:
+- Named teammates
+- Coordination sequences
+- Workflow-specific conditionals
+
+**Skills** (`.claude/skills/*/SKILL.md`) define reusable
+procedures invoked by the lead. Templates consumed by a
+skill live in that skill's directory (not a separate
+`templates/` directory) — this makes dependencies explicit
+and eliminates a top-level directory. Currently:
+`ensure-plans-dir` (prepares the plans directory and its
+format guide) and `project-init` (scans the project and
+generates context).
+
+**Rules** (`.claude/rules/*.md`) provide guidance that
+Claude Code injects into agent context automatically.
+Unconditional rules load at session start; conditional
+rules load when agents touch matching files. Rules are
+independent of agents — they apply to any agent that
+touches a matching file.
+
+**Plans** (`.ai/plans/*.md`) are runtime artifacts written
+by the lead during a session. They capture the goal,
+context, steps, task decomposition, and commit SHAs as
+tasks complete. Plans are committed to git as decision
+records.
+
+**Tests** (`tests/`) verify the blueprint's structural
+integrity: required files exist, agent frontmatter matches
+contracts, static files contain no dynamic content.
+
+## Rule System Design
+
+Identical to blueprint_v2. See the v2 design reference for
+the full rule system design documentation. In summary:
+
+- **Unconditional** (no `paths:` frontmatter): `simplicity.md`
+- **Conditional** (with `paths:` frontmatter): all others
+- Universal principles stated once, language rules extend
+  without restating
+
+### Adding a new language
+
+1. Create `.claude/rules/lang-<language>.md`
+2. Add `paths:` frontmatter with file extensions
+3. Include idioms, testing, tooling, pitfalls
+4. Update `functional-style.md` paths if applicable
+5. Update `code-mass.md` and `code-principles.md` paths
+6. Update root `CLAUDE.md` and root `README.md`
+7. Run `uv run pytest blueprint_v3/tests/ -m static -v`
+
+No changes to `.claude/CLAUDE.md` or agents.
+
+## Prompt Caching Alignment
+
+The blueprint aligns with Claude Code's prompt caching
+architecture (see repo-level
+`.claude/rules/prompt-caching.md`):
+
+- **Level 3 (CLAUDE.md + rules)** — all files are fully
+  static. No dates, counters, or changing data. Enforced
+  by caching compliance tests.
+- **Tool set stability** — each agent has a fixed tool set
+  in its frontmatter. No conditional tool loading.
+- **Model delegation** — agents are subagents (separate
+  conversations), not model switches within a conversation.
+- **Conditional rules** — loaded by Claude Code at level 3,
+  part of the cached prefix.
+
+## What This Blueprint Does NOT Prescribe
+
+These are intentional omissions, not gaps:
+
+- **Architecture** — project choice, not blueprint concern
+- **Security practices** — handled on-demand by the
+  security-engineer advisor
+- **Data modeling** — project-specific decisions
+- **CI/CD** — project-specific infrastructure
+- **Formatting** — belongs in project CLAUDE.md or
+  pre-commit hooks
+- **Testing methodology** — the test-engineer advisor
+  designs test specifications; the lead implements them
+- **User checkpoints** — v3 is fully autonomous after plan
+  approval; use v2 for per-commit user control
+
+## Comparison with Blueprint v2
+
+| Aspect | v2 | v3 |
+|---|---|---|
+| Implementation | Developer agent (Sonnet) | Lead (Opus) |
+| Planning | Architect agent (Opus) | Lead (Opus) |
+| User checkpoints | Per-commit (Supervised) or none (Autonomous) | None after plan approval |
+| Advisor invocation | Every task (mandatory sign-offs) | On-demand (risk/uncertainty) |
+| Workflows | 4 variants (user chooses) | 1 flow (autonomous) |
+| Agents | 5 (Architect, Developer, Reviewer, TE, SE) | 3 (Reviewer, TE, SE) |
+| Agent communication | Peer-to-peer + lead relay | Hub-and-spoke (lead only) |
+| Handoff monitoring | Required (message loss risk) | Not needed (lead is always sender/receiver) |

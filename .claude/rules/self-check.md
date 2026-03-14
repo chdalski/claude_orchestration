@@ -47,7 +47,7 @@ If the change affects blueprint structure (new files, new
 directories, renamed concepts):
 
 - Update the root `CLAUDE.md` structure diagram
-- Update the blueprint's `README.md`
+- Update the root `README.md` blueprint section
 - Update `blueprint_contracts.py` if required files or
   directories changed
 
@@ -100,7 +100,7 @@ tests catch this, but awareness prevents the mistake.
 ## When to Skip
 
 - Typo fixes in a single file with no cross-references
-- Changes to `README.md` files (human-facing, no agent
+- Changes to the root `README.md` (human-facing, no agent
   impact)
 - Changes to test files only (they verify, they don't
   instruct)

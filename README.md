@@ -1,187 +1,167 @@
 # Claude Orchestration Kit
 
-A drop-in orchestration kit for Claude Code multi-agent
-workflows. Copy a blueprint's `.claude/` directory into any
-project to get a team of specialized agents coordinated by
-your Claude Code session.
-
-## Repository Layout
-
-```text
-claude_orchestration/
-├── .devcontainer/           # Sandboxed execution environment
-├── blueprint_testlist/      # Test-list blueprint (5 agents)
-│   └── .claude/             # Orchestration config + agents
-└── blueprint_v2/            # Plan-first blueprint (workflow-based)
-    └── .claude/             # Lead instructions, agents, rules, workflows, templates
-```
+Drop-in multi-agent orchestration for Claude Code. Copy a
+blueprint's `.claude/` directory into any project to get a
+team of specialized agents coordinated by your Claude Code
+session.
 
 ## Blueprints
 
-### Test-List Blueprint (blueprint_testlist)
+### Choosing a Blueprint
 
-**Test-list (spec-first), Architect handles task
-decomposition.**
+| If you want... | Use |
+|---|---|
+| Full control, spec-first TDD with knowledge base | v1 |
+| Workflow options (supervised, autonomous, TDD) | v2 |
+| Maximum throughput, minimal interaction | v3 |
+| Per-commit user approval | v1 or v2 (Supervised) |
+| Full autonomy after plan approval | v3 |
+| Fewer agents, simpler coordination | v3 |
 
-The lead focuses on user communication and team
-coordination. The Architect reads the codebase, decomposes
-work into tasks, writes plans to `.claude/plan.md`, and
-feeds tasks to the dev-team sequentially. The Test Engineer
-produces test specs, the Developer writes all code (source
-and tests). Both Test Engineer and Security Engineer give
+### v1 — Test-List (5 agents)
+
+Spec-first development. The Architect decomposes work, the
+Test Engineer designs what to test, the Developer writes all
+code. Both Test Engineer and Security Engineer give
 post-implementation sign-offs before review.
 
-**Agents:** Lead, Architect, Developer, Test Engineer,
-Security Engineer, Reviewer
-
 | Agent | Model | Role |
 |-------|-------|------|
-| **Architect** | sonnet | Reads codebase, decomposes tasks, writes plans |
-| **Developer** | sonnet | Implements all code (source + tests) |
-| **Test Engineer** | sonnet | Advisory — designs test specs, verifies coverage |
-| **Security Engineer** | sonnet | Advisory — checks security gaps |
-| **Reviewer** | opus | Quality gate — commits when satisfied |
-
-**Workflow:**
+| Architect | Sonnet | Reads codebase, decomposes tasks, writes plans |
+| Developer | Sonnet | Implements all code (source + tests) |
+| Test Engineer | Sonnet | Advisory — designs test specs, verifies coverage |
+| Security Engineer | Sonnet | Advisory — checks security gaps |
+| Reviewer | Opus | Quality gate — commits when satisfied |
 
 ```text
-User -> Lead -> Story -> Architect -> Task -> Dev-Team -> Reviewer -> Commit
-         ^                  |          ^        |            |
-         |                  |          |        '------<-----' (if rejected)
-         '--------<---------'          '--------<-----' (questions)
+User -> Lead -> Architect -> Dev-Team -> Reviewer -> Commit
 ```
 
-1. **Lead** clarifies requirements with user
-2. **Architect** receives clarified story, reads codebase,
-   decomposes into tasks, writes plan to `.claude/plan.md`
-3. **Dev-team** receives task from Architect, implements
-4. **Reviewer** commits or rejects (coordinated by Lead)
-5. Architect sends next task after commit
-
 The dev-team (Developer, Test Engineer, Security Engineer)
-discusses approach before implementing. Test Engineer
-produces test spec, Developer writes tests, Test Engineer
-verifies before implementation starts. Post-implementation:
-both Test Engineer and Security Engineer give sign-offs
-before review.
+discusses approach before implementing. The Architect feeds
+tasks sequentially; the lead coordinates review handoffs.
 
-**Knowledge base:** Engineering principles in `knowledge/`
-that agents load during startup — language-agnostic base
-principles, language-specific extensions (Rust, TypeScript,
-Python, Go), and project-specific conventions in
-`extensions/`.
+Engineering principles live in `knowledge/` — language-agnostic
+base principles, language-specific extensions, and
+project-specific conventions in `extensions/`.
 
-### Plan-First Blueprint (blueprint_v2)
+### v2 — Clarify-First (workflow-based)
 
-**Plan-first, workflow-based.** The lead starts in plan
-mode, clarifies the task, spawns an Architect to write a
-plan to `.ai/plans/`, and the user approves before
-execution. Workflows define execution patterns — adding a
-new workflow is just adding a file. Language-specific
-guidance loads automatically via conditional rules (no
-manual knowledge loading).
-
-**Agents:** Lead, Architect, Auditor, Plan Init, Committer,
-Developer, Test Engineer, Security Engineer, Reviewer
+The lead clarifies the task, then presents workflow options.
+The user chooses how work gets done. Workflows are separate
+files in `.claude/workflows/` — adding one requires no
+changes to CLAUDE.md.
 
 | Agent | Model | Role |
 |-------|-------|------|
-| **Architect** | opus | Reads codebase, writes plans, decomposes and feeds tasks |
-| **Auditor** | haiku | Checks CLAUDE.md accuracy |
-| **Plan Init** | haiku | Ensures .ai/plans/ and format guide exist |
-| **Committer** | haiku | Stages and commits files |
-| **Developer** | sonnet | Implements all code (source + tests) |
-| **Test Engineer** | sonnet | Advisory — designs test specs, verifies coverage |
-| **Security Engineer** | sonnet | Advisory — checks security gaps |
-| **Reviewer** | sonnet | Independent quality gate — reviews, does not commit |
+| Architect | Opus | Reads codebase, writes plans, feeds tasks |
+| Developer | Sonnet | Implements all code (source + tests) |
+| Test Engineer | Sonnet | Advisory — designs test specs, verifies coverage |
+| Security Engineer | Sonnet | Advisory — checks security gaps |
+| Reviewer | Sonnet | Quality gate — reviews and commits |
 
 **Workflows:**
 
-- **Develop-Review (Supervised)** — test-list-driven
-  development with security review and independent quality
-  gate. The user approves each commit before it enters git
-  history.
+- **Direct-Review** — lead handles work directly, Reviewer
+  checks quality. For well-scoped tasks.
+- **Develop-Review (Supervised)** — full dev cycle with
+  Architect planning, test-list development, and user
+  approval per commit.
 - **Develop-Review (Autonomous)** — same as Supervised but
-  commits automatically after Reviewer approval — the user
-  trusts the agent quality gates.
-- **TDD User-in-the-Loop** — strict Red-Green-Refactor
-  with user approval at every phase transition.
+  commits automatically after Reviewer approval.
+- **TDD User-in-the-Loop** — strict Red-Green-Refactor with
+  user approval at every phase transition.
 
-**Best for:** Projects wanting plan-first development with
-flexible workflow selection and automatic language-specific
-guidance. See `blueprint_v2/README.md` for full details.
+Language-specific guidance loads automatically via
+conditional rules when agents touch matching files.
+`/project-init` generates project context on first session.
 
-## Prerequisites
+### v3 — Autonomous Lead (3 agents)
 
-Agent teams are an experimental Claude Code feature, disabled
-by default. The included `settings.json` enables them
-automatically when you copy the blueprint. You can also set
-the environment variable directly:
+The lead handles everything: clarification, planning, and
+implementation. Three subagents provide independent code
+review, on-demand test design, and on-demand security
+assessment. After the user approves the plan, execution is
+fully autonomous.
 
-```bash
-export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+| Agent | Model | Role |
+|-------|-------|------|
+| Reviewer | Sonnet | Quality gate — reviews and commits |
+| Test Engineer | Sonnet | Advisory — test lists on demand |
+| Security Engineer | Sonnet | Advisory — security assessments on demand |
+
+```text
+User -> Lead -> Plan -> [Assess Risk/Uncertainty]
+                  |            |              |
+                  |     Test Engineer   Security Engineer
+                  |     (if needed)      (if needed)
+                  v
+              Implement -> Reviewer -> Commit
 ```
+
+Advisors are consulted based on risk and uncertainty
+indicators — not on every task. When consulted, they also
+verify the implementation post-implementation (test coverage
+conformance, security sign-off). Hub-and-spoke communication
+(lead is always one party) eliminates message-loss risk.
 
 ## Quick Start
 
-Copy a blueprint into your project:
-
 ```bash
-# Test-list blueprint
-cp -r blueprint_testlist/.claude/ /path/to/your/project/.claude/
-
-# OR plan-first blueprint
+# Copy a blueprint into your project
+cp -r blueprint_v1/.claude/ /path/to/your/project/.claude/
+# or
 cp -r blueprint_v2/.claude/ /path/to/your/project/.claude/
+# or
+cp -r blueprint_v3/.claude/ /path/to/your/project/.claude/
 ```
 
 Start Claude Code in your project directory. The CLAUDE.md
 loads automatically and configures your session as the team
 lead.
 
-## Devcontainer (Sandboxed Execution)
+## Prerequisites
 
-The root `.devcontainer/` directory provides an isolated
-container for running agents with:
-
-- **Network firewall** — outbound traffic restricted to
-  an allowlist of domains (Anthropic API, GitHub, package
-  registries, language docs). Edit
-  `allowed-domains.conf` to add or remove domains —
-  changes take effect on container restart, no rebuild
-  needed.
-- **UID/GID mapping** — container user matches the host
-  user, so bind-mounted files have correct permissions
-  regardless of the host's UID.
-- **Project-controlled permissions** — the container
-  respects the project's `settings.json` permission mode.
-  Blueprints that use plan mode (like v2) will start in
-  plan mode; projects that set `bypassPermissions` will
-  run autonomously.
-- **Host Claude config** — `~/.claude` is bind-mounted
-  read-only so agents have access to API keys and
-  settings without modifying the host config.
-
-To use the devcontainer, copy it alongside `.claude/`:
+Agent teams are an experimental Claude Code feature,
+disabled by default. Each blueprint's `settings.json`
+enables them automatically. You can also set the environment
+variable directly:
 
 ```bash
-cp -r .devcontainer/ /path/to/your/project/.devcontainer/
+export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 ```
 
-Then open the project in VS Code with the Dev Containers
-extension, or use the `devcontainer` CLI.
+## Devcontainer Template
+
+`devcontainer_template/` provides a devcontainer setup for
+sandboxed agent execution. Copy it alongside `.claude/`:
+
+```bash
+cp -r devcontainer_template/.devcontainer/ /path/to/your/project/.devcontainer/
+```
+
+Features:
+
+- **Dual auth mode** — proxy (default) or OAuth, controlled
+  by `CLAUDE_AUTH` in `.devcontainer/.env.local`
+- **Project-scoped volume** — Claude config and history
+  isolated per project
+- **Host config as template** — `~/.claude/` mounted
+  read-only, copied into container on startup
+
+See `devcontainer_template/.devcontainer/README.md` for
+auth configuration, troubleshooting, and mount details.
 
 ## Known Limitations
 
 Agent teams are experimental. Be aware of:
 
-- **No session resumption** — `/resume` and `/rewind` do not
-  restore in-process teammates.
-- **One team per session** — Clean up the current team before
-  starting another.
-- **No nested teams** — Only the lead can manage the team.
-- **Lead is fixed** — The session that creates the team stays
-  the lead.
-- **Task status can lag** — Teammates sometimes fail to mark
-  tasks completed. Check and update manually if stuck.
-- **Permissions inherit** — All teammates inherit the lead's
-  permission settings.
+- **No session resumption** — `/resume` and `/rewind` do
+  not restore in-process teammates.
+- **One team per session** — clean up the current team
+  before starting another.
+- **No nested teams** — only the lead can manage the team.
+- **Lead is fixed** — the session that creates the team
+  stays the lead.
+- **Permissions inherit** — all teammates inherit the
+  lead's permission settings.
