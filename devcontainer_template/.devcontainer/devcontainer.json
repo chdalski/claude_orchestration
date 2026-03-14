@@ -1,5 +1,5 @@
 {
-  "name": "Claude Orchestration Sandbox",
+  "name": "${localWorkspaceFolderBasename} - Sandbox",
   "build": {
     "dockerfile": "Dockerfile"
   },
