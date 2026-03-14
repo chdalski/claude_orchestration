@@ -8,8 +8,8 @@ from pathlib import Path
 
 import pytest
 
-from claude_code_sdk import ClaudeCodeOptions, query
-from claude_code_sdk.types import AssistantMessage, ToolUseBlock
+from claude_agent_sdk import ClaudeAgentOptions, query
+from claude_agent_sdk.types import AssistantMessage, ToolUseBlock
 
 from behavioral.conftest import NESTED_SESSION_ENV, ToolCallLog
 
@@ -33,12 +33,12 @@ async def _run_agent_session(
     tool_log: ToolCallLog,
 ) -> None:
     """Run a Claude Code session, logging tool calls from the message stream."""
-    options = ClaudeCodeOptions(
+    options = ClaudeAgentOptions(
         cwd=str(project_path),
         max_turns=3,
         env=NESTED_SESSION_ENV,
         permission_mode="bypassPermissions",
-        append_system_prompt=DIRECT_MODE,
+        system_prompt={"type": "preset", "preset": "claude_code", "append": DIRECT_MODE},
     )
 
     async for message in query(prompt=prompt, options=options):
@@ -52,12 +52,12 @@ async def _run_agent_session(
 @pytest.mark.timeout(90)
 async def test_reviewer_does_not_commit_unprompted(fixture_project, tool_log):
     """Reviewer reads and assesses code but never runs git commit without a signal."""
-    options = ClaudeCodeOptions(
+    options = ClaudeAgentOptions(
         cwd=str(fixture_project),
         max_turns=3,
         env=NESTED_SESSION_ENV,
         permission_mode="bypassPermissions",
-        append_system_prompt=DIRECT_MODE,
+        system_prompt={"type": "preset", "preset": "claude_code", "append": DIRECT_MODE},
     )
 
     prompt = (

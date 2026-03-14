@@ -1,6 +1,6 @@
 """Shared fixtures for behavioral tests.
 
-SDK quirks and design decisions (claude-code-sdk 0.0.25, CLI 2.1.63):
+SDK quirks and design decisions (claude-agent-sdk 0.1.48, CLI 2.1.76):
 
 - can_use_tool callback: Does not fire with this CLI version. The SDK
   sets --permission-prompt-tool stdio, but the CLI never sends
@@ -12,7 +12,7 @@ SDK quirks and design decisions (claude-code-sdk 0.0.25, CLI 2.1.63):
 
 - Blueprint CLAUDE.md conflict: The lead's CLAUDE.md says "never
   implement code". Behavioral tests that need the agent to use tools
-  directly must pass append_system_prompt to override this.
+  directly must pass system_prompt (with preset append) to override this.
 
 - SessionStart hook overhead: The blueprint's SessionStart hook tells
   the agent to read many knowledge files, consuming most of max_turns.
@@ -36,10 +36,42 @@ FIXTURES_DIR = Path(__file__).parent.parent / "fixtures" / "minimal_project"
 BLUEPRINT_CLAUDE_DIR = Path(__file__).parent.parent.parent / ".claude"
 
 
+def _has_claude_auth() -> bool:
+    """Check whether any valid Claude Code authentication is available.
+
+    The SDK spawns the CLI as a subprocess, so it inherits
+    whatever auth the CLI has — API key, OAuth, or cloud
+    provider credentials. Checking only ANTHROPIC_API_KEY
+    would skip tests for OAuth users who are fully
+    authenticated.
+    """
+    # API key (direct Anthropic API)
+    if os.environ.get("ANTHROPIC_API_KEY"):
+        return True
+
+    # OAuth (claude login) — credentials stored by the CLI
+    credentials_file = Path.home() / ".claude" / ".credentials.json"
+    if credentials_file.is_file():
+        try:
+            creds = json.loads(credentials_file.read_text())
+            if creds.get("claudeAiOauth"):
+                return True
+        except (json.JSONDecodeError, OSError):
+            pass
+
+    # Cloud providers (Bedrock, Vertex, Azure)
+    if os.environ.get("CLAUDE_CODE_USE_BEDROCK"):
+        return True
+    if os.environ.get("CLAUDE_CODE_USE_VERTEX"):
+        return True
+
+    return False
+
+
 def pytest_collection_modifyitems(config, items):
-    """Skip behavioral tests if ANTHROPIC_API_KEY is not set."""
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        skip = pytest.mark.skip(reason="ANTHROPIC_API_KEY not set")
+    """Skip behavioral tests if no Claude Code authentication is available."""
+    if not _has_claude_auth():
+        skip = pytest.mark.skip(reason="No Claude Code auth (API key, OAuth, or cloud provider)")
         for item in items:
             if "behavioral" in str(item.fspath):
                 item.add_marker(skip)

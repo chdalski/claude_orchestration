@@ -53,6 +53,7 @@ DYNAMIC_CONTENT_ALLOWLIST: list[str] = [
 
 # Agent definitions — filename must match exactly
 AGENT_FILES: dict[str, str] = {
+    "developer": "developer.md",
     "reviewer": "reviewer.md",
     "test-engineer": "test-engineer.md",
     "security-engineer": "security-engineer.md",
@@ -60,6 +61,10 @@ AGENT_FILES: dict[str, str] = {
 
 # Agent tools — exact tool set for each agent
 AGENT_TOOLS: dict[str, set[str]] = {
+    "developer": {
+        "Read", "Write", "Edit", "Bash", "Glob", "Grep",
+        "WebSearch", "WebFetch", "SendMessage",
+    },
     "reviewer": {
         "Read", "Glob", "Grep", "Bash", "SendMessage",
     },
@@ -73,6 +78,7 @@ AGENT_TOOLS: dict[str, set[str]] = {
 
 # Agent models — required model for each agent
 AGENT_MODELS: dict[str, str] = {
+    "developer": "sonnet",
     "reviewer": "sonnet",
     "test-engineer": "sonnet",
     "security-engineer": "sonnet",

@@ -16,7 +16,8 @@ session.
 | Maximum throughput, minimal interaction | v3 |
 | Per-commit user approval | v1 or v2 (Supervised) |
 | Full autonomy after plan approval | v3 |
-| Fewer agents, simpler coordination | v3 |
+| Plan queue with concurrent clarification | v3 |
+| Lead stays responsive during execution | v3 |
 
 ### v1 — Test-List (5 agents)
 
@@ -76,34 +77,45 @@ Language-specific guidance loads automatically via
 conditional rules when agents touch matching files.
 `/project-init` generates project context on first session.
 
-### v3 — Autonomous Lead (3 agents)
+### v3 — Plan Queue + Developer (4 agents)
 
-The lead handles everything: clarification, planning, and
-implementation. Three subagents provide independent code
-review, on-demand test design, and on-demand security
-assessment. After the user approves the plan, execution is
-fully autonomous.
+The lead handles clarification, planning, and plan queue
+management. The Developer implements all code. After the
+user approves a plan, the lead feeds tasks to the Developer
+one at a time. The Developer assesses risk/uncertainty,
+consults advisors when warranted, implements, and sends to
+the Reviewer. The lead stays responsive to the user during
+execution — new requests become plans in the queue.
 
 | Agent | Model | Role |
 |-------|-------|------|
+| Developer | Sonnet | Implements all code (source + tests) |
 | Reviewer | Sonnet | Quality gate — reviews and commits |
 | Test Engineer | Sonnet | Advisory — test lists on demand |
 | Security Engineer | Sonnet | Advisory — security assessments on demand |
 
 ```text
-User -> Lead -> Plan -> [Assess Risk/Uncertainty]
-                  |            |              |
-                  |     Test Engineer   Security Engineer
-                  |     (if needed)      (if needed)
-                  v
-              Implement -> Reviewer -> Commit
+User -> Lead -> Plan Queue -> Lead sends task
+                                    |
+                                Developer
+                                    |
+                          [Assess Risk/Uncertainty]
+                           /                    \
+                   Test Engineer          Security Engineer
+                   (if needed)             (if needed)
+                          \                    /
+                                Developer
+                                    |
+                                Reviewer -> Commit
+                                    |
+                              Lead (next task)
 ```
 
-Advisors are consulted based on risk and uncertainty
-indicators — not on every task. When consulted, they also
-verify the implementation post-implementation (test coverage
-conformance, security sign-off). Hub-and-spoke communication
-(lead is always one party) eliminates message-loss risk.
+Advisors are consulted by the Developer based on risk and
+uncertainty indicators — not on every task. When consulted,
+they also verify the implementation post-implementation
+(test coverage conformance, security sign-off). The
+Developer-Reviewer rejection loop is opaque to the lead.
 
 ## Quick Start
 

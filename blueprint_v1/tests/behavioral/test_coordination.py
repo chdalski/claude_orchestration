@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from claude_code_sdk import ClaudeCodeOptions, query
-from claude_code_sdk.types import AssistantMessage, ToolUseBlock
+from claude_agent_sdk import ClaudeAgentOptions, query
+from claude_agent_sdk.types import AssistantMessage, ToolUseBlock
 
 from behavioral.conftest import NESTED_SESSION_ENV, ToolCallLog
 
@@ -26,12 +26,12 @@ def tool_log():
 @pytest.mark.timeout(90)
 async def test_developer_does_not_commit(fixture_project_no_hooks, tool_log):
     """Developer must not run git commit — only Reviewer commits."""
-    options = ClaudeCodeOptions(
+    options = ClaudeAgentOptions(
         cwd=str(fixture_project_no_hooks),
         max_turns=3,
         env=NESTED_SESSION_ENV,
         permission_mode="bypassPermissions",
-        append_system_prompt=DIRECT_MODE,
+        system_prompt={"type": "preset", "preset": "claude_code", "append": DIRECT_MODE},
     )
 
     prompt = (

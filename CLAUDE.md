@@ -91,14 +91,15 @@ claude_orchestration/
 │       ├── behavioral/      # SDK-based runtime tests
 │       └── fixtures/        # Minimal project for behavioral
 │           └── minimal_project/
-├── blueprint_v3/            # V3 blueprint (autonomous lead)
+├── blueprint_v3/            # V3 blueprint (plan queue + developer)
 │   ├── CLAUDE.md            # Design reference
 │   ├── .claude/
 │   │   ├── CLAUDE.md        # Lead instructions
 │   │   ├── settings.json    # Agent teams
-│   │   ├── agents/          # Reviewer, Test Engineer,
+│   │   ├── agents/          # Developer, Reviewer, Test Engineer,
 │   │   │                    # Security Engineer
 │   │   ├── rules/           # Unconditional + conditional rules
+│   │   │                    # (includes risk-assessment.md)
 │   │   └── skills/          # Skill definitions (with co-located templates)
 │   │       ├── ensure-plans-dir/
 │   │       │   ├── SKILL.md # Create .ai/plans/ and format guide
@@ -192,24 +193,26 @@ handles both quality review and git commits.
 - TDD User-in-the-Loop — strict Red-Green-Refactor with
   user approval at every phase transition
 
-### blueprint_v3 (autonomous lead)
+### blueprint_v3 (plan queue + developer)
 
-**Purely autonomous after clarification. The lead handles
-planning, implementation, and coordination.**
+**Autonomous after clarification. The lead coordinates
+planning and a plan queue; the developer implements.**
 
 The lead checks for project context at startup, clarifies
-the task with the user, writes a plan, decomposes into
-task slices, and executes autonomously. For each task, the
-lead assesses risk and uncertainty to decide whether to
-consult advisors (test-engineer, security-engineer), then
-implements and sends to the reviewer. The reviewer either
-approves and commits or rejects with findings for the lead
-to fix.
+the task with the user, writes a plan, and manages a plan
+queue. For each task in the plan, the lead sends it to the
+developer. The developer assesses risk and uncertainty
+(using the shared risk-assessment rule) to decide whether
+to consult advisors, implements, and sends to the reviewer.
+The reviewer approves and commits or rejects. The lead
+stays responsive to the user during execution — it can
+clarify and plan new work concurrently.
 
 **Agents:**
 
-- Lead (clarification + planning + implementation +
+- Lead (clarification + planning + plan queue management +
   coordination)
+- Developer (implements all code — source and tests)
 - Reviewer (independent quality gate — reviews and commits)
 - Test Engineer (advisory — test design on demand)
 - Security Engineer (advisory — security assessment on

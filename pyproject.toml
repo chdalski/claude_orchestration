@@ -7,7 +7,7 @@ dependencies = [
     "pytest>=8.0",
     "pytest-asyncio>=0.24",
     "pyyaml>=6.0",
-    "claude-code-sdk>=0.0.20",
+    "claude-agent-sdk>=0.1.48",
     "python-dotenv>=1.0",
     "pytest-timeout>=2.3",
 ]
@@ -16,8 +16,8 @@ dependencies = [
 asyncio_mode = "auto"
 markers = [
     "static: tests that parse files and validate structure (no API calls)",
-    "behavioral: tests that run real Claude Code sessions (requires API key)",
+    "behavioral: tests that run real Claude Code sessions (requires auth)",
 ]
-testpaths = ["blueprint_testlist/tests", "blueprint_v2/tests", "blueprint_v3/tests"]
+testpaths = ["blueprint_v1/tests", "blueprint_v2/tests", "blueprint_v3/tests"]
 pythonpath = []
-norecursedirs = ["blueprint_testlist/tests/fixtures", "blueprint_v2/tests/fixtures", "blueprint_v3/tests/fixtures"]
+norecursedirs = ["blueprint_v1/tests/fixtures", "blueprint_v2/tests/fixtures", "blueprint_v3/tests/fixtures"]

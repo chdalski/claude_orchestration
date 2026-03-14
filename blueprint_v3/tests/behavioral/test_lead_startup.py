@@ -11,8 +11,8 @@ These tests verify observable startup behavior:
 
 import pytest
 
-from claude_code_sdk import ClaudeCodeOptions, query
-from claude_code_sdk.types import AssistantMessage, ToolUseBlock
+from claude_agent_sdk import ClaudeAgentOptions, query
+from claude_agent_sdk.types import AssistantMessage, ToolUseBlock
 
 from behavioral.conftest import NESTED_SESSION_ENV, ToolCallLog
 
@@ -36,14 +36,14 @@ async def test_lead_follows_startup_sequence(fixture_project, tool_log):
 
     We check that within the first few tool calls, the lead either:
     - Reads files to understand context (Read, Glob, Grep)
+    - Uses Bash for information gathering (git status, ls, etc.)
     - Asks the user for clarification (AskUserQuestion)
     - Spawns agents if needed (Agent tool)
 
     And does NOT:
     - Jump straight to writing code (Write, Edit)
-    - Run commands (Bash)
     """
-    options = ClaudeCodeOptions(
+    options = ClaudeAgentOptions(
         cwd=str(fixture_project),
         max_turns=5,
         env=NESTED_SESSION_ENV,
@@ -63,8 +63,10 @@ async def test_lead_follows_startup_sequence(fixture_project, tool_log):
     # The lead should have used at least one tool
     assert tool_log.records, "Lead should have used tools during startup"
 
-    # Acceptable first actions: reading, exploring, spawning agents, asking user
-    implementation_tools = {"Write", "Edit", "Bash"}
+    # Only Write and Edit are implementation tools. Bash is dual-purpose
+    # (information gathering vs. implementation) and is legitimate during
+    # startup for checking git status, running tests, etc.
+    implementation_tools = {"Write", "Edit"}
 
     first_tools = [r.tool_name for r in tool_log.records[:5]]
     premature_impl = [t for t in first_tools if t in implementation_tools]
@@ -75,7 +77,7 @@ async def test_lead_follows_startup_sequence(fixture_project, tool_log):
     )
 
     # At least one startup-appropriate tool should be present
-    startup_tools = {"Read", "Glob", "Grep", "Agent", "AskUserQuestion"}
+    startup_tools = {"Read", "Glob", "Grep", "Bash", "Agent", "AskUserQuestion"}
     startup_used = [t for t in first_tools if t in startup_tools]
     assert startup_used, (
         f"Lead did not use any startup-appropriate tools in its first "

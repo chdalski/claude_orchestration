@@ -10,8 +10,8 @@ from pathlib import Path
 
 import pytest
 
-from claude_code_sdk import ClaudeCodeOptions, query
-from claude_code_sdk.types import AssistantMessage, TextBlock
+from claude_agent_sdk import ClaudeAgentOptions, query
+from claude_agent_sdk.types import AssistantMessage, TextBlock
 
 from behavioral.conftest import NESTED_SESSION_ENV
 
@@ -43,7 +43,7 @@ async def test_ensure_plans_dir_creates_directory_and_format_guide(fixture_proje
     assert not plans_dir.exists(), "Test precondition: .ai/plans/ should not exist yet"
     assert template.exists(), "Test precondition: template must exist in .claude/templates/"
 
-    options = ClaudeCodeOptions(
+    options = ClaudeAgentOptions(
         cwd=str(fixture_project),
         max_turns=5,
         env=NESTED_SESSION_ENV,
@@ -75,7 +75,7 @@ async def test_ensure_plans_dir_overwrites_outdated_format_guide(fixture_project
     plans_dir.mkdir(parents=True, exist_ok=True)
     format_guide.write_text("# Outdated plan format\n\nThis is stale content.\n")
 
-    options = ClaudeCodeOptions(
+    options = ClaudeAgentOptions(
         cwd=str(fixture_project),
         max_turns=5,
         env=NESTED_SESSION_ENV,
@@ -105,7 +105,7 @@ async def test_ensure_plans_dir_leaves_current_format_guide_unchanged(fixture_pr
     template_content = template.read_text()
     format_guide.write_text(template_content)
 
-    options = ClaudeCodeOptions(
+    options = ClaudeAgentOptions(
         cwd=str(fixture_project),
         max_turns=5,
         env=NESTED_SESSION_ENV,

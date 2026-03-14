@@ -2,8 +2,8 @@
 
 import pytest
 
-from claude_code_sdk import ClaudeCodeOptions, query
-from claude_code_sdk.types import AssistantMessage, TextBlock
+from claude_agent_sdk import ClaudeAgentOptions, query
+from claude_agent_sdk.types import AssistantMessage, TextBlock
 
 from behavioral.conftest import NESTED_SESSION_ENV
 
@@ -14,7 +14,7 @@ pytestmark = pytest.mark.behavioral
 @pytest.mark.timeout(90)
 async def test_session_start_hook_fires(fixture_project):
     """SessionStart hook should fire and agent should acknowledge the checklist."""
-    options = ClaudeCodeOptions(
+    options = ClaudeAgentOptions(
         cwd=str(fixture_project),
         max_turns=3,
         env=NESTED_SESSION_ENV,

@@ -12,33 +12,45 @@ session, see `.claude/CLAUDE.md`.
 
 Every session starts with clarification and planning. Once
 the user approves the plan, execution is fully autonomous —
-the lead implements each task slice, consults advisors when
-warranted, and sends completed work to the reviewer for
-independent review and commit. No user checkpoints gate
-individual task slices.
+the lead feeds tasks to the developer, the developer
+implements and sends to the reviewer for independent review
+and commit. No user checkpoints gate individual task slices.
 
 This trades user control for speed. Users who want
 per-commit approval should use blueprint_v2's Supervised
 workflow instead. V3 is for users who trust the quality
 gates (reviewer + advisors) and want maximum throughput.
 
-### Lead as implementor
+### Lead as coordinator
 
-The lead absorbs the Architect and Developer roles from
-blueprint_v2. This eliminates:
+The lead manages clarification, planning, plan queue, and
+task feeding — but delegates all implementation to the
+developer. This separation exists because a lead that is
+blocked writing code cannot respond to the user. With the
+developer handling implementation, the lead stays
+responsive: the user can describe new work, ask questions,
+or adjust priorities while code is being written.
 
-- **Handoff latency** — no waiting for relay messages
-  between Architect → lead → Developer
-- **Relay overhead** — no token cost for the lead to
-  forward messages between agents
-- **Coordination failure** — no peer-to-peer agent
-  communication that can silently drop messages
+The trade-off is handoff latency — sending a task to the
+developer and waiting for the result is slower than
+implementing directly. This is accepted because lead
+responsiveness during execution is more valuable than
+marginal speed: users who can interact with the lead
+concurrently produce better plans and catch issues earlier.
 
-The trade-off is that the lead runs on Opus (more expensive
-per token) and handles a larger cognitive load. This works
-because planning and implementation are sequential — the
-lead finishes planning before implementing, so it doesn't
-need to hold both in working memory simultaneously.
+### Plan queue
+
+The plan queue model supports multiple concurrent feature
+requests. The lead can clarify and plan new work while the
+developer executes the current plan. Plans are ordered by
+dependency and impact, and the lead checks for supersession
+before each task — if a newer plan invalidates the current
+one, the current plan is canceled and the lead switches.
+
+This solves two problems: (1) if a session crashes
+mid-implementation, all plans are persisted as files and
+can be resumed; (2) new feature requests during execution
+have a clear mechanism — they become plans in the queue.
 
 ### Selective advisor consultation
 
@@ -49,7 +61,8 @@ security review on low-risk tasks (pure functions, internal
 wiring) produces rubber-stamp sign-offs that dilute the
 signal when real issues arise.
 
-The framework:
+The framework lives in `.claude/rules/risk-assessment.md`
+(an unconditional rule loaded by both lead and developer):
 - **High uncertainty → test-engineer** — design trade-offs,
   complex interactions, greenfield code, API surface changes.
   When consulted, the test-engineer also verifies the
@@ -70,12 +83,14 @@ blueprint_v3/
 ├── .claude/
 │   ├── CLAUDE.md          ← Lead instructions (session behavior)
 │   ├── settings.json      ← Agent teams config
-│   ├── agents/            ← Agent definitions (3 agents)
+│   ├── agents/            ← Agent definitions (4 agents)
+│   │   ├── developer.md   ← Implements all code (source + tests)
 │   │   ├── reviewer.md    ← Independent quality gate + commits
 │   │   ├── test-engineer.md   ← Advisory — test design on demand
 │   │   └── security-engineer.md ← Advisory — security assessment on demand
 │   ├── rules/             ← Unconditional + conditional rules
 │   │   ├── simplicity.md         ← [unconditional] KISS, YAGNI, etc.
+│   │   ├── risk-assessment.md    ← [unconditional] When to consult advisors
 │   │   ├── code-principles.md    ← [conditional: source files] SOLID, Kent Beck
 │   │   ├── lang-typescript.md    ← [conditional: *.ts, *.tsx]
 │   │   ├── lang-python.md        ← [conditional: *.py]
@@ -105,17 +120,18 @@ blueprint_v3/
 ### How Components Relate
 
 **Lead instructions** (`.claude/CLAUDE.md`) define session
-behavior — startup, clarification, planning, implementation,
-advisor consultation, and reviewer coordination. The lead is
-the only agent with user access and the only agent that
-implements code.
+behavior — startup, clarification, planning, plan queue
+management, and task feeding to the developer. The lead is
+the only agent with user access and the coordinator of the
+execution pipeline.
 
 **Agent definitions** (`.claude/agents/*.md`) specify each
 agent's model, tools, and instructions via YAML frontmatter
-and markdown body. All three agents are general-purpose
-building blocks — they respond to consultation requests
-(advisors) or review requests (reviewer) without knowing
-which workflow or blueprint invoked them.
+and markdown body. All four agents are general-purpose
+building blocks — the developer implements code, the
+reviewer evaluates and commits, and advisors respond to
+consultation requests without knowing which workflow or
+blueprint invoked them.
 
 #### Agent Design Principle
 
@@ -150,13 +166,15 @@ Claude Code injects into agent context automatically.
 Unconditional rules load at session start; conditional
 rules load when agents touch matching files. Rules are
 independent of agents — they apply to any agent that
-touches a matching file.
+touches a matching file. The `risk-assessment.md` rule
+is unconditional and loaded by both the lead and developer,
+ensuring consistent advisor consultation decisions.
 
 **Plans** (`.ai/plans/*.md`) are runtime artifacts written
 by the lead during a session. They capture the goal,
 context, steps, task decomposition, and commit SHAs as
 tasks complete. Plans are committed to git as decision
-records.
+records. Multiple plans can coexist in the queue.
 
 **Tests** (`tests/`) verify the blueprint's structural
 integrity: required files exist, agent frontmatter matches
@@ -167,7 +185,8 @@ contracts, static files contain no dynamic content.
 Identical to blueprint_v2. See the v2 design reference for
 the full rule system design documentation. In summary:
 
-- **Unconditional** (no `paths:` frontmatter): `simplicity.md`
+- **Unconditional** (no `paths:` frontmatter): `simplicity.md`,
+  `risk-assessment.md`
 - **Conditional** (with `paths:` frontmatter): all others
 - Universal principles stated once, language rules extend
   without restating
@@ -212,7 +231,7 @@ These are intentional omissions, not gaps:
 - **Formatting** — belongs in project CLAUDE.md or
   pre-commit hooks
 - **Testing methodology** — the test-engineer advisor
-  designs test specifications; the lead implements them
+  designs test specifications; the developer implements them
 - **User checkpoints** — v3 is fully autonomous after plan
   approval; use v2 for per-commit user control
 
@@ -220,11 +239,13 @@ These are intentional omissions, not gaps:
 
 | Aspect | v2 | v3 |
 |---|---|---|
-| Implementation | Developer agent (Sonnet) | Lead (Opus) |
+| Implementation | Developer agent (Sonnet) | Developer agent (Sonnet) |
 | Planning | Architect agent (Opus) | Lead (Opus) |
 | User checkpoints | Per-commit (Supervised) or none (Autonomous) | None after plan approval |
 | Advisor invocation | Every task (mandatory sign-offs) | On-demand (risk/uncertainty) |
 | Workflows | 4 variants (user chooses) | 1 flow (autonomous) |
-| Agents | 5 (Architect, Developer, Reviewer, TE, SE) | 3 (Reviewer, TE, SE) |
-| Agent communication | Peer-to-peer + lead relay | Hub-and-spoke (lead only) |
-| Handoff monitoring | Required (message loss risk) | Not needed (lead is always sender/receiver) |
+| Agents | 5 (Architect, Developer, Reviewer, TE, SE) | 4 (Developer, Reviewer, TE, SE) |
+| Agent communication | Peer-to-peer + lead relay | Developer-reviewer direct + lead hub |
+| Execution pipeline | Architect → Developer → Reviewer | Lead → Developer → Reviewer → Lead |
+| Plan management | Single plan per session | Plan queue (multiple plans, supersession) |
+| Lead during execution | Blocked (relaying messages) | Responsive (can clarify new work) |
