@@ -115,15 +115,19 @@ claude_orchestration/
 │       ├── behavioral/      # SDK-based runtime tests
 │       └── fixtures/        # Minimal project for behavioral
 │           └── minimal_project/
-├── devcontainer_template/   # Devcontainer for sandboxed runs
-│   └── .devcontainer/
-│       ├── README.md          # Setup and configuration docs
-│       ├── devcontainer.json  # Container config
-│       ├── Dockerfile         # Image definition
-│       ├── init-env            # Cross-platform .env.local bootstrap (Unix)
-│       ├── init-env.cmd       # Cross-platform .env.local bootstrap (Windows)
-│       ├── post-create.sh     # One-time setup (pnpm store ownership)
-│       └── post-start.sh     # Auth-mode config copy on each start
+├── devcontainer_templates/   # Devcontainer templates for sandboxed runs
+│   ├── CLAUDE.md              # Keep templates in sync
+│   ├── .devcontainer/         # Base template (cross-platform)
+│   │   ├── README.md          # Setup and configuration docs
+│   │   ├── devcontainer.json  # Container config
+│   │   ├── Dockerfile         # Image definition
+│   │   ├── init-env           # Cross-platform .env.local bootstrap (Unix)
+│   │   ├── init-env.cmd       # Cross-platform .env.local bootstrap (Windows)
+│   │   ├── post-create.sh     # One-time setup (pnpm store ownership)
+│   │   └── post-start.sh     # Auth-mode config copy on each start
+│   └── .devcontainer_audio/   # Audio variant (PulseAudio passthrough)
+│       ├── README.md          # Platform support and audio setup
+│       └── ...                # Same files as base + audio additions
 ```
 
 ## Blueprint
@@ -213,7 +217,7 @@ to fix.
 
 ## Devcontainer Template
 
-`devcontainer_template/` provides a devcontainer setup for
+`devcontainer_templates/` provides a devcontainer setup for
 sandboxed agent execution.
 
 - Project-scoped Docker volume for Claude config and history

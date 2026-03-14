@@ -133,11 +133,11 @@ export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 
 ## Devcontainer Template
 
-`devcontainer_template/` provides a devcontainer setup for
+`devcontainer_templates/` provides a devcontainer setup for
 sandboxed agent execution. Copy it alongside `.claude/`:
 
 ```bash
-cp -r devcontainer_template/.devcontainer/ /path/to/your/project/.devcontainer/
+cp -r devcontainer_templates/.devcontainer/ /path/to/your/project/.devcontainer/
 ```
 
 Features:
@@ -149,7 +149,7 @@ Features:
 - **Host config as template** — `~/.claude/` mounted
   read-only, copied into container on startup
 
-See `devcontainer_template/.devcontainer/README.md` for
+See `devcontainer_templates/.devcontainer/README.md` for
 auth configuration, troubleshooting, and mount details.
 
 ## Known Limitations
