@@ -4,7 +4,6 @@
     "dockerfile": "Dockerfile"
   },
   // Use features to enable language support (https://containers.dev/features):
-  //
   "features": {
     "ghcr.io/devcontainers/features/rust:1": {},
     "ghcr.io/devcontainers/features/node:1": {
@@ -14,8 +13,15 @@
     "ghcr.io/devcontainers/features/go:1": {}
   },
   "remoteUser": "vscode",
-  // Authentication mode: see .devcontainer/.env.local (created by initializeCommand, gitignored).
-  "initializeCommand": "test -f .devcontainer/.env.local || echo 'CLAUDE_AUTH=proxy' > .devcontainer/.env.local",
+  // Cross-platform init: runs on the HOST before the container starts.
+  // The extensionless "init-env" is resolved by the OS — Unix runs init-env
+  // directly (shebang), Windows appends .cmd via PATHEXT and runs init-env.cmd.
+  // Creates .devcontainer/.env.local (gitignored) with CLAUDE_AUTH=proxy if
+  // it doesn't exist yet. The file must exist before Docker reads it via
+  // --env-file in runArgs below.
+  "initializeCommand": [
+    ".devcontainer/init-env"
+  ],
   "runArgs": [
     "--env-file",
     ".devcontainer/.env.local"

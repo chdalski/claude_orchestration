@@ -119,6 +119,8 @@ claude_orchestration/
 │       ├── README.md          # Setup and configuration docs
 │       ├── devcontainer.json  # Container config
 │       ├── Dockerfile         # Image definition
+│       ├── init-env            # Cross-platform .env.local bootstrap (Unix)
+│       ├── init-env.cmd       # Cross-platform .env.local bootstrap (Windows)
 │       ├── post-create.sh     # One-time setup (pnpm store ownership)
 │       └── post-start.sh     # Auth-mode config copy on each start
 ```

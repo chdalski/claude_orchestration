@@ -10,8 +10,11 @@ Devcontainer template for sandboxed Claude Code agent execution.
 ## Authentication Modes
 
 The `CLAUDE_AUTH` environment variable controls how Claude Code authenticates.
-On first use, `initializeCommand` creates `.devcontainer/.env.local`
-(gitignored) with the default `CLAUDE_AUTH=proxy` before Docker needs it.
+On first use, `initializeCommand` runs `.devcontainer/init-env` on the host to
+create `.devcontainer/.env.local` (gitignored) with the default
+`CLAUDE_AUTH=proxy` before Docker needs it. The command is cross-platform:
+Unix runs the extensionless `init-env` script via its shebang, Windows resolves
+`init-env.cmd` via PATHEXT.
 
 | Mode | `CLAUDE_AUTH` | What gets copied | Use case |
 |------|---------------|------------------|----------|
