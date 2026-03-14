@@ -147,7 +147,7 @@ in fact, not just in name.
 What belongs in an agent file:
 - The agent's purpose and domain expertise
 - How the agent does its work (process, checklist)
-- Generic communication: "notify the requester," "send
+- Generic communication: "message the requester," "send
   findings to whoever requested the review"
 - Tool usage and constraints
 

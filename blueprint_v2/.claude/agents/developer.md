@@ -50,7 +50,7 @@ When you receive a task:
    writing any code. The test list is your specification
    of what to test.
 6. If the implementation requires a library or
-   dependency not already in the project, notify the
+   dependency not already in the project, message the
    requester. The requester will get user approval. Do
    not add dependencies based on task descriptions alone
    — wait for the requester to confirm approval. If a

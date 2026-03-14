@@ -84,17 +84,38 @@ Common patterns:
 
 ### 2c — Terminology Drift
 
-Inconsistent terminology across files for the same concept.
-Common patterns:
-- "spawn" vs. "create" vs. "start" for agent creation —
-  pick one per mechanism (`TeamCreate` = "create a team",
-  `Agent` tool = "spawn")
+**Reference:** `/.claude/rules/terminology.md`
+
+Read the terminology rule's Quick Reference table. For each
+term defined there, search the blueprint's instruction files
+for non-canonical synonyms. The rule lists correct terms,
+"do not use" alternatives, and which tool/mechanism each
+term maps to.
+
+**How to check:**
+
+1. Read `/.claude/rules/terminology.md` to get the current
+   glossary (terms, correct usage, and banned synonyms).
+2. For each entry's "do not use" list, search the
+   blueprint's files for those banned synonyms. Also search
+   for common informal alternatives not explicitly listed
+   (e.g., "kick off", "fire up", "spin up", "ping",
+   "notify", "hand off to [named agent]").
+3. Verify that agent files use role-neutral references
+   ("the requester", "the implementor") instead of naming
+   specific teammates — per both `terminology.md` and
+   `agent-design.md`.
+
+**Additional patterns to check:**
 - "shared" vs. "session-start" vs. "utility" for
   non-workflow agents
 - "workflow-specific" vs. "team" vs. "workflow" for agents
   listed in workflow files (if present)
 - Agent role labels differing between workflow tables and
   agent definition files
+
+Report each violation with the file, the term used, and the
+correct term from the glossary.
 
 ### 2d — Redundancy
 
@@ -277,7 +298,8 @@ section:
  actually there, or "None found"]
 
 ### Terminology Drift
-[List inconsistent terms with file locations,
+[List each non-canonical term with the file, line, the term
+ used, and the correct term from the glossary,
  or "None found"]
 
 ### Redundancy

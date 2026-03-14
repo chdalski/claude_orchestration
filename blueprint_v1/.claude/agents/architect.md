@@ -181,4 +181,4 @@ has final say over what enters the dependency tree.
 - Use the Task tool with Explore agents for deep codebase
   investigation when needed
 - Do not write code yourself — design the work breakdown
-  and delegate to the dev-team
+  and message tasks to the dev-team

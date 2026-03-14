@@ -98,7 +98,7 @@ dev-team reports completion to the lead.
 
 - Review the actual code written by the Developer.
 - Send your post-implementation sign-off to the dev-team.
-  The Architect will confirm receipt and notify the lead
+  The Architect will confirm receipt and message the lead
   when the task is ready for review.
 - If there are accepted risks (e.g., "LSP server trusts
   the client"), document the assumption in your sign-off.

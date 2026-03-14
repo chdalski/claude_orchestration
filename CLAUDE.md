@@ -22,6 +22,7 @@ claude_orchestration/
 │   │   ├── self-check.md            # Post-change verification
 │   │   ├── agent-design.md          # Agent vs workflow separation
 │   │   ├── claude-code-guide.md     # Delegate Claude Code questions
+│   │   ├── terminology.md          # Official Claude Code terms glossary
 │   │   ├── simplicity.md            # KISS, YAGNI, Reveals Intent
 │   │   ├── code-principles.md       # SOLID, Kent Beck rules
 │   │   ├── code-mass.md             # APP refactoring metric
@@ -254,6 +255,9 @@ This project uses:
   between agent role definitions and workflow coordination
 - `.claude/rules/claude-code-guide.md` — delegates Claude
   Code questions to the built-in guide subagent
+- `.claude/rules/terminology.md` — enforces official Claude
+  Code terms (launch, spawn, create, message) across
+  blueprint files to prevent terminology drift
 - `.claude/rules/simplicity.md`, `code-principles.md`,
   `code-mass.md`, `documentation.md`, `functional-style.md`,
   `lang-python.md` — coding and documentation standards

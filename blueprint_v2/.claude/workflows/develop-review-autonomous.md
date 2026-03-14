@@ -162,7 +162,7 @@ multi-minute stalls from undetected message loss.
     Architect — having received both sign-offs, sends a
     summary via SendMessage.
 
-11. **Architect notifies lead** that the task is ready for
+11. **Architect messages lead** that the task is ready for
     review.
 
 ### Review

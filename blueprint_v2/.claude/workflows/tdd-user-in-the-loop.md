@@ -91,7 +91,7 @@ test at a time. For each test case:
 
    **Failed prediction:** If the test passes unexpectedly
    (the behavior already exists), the Developer stops
-   and notifies the lead immediately. The lead consults
+   and messages the lead immediately. The lead consults
    the user — this may indicate the test list needs
    updating, the behavior was already implemented in a
    prior cycle, or the test is not asserting what was
@@ -117,7 +117,7 @@ test at a time. For each test case:
    implementation and test output to the lead.
 
    **Failed prediction:** If any previously passing test
-   now fails, the Developer stops and notifies the lead.
+   now fails, the Developer stops and messages the lead.
    The lead consults the user — the new implementation
    broke an assumption from an earlier cycle. Do not
    proceed until the regression is resolved.
@@ -143,7 +143,7 @@ test at a time. For each test case:
 
    **Failed prediction:** If any test fails after
    refactoring, the Developer reverts the refactoring
-   change and notifies the lead. Refactoring must not
+   change and messages the lead. Refactoring must not
    change behavior — a failing test means the
    refactoring was incorrect.
 
@@ -185,7 +185,7 @@ test list.
     Architect — having received both sign-offs, sends a
     summary via SendMessage.
 
-15. **Architect notifies lead** that the task is ready
+15. **Architect messages lead** that the task is ready
     for review.
 
 ### Review

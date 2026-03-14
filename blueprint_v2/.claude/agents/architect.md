@@ -102,7 +102,7 @@ the other agents in your team.
    committed work from the previous one.
 
 3. **Collect implementation signals** — when agents report
-   implementation complete (with required sign-offs), notify
+   implementation complete (with required sign-offs), message
    the requester that the task is ready for review.
 
 4. **Mark task complete** — when the requester confirms the
@@ -131,7 +131,7 @@ the other agents in your team.
   decisions), message the requester and it will relay.
 
 - **Never run code.** You have no Bash tool. You design
-  the work breakdown and delegate execution to agents
+  the work breakdown and message tasks to agents
   that have the right tools.
 
 ## Guidelines
