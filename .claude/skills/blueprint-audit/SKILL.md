@@ -250,6 +250,48 @@ scoped — not a judgment-call qualifier broad enough that
 the agent could rationalize the main case into it. If the
 exception boundary is fuzzy, flag it.
 
+### 7d — Procedural short-circuit risk
+
+**Read:** All skill files (`<blueprint>/.claude/skills/*/SKILL.md`),
+lead instructions (`.claude/CLAUDE.md`), and workflow files
+(`.claude/workflows/*.md`, if present).
+
+Scan for multi-step procedures (numbered step lists, phase
+sequences, checklists). For each procedure:
+
+1. Identify whether an early step produces observable state
+   (directory exists, config key found, file present, build
+   passes).
+2. Check whether later steps are unconditional — they must
+   execute regardless of the early step's outcome.
+3. If later steps are unconditional but the language does
+   not make this explicit, flag it. An agent under
+   optimization pressure will treat the early step's
+   success as proof that everything is current and skip
+   the rest.
+
+**Vulnerable patterns to flag:**
+
+- A step that reads/checks state followed by a step that
+  writes/overwrites, with no explicit "always" or
+  "unconditional" marker on the write step.
+- Steps using conditional-sounding verbs (`ensure`,
+  `verify`, `check if`) for actions that must always
+  execute — these verbs imply "skip if already done."
+- Procedures missing a preamble that states all steps are
+  mandatory — without it, agents treat early steps as
+  gates that can short-circuit the rest.
+
+**Not vulnerable (do not flag):**
+
+- Steps that are genuinely conditional (e.g., "if the key
+  is absent, create it").
+- Procedures where later steps explicitly depend on early
+  step outputs (natural data flow, not skippable).
+
+Report each vulnerable procedure with the file, step
+numbers, and what an agent could skip.
+
 ---
 
 ## Check 8 — Configuration Coupling
@@ -335,6 +377,10 @@ section:
 ### Exception Language
 [List each exception clause with file location and whether
  it is narrowly scoped, or "None found"]
+
+### Procedural Short-Circuit Risk
+[List each vulnerable procedure with file, step numbers,
+ and what an agent could skip, or "None found"]
 
 ## Configuration Coupling
 [List each hardcoded value that settings.json owns, with

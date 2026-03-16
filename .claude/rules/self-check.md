@@ -89,7 +89,43 @@ does any path or name in the instructions match a key in
 instruction should tell the agent to read from
 `settings.json`, not reproduce the value inline.
 
-### 7. Caching compliance
+### 7. Procedural short-circuit resistance
+
+When writing multi-step procedures (skills, checklists,
+agent workflows), check whether an early step produces
+observable state that could make later steps *seem*
+redundant — even though later steps are unconditional.
+
+The pattern: step N checks or creates something (a
+directory exists, a config key is present, a file is
+found). Steps N+1..M act on that state but must always
+execute regardless of step N's outcome. An agent under
+optimization pressure treats step N's success as proof
+that everything is current and skips to "done."
+
+For each multi-step procedure, ask:
+
+- If an agent executes only step 1 and declares success,
+  what breaks? If something breaks, the procedure is
+  vulnerable.
+- Are later steps marked as unconditional with language
+  that cannot be read as conditional? Words like "ensure,"
+  "verify," and "check" imply conditionality — "always
+  write," "execute every time," and "not conditional" are
+  harder to skip.
+- Does the procedure include a preamble stating that all
+  steps are mandatory? Agents pattern-match against
+  structure — a bold preamble before the steps list is
+  harder to skip than a rationale sentence buried in a
+  step description.
+
+This check exists because a production session
+short-circuited `/ensure-plans-dir` by treating "config
+key found" (step 1) as sufficient, skipping the format
+guide overwrite (step 2), and producing four plans with
+a stale template.
+
+### 8. Caching compliance
 
 Rule files, CLAUDE.md, and agent definitions are cached at
 session start (prompt cache level 3). They must not contain
