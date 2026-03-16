@@ -90,6 +90,7 @@ blueprint_v3/
 │   │   └── security-engineer.md ← Advisory — security assessment on demand
 │   ├── rules/             ← Unconditional + conditional rules
 │   │   ├── simplicity.md         ← [unconditional] KISS, YAGNI, etc.
+│   │   ├── procedural-fidelity.md ← [unconditional] Execute every step
 │   │   ├── risk-assessment.md    ← [unconditional] When to consult advisors
 │   │   ├── code-principles.md    ← [conditional: source files] SOLID, Kent Beck
 │   │   ├── lang-typescript.md    ← [conditional: *.ts, *.tsx]
