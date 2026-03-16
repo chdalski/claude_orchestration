@@ -30,11 +30,16 @@ On session start:
    whether the user wants to address any resulting issues
    before starting new work — new lints may surface warnings
    across the codebase.
-2. Read `.claude/settings.json` and extract `plansDirectory`
-   (default `.ai/plans/` if absent). Check that directory
-   for existing plan files — a previous session may have
-   left work in progress, and resuming is cheaper than
-   restarting
+2. **Invoke `/ensure-plans-dir`** — this refreshes the
+   format guide to match the current blueprint version and
+   creates the plans directory if it does not exist. Always
+   invoke this, even if the plans directory already exists —
+   a blueprint update may have changed the plan format, and
+   stale format guides produce plans that don't match the
+   current conventions. After the skill completes, scan the
+   plans directory for existing plan files — a previous
+   session may have left work in progress, and resuming is
+   cheaper than restarting
 3. If in-progress plans exist, present them to the user
    and ask whether to resume or start fresh
 4. If no plans exist, begin clarification with the user
