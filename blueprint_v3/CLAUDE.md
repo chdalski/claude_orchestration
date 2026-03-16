@@ -132,7 +132,12 @@ and markdown body. All four agents are general-purpose
 building blocks — the developer implements code, the
 reviewer evaluates and commits, and advisors respond to
 consultation requests without knowing which workflow or
-blueprint invoked them.
+blueprint invoked them. The developer-reviewer handoff
+includes a working-tree delta: the developer snapshots
+`git diff --name-only` before and after implementation,
+reports the exact file list (including incidental formatter
+changes), and the reviewer commits that scoped set —
+not all dirty files in the tree.
 
 #### Agent Design Principle
 
@@ -161,6 +166,17 @@ and eliminates a top-level directory. Currently:
 `ensure-plans-dir` (prepares the plans directory and its
 format guide) and `project-init` (scans the project and
 generates context).
+
+Skills run at startup — before the team exists — so their
+outputs cannot go through the developer-reviewer pipeline.
+The lead commits skill outputs directly, scoped by the
+**skill-output commit rule** (defined in `.claude/CLAUDE.md`):
+only files that a skill's `SKILL.md` explicitly names as
+outputs, committed immediately after the skill completes.
+This prevents the lead from using the exception to bypass
+the reviewer for arbitrary files. The bright-line test: if
+the skill invocation were removed, would the file still
+need to exist? If yes, it belongs in the pipeline.
 
 **Rules** (`.claude/rules/*.md`) provide guidance that
 Claude Code injects into agent context automatically.
