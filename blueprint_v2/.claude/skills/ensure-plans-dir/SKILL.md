@@ -13,6 +13,13 @@ The Architect writes plans to the configured plans directory
 and consults its `CLAUDE.md` for the required format —
 without both, the planning flow breaks.
 
+**All three steps below are mandatory — execute every step,
+every time.** Do not skip step 2 or 3 because the directory
+already exists or the format guide appears current. The
+template may have changed since the last run, and skipping
+the overwrite causes plans to follow a stale format. This
+has caused real drift in production sessions.
+
 ## Steps
 
 1. **Find the plans directory** — read `.claude/settings.json`
@@ -20,12 +27,15 @@ without both, the planning flow breaks.
    default to `.ai/plans/`. This respects the project's
    configured location rather than assuming a fixed path.
 
-2. **Write the format guide** — read the canonical template
-   from `.claude/templates/plan-format.md` and write it to
+2. **Write the format guide (always — not conditional)** —
+   read the canonical template from
+   `.claude/templates/plan-format.md` and write it to
    `<plansDirectory>/CLAUDE.md` using Write — this creates
    the directory if needed. Do not modify the template
-   content. Always overwriting ensures the format guide is
-   current and plan naming conventions are never stale.
+   content. **Always overwrite, even if the file already
+   exists** — the template may have changed since the last
+   run, and only an unconditional write guarantees the
+   deployed guide matches the current blueprint.
 
 3. **Read `<plansDirectory>/CLAUDE.md`** — load the format
    guide into context. Plans must follow this format so the
