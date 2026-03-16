@@ -32,7 +32,7 @@ the same quality with fewer interruptions.
 | Agent | Role |
 |-------|------|
 | **Architect** | Reads the codebase, writes plans, decomposes into task slices, and feeds tasks to the dev-team sequentially. Collects completion signals and sequences the next task. |
-| **Developer** | Implements all code (source + tests). Activates one test at a time from the test list and executes the Red-Green-Refactor cycle for each. |
+| **Developer** | Implements all code (source + tests). Receives one phase instruction at a time from the lead (Red, Green, or Refactor) and executes only that phase. Does not advance to the next phase autonomously. |
 | **Test Engineer** | Advisory — designs the full test list upfront, verifies each test as the Developer writes it, and provides post-implementation sign-off after all cycles complete. Does not write code. |
 | **Security Engineer** | Advisory — provides pre-implementation security assessment and post-implementation sign-off. Does not write code. |
 | **Reviewer** | Independent quality gate — evaluates the completed task for correctness, security, test coverage, design, and idioms. Composes the commit message and commits approved work after the user checkpoint. |
@@ -78,16 +78,31 @@ startup cost and breaks `SendMessage` communication.
 
 #### TDD Cycles (steps 5–11, repeated per test)
 
-The Developer works through the approved test list one
-test at a time. For each test case:
+The **lead controls the phase loop** — the Developer
+receives one phase instruction at a time and must not
+proceed to the next phase autonomously. This structural
+enforcement exists because a Developer that receives the
+full test list and a "do TDD" instruction will optimize
+by collapsing phases, writing tests and implementation
+together, or skipping refactoring. Sending one phase at
+a time makes it structurally impossible to skip ahead.
 
-5. **Red — Developer writes one test.** The Developer
-   writes the next test from the approved list. The test
-   must fail when run — this confirms the test actually
-   tests something and the behavior does not already
-   exist. The Developer runs the test, confirms failure,
-   and sends the test code and failure output to the
-   lead.
+For each test case in the approved test list:
+
+5. **Lead sends Red phase instruction** to the Developer
+   via `SendMessage`. The message must be explicit:
+
+   > **Phase: RED** — Write one failing test for: [test
+   > case description from the approved list]. Write
+   > only the test — no implementation code. Run the
+   > test, confirm it fails, and report back with:
+   > (1) the test code, (2) the failure output. Do not
+   > proceed to Green.
+
+   The Developer writes the test, runs it, confirms
+   failure, and sends the test code and failure output
+   back to the lead. The Developer does nothing else —
+   no implementation, no other tests.
 
    **Failed prediction:** If the test passes unexpectedly
    (the behavior already exists), the Developer stops
@@ -105,16 +120,21 @@ test at a time. For each test case:
    that the test matches their intent before any
    implementation happens.
 
-7. **Green — Developer writes minimal implementation.**
-   The Developer writes the minimum code needed to make
-   the failing test pass — no more. All existing tests
-   must also continue to pass. "Minimal" means the
-   simplest code that satisfies the assertion, even if
-   it looks naive. Premature generalization at this stage
-   leads to implementations that serve hypothetical cases
-   rather than actual test requirements. The Developer
-   runs all tests, confirms they pass, and sends the
-   implementation and test output to the lead.
+7. **Lead sends Green phase instruction** to the Developer
+   via `SendMessage`:
+
+   > **Phase: GREEN** — Write the minimum code needed to
+   > make the failing test pass. All existing tests must
+   > also continue to pass. "Minimal" means the simplest
+   > code that satisfies the assertion — hardcoded
+   > returns are acceptable. Do not refactor, do not
+   > generalize, do not add code for future tests. Run
+   > all tests, confirm they pass, and report back with:
+   > (1) the implementation code, (2) the test output.
+   > Do not proceed to Refactor.
+
+   The Developer implements, runs all tests, and sends
+   the implementation and test output back to the lead.
 
    **Failed prediction:** If any previously passing test
    now fails, the Developer stops and messages the lead.
@@ -127,19 +147,23 @@ test at a time. For each test case:
    user. The user confirms the implementation is
    acceptable and approves moving to the Refactor phase.
 
-9. **Refactor — Developer improves the code.** The
-   Developer must attempt at least one refactoring.
-   Evaluate naming first, then look for duplication,
-   structural improvements, and simplification
-   opportunities. Report what was changed and why, or
-   if a refactoring was attempted and rejected, explain
-   why it would have made the code worse. Mandatory
-   refactoring after every Green phase is core TDD
-   discipline — skipping it lets design debt accumulate
-   across cycles until the code becomes difficult to
-   extend. The Developer runs all tests after
-   refactoring to confirm they still pass, and sends
-   the refactored code and test output to the lead.
+9. **Lead sends Refactor phase instruction** to the
+   Developer via `SendMessage`:
+
+   > **Phase: REFACTOR** — Attempt at least one
+   > refactoring. Evaluate naming first, then look for
+   > duplication, structural improvements, and
+   > simplification opportunities. Run all tests after
+   > each change to confirm they still pass. Report back
+   > with: (1) what was changed and why, or why a
+   > refactoring was attempted and rejected, (2) the
+   > refactored code, (3) the test output. Do not
+   > proceed to the next test.
+
+   Mandatory refactoring after every Green phase is core
+   TDD discipline — skipping it lets design debt
+   accumulate across cycles until the code becomes
+   difficult to extend.
 
    **Failed prediction:** If any test fails after
    refactoring, the Developer reverts the refactoring
@@ -156,14 +180,16 @@ test at a time. For each test case:
     approval of the cycle, the Test Engineer reads the
     test file, confirms the test matches its
     specification from the test list (name, scenario,
-    assertions), and sends confirmation to the Developer.
+    assertions), and sends confirmation to the lead.
     This incremental verification catches spec drift
     early — without it, mismatches accumulate across
     cycles and require a costly batch correction at the
     end.
 
 **Repeat steps 5–11** for each test case in the approved
-test list.
+test list. The lead must send a new phase instruction
+for each step — the Developer never receives more than
+one phase at a time.
 
 #### Sign-offs
 
