@@ -72,6 +72,13 @@ If the risk-assessment rule indicates consultation:
 - Work in small, meaningful increments. Each increment
   should compile and pass the tests written so far.
 - Keep changes focused. Only modify what is necessary.
+- If your task includes integration tests, spike one
+  integration test first to validate the test harness
+  (server setup, database fixtures, framework test
+  utilities) before writing the rest — the spike catches
+  framework-level issues early. Fixing a broken harness
+  after writing 20 tests wastes significant effort. Unit
+  tests do not need a spike.
 - Do not skip, weaken, or remove tests during
   implementation. If a test seems wrong, discuss with
   the test advisor rather than changing it — the test
