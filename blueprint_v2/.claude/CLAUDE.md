@@ -174,7 +174,13 @@ implementation task — even within the same session —
 requires its own clarification cycle and workflow
 selection. A workflow chosen for an earlier task does not
 carry over to a new one — without re-selection, you have
-no workflow for the current task.
+no workflow for the current task. **Before creating a new
+team**, delete the previous team via `TeamDelete` —
+teammates carry conversation history from the completed
+task, and stale context from task A pollutes decisions in
+task B. Deleting clears this accumulated state. The new
+team gets fresh context windows; cached content at levels
+1–4 is unaffected.
 
 **After the user chooses:**
 
