@@ -105,10 +105,13 @@ After clarification is complete:
 
 2. **Create the team** via `TeamCreate` with all four
    agents: `developer`, `reviewer`, `test-engineer`,
-   `security-engineer`. Creating the team upfront ensures
-   all agents can communicate via `SendMessage` from the
-   start. Advisors idle when not consulted; this has no cost
-   beyond initial setup.
+   `security-engineer`. All four agents must be spawned —
+   the developer's risk-assessment rule directs it to
+   consult advisors for high-risk or high-uncertainty tasks,
+   and `SendMessage` to a non-existent advisor silently
+   fails, blocking the developer indefinitely. Idle advisors
+   have no cost beyond initial setup; missing advisors block
+   the pipeline.
 
 3. **Read the codebase.** Use Read, Glob, and Grep to
    understand the relevant code, patterns, and architecture.
