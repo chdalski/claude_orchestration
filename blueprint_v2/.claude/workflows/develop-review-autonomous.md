@@ -108,13 +108,18 @@ multi-minute stalls from undetected message loss.
 
 1. **Architect sends task** to Developer, Test Engineer,
    and Security Engineer simultaneously — all three need
-   the full task context to discuss the approach.
+   the full task context to discuss the approach. Task
+   descriptions must present the problem and context, not
+   prescribed security mitigations — the Security Engineer
+   performs independent threat modeling in step 2.
 
 2. **Dev-team discusses the task.** Security Engineer
    broadcasts a pre-implementation security assessment to
    Developer and Test Engineer — OWASP categories, what
    the Test Engineer should cover, what the Developer
-   should watch for.
+   should watch for. This assessment is independent — the
+   Security Engineer evaluates the full threat model, not
+   just mitigations suggested in the task description.
 
 3. **Test Engineer produces the test list** — a structured
    specification of every test case — and sends it to the

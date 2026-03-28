@@ -87,6 +87,8 @@ blueprint_v2/
 │   │       └── github-sanity.md ← GitHub Actions workflow checks
 │   ├── rules/             ← Unconditional + conditional rules
 │   │   ├── simplicity.md         ← [unconditional] KISS, YAGNI, etc.
+│   │   ├── risk-assessment.md    ← [unconditional] Workflow selection risk check
+│   │   ├── procedural-fidelity.md ← [unconditional] Execute every step
 │   │   ├── github-workflows.md   ← [conditional: .github/workflows/**]
 │   │   ├── code-principles.md    ← [conditional: source files] SOLID, Kent Beck
 │   │   ├── lang-typescript.md    ← [conditional: *.ts, *.tsx]
@@ -212,7 +214,8 @@ projects.
 **Unconditional** (no `paths:` frontmatter) — loaded at
 session start, always in context. Use for principles that
 apply to everything agents produce, regardless of file
-type. Currently: `simplicity.md`.
+type. Currently: `simplicity.md`, `risk-assessment.md`,
+`procedural-fidelity.md`.
 
 **Conditional** (with `paths:` frontmatter) — loaded only
 when agents touch matching files. Use for guidance that is

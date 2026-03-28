@@ -64,11 +64,16 @@ claude_orchestration/
 │   │   │   ├── ensure-plans-dir/
 │   │   │   │   └── SKILL.md # Create .ai/plans/ and format guide if missing
 │   │   │   ├── project-init/
-│   │   │   │   └── SKILL.md # Project scanning + context generation
+│   │   │   │   ├── SKILL.md # Project scanning + context generation
+│   │   │   │   ├── README.md  # Extension guide
+│   │   │   │   └── rust-init.md  # Rust-specific init (Cargo lints)
 │   │   │   └── project-sanity/
-│   │   │       └── SKILL.md # Audit repo for common issues
+│   │   │       ├── SKILL.md # Audit repo for common issues
+│   │   │       └── github-sanity.md # GitHub Actions workflow checks
 │   │   ├── rules/           # Unconditional + conditional rules
 │   │   │   ├── simplicity.md       # KISS, YAGNI, Reveals Intent (unconditional)
+│   │   │   ├── risk-assessment.md  # Workflow selection risk check (unconditional)
+│   │   │   ├── procedural-fidelity.md # Execute every step (unconditional)
 │   │   │   ├── github-workflows.md # GitHub Actions (conditional)
 │   │   │   ├── code-principles.md  # SOLID, Kent Beck (source files)
 │   │   │   ├── code-mass.md        # APP refactoring metric
@@ -113,7 +118,8 @@ claude_orchestration/
 │   │       │   ├── README.md  # Extension guide
 │   │       │   └── rust-init.md  # Rust-specific init (Cargo lints)
 │   │       └── project-sanity/
-│   │           └── SKILL.md # Audit repo for common issues
+│   │           ├── SKILL.md # Audit repo for common issues
+│   │           └── github-sanity.md # GitHub Actions workflow checks
 │   └── tests/               # Blueprint verification tests
 │       ├── blueprint_contracts.py  # Single source of truth
 │       ├── conftest.py      # Shared fixtures + helpers

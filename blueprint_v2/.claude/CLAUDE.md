@@ -89,9 +89,10 @@ chooses a workflow that requires planning (Develop-Review
 Supervised, Develop-Review Autonomous, TDD User-in-the-Loop):
 
 1. **Invoke `/ensure-plans-dir`** before creating the team.
-   This ensures `.ai/plans/` and its format guide exist
-   before the Architect starts writing. Do not skip this
-   even if `.ai/plans/` appears to exist — the skill checks
+   This ensures the configured plans directory and its
+   format guide exist before the Architect starts writing.
+   Do not skip this even if the directory appears to exist
+   — the skill checks
    whether the format guide is current and refreshes it if
    not. The Architect relies on the format guide for naming
    conventions and plan structure; without it, the first
@@ -102,14 +103,23 @@ Supervised, Develop-Review Autonomous, TDD User-in-the-Loop):
    Architect).
 
 3. **Send the clarified request** to the Architect via
-   `SendMessage`. When composing this message, do not
-   include instructions to create `.ai/plans/` or fall back
-   to creating it manually — that is the skill's
-   responsibility, and bypassing it produces non-conforming
-   plan names.
+   `SendMessage`. When composing this message:
+   - Do not include instructions to create the plans directory
+     or fall back to creating it manually — that is the skill's
+     responsibility, and bypassing it produces non-conforming
+     plan names.
+   - Do not prescribe security mitigations (e.g., "use bcrypt,"
+     "add rate limiting," "validate with length checks"). If
+     you identified security concerns during clarification,
+     state the risk category ("this task handles untrusted
+     input from HTTP responses") but let the Security Engineer
+     specify the controls during the workflow's pre-implementation
+     assessment. Prescribed mitigations anchor the Security
+     Engineer toward validation instead of independent threat
+     modeling.
 
-The Architect reads the codebase, writes a plan to
-`.ai/plans/`, decomposes it into task slices, and reports
+The Architect reads the codebase, writes a plan to the
+plans directory, decomposes it into task slices, and reports
 back via `SendMessage`. You then present the plan to the
 user for approval. This separation exists because plan
 writing requires deep codebase analysis that would overwhelm
@@ -151,8 +161,8 @@ clarification:
 
 Do not enter plan mode yourself — plan mode is single-agent
 while this blueprint uses a multi-agent process where the
-Architect reads the codebase, writes to `.ai/plans/`, and
-decomposes into task slices. Conflating them bypasses the
+Architect reads the codebase, writes to the plans directory,
+and decomposes into task slices. Conflating them bypasses the
 Architect's codebase analysis.
 
 ## Proposing the Approach
@@ -165,6 +175,15 @@ option, include its name, a brief description of when it
 fits, and the trade-offs. The workflow choice is a **user
 preference** — different users may prefer different levels
 of autonomy and control.
+
+Before presenting Direct-Review as an option, check the task
+against the risk-assessment rule (loaded automatically). If
+any high-risk indicator matches, do not offer Direct-Review —
+the task needs the Security Engineer's independent
+assessment, which only Develop-Review provides. The
+Direct-Review workflow states the same criteria ("no security
+ramifications"), but the risk-assessment rule provides the
+structured checklist to evaluate that criterion reliably.
 
 Once the user chooses a workflow, execute it as defined —
 do not switch workflows mid-execution.
