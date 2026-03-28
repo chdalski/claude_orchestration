@@ -49,7 +49,10 @@ has caused real drift in production sessions.
    takes effect immediately.
 
 2. **Write the format guide (always — not conditional)** —
-   read the canonical template from
+   if `<plansDirectory>/CLAUDE.md` already exists, Read it
+   first — the Write tool requires a prior Read for existing
+   files to prevent accidental overwrites. Then read the
+   canonical template from
    `.claude/skills/ensure-plans-dir/plan-format.md` and
    write it to `<plansDirectory>/CLAUDE.md` using Write —
    this creates the directory if needed. Do not modify the
