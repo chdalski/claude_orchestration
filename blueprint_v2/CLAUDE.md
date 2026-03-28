@@ -78,12 +78,16 @@ blueprint_v2/
 │   ├── skills/            ← Skill definitions (preloaded into agents)
 │   │   ├── ensure-plans-dir/
 │   │   │   └── SKILL.md   ← Create .ai/plans/ and format guide if missing
-│   │   └── project-init/
-│   │       ├── SKILL.md   ← Project scanning + context generation
-│   │       ├── README.md  ← Extension guide (add <language>-init.md for new languages)
-│   │       └── rust-init.md ← Rust-specific init (Cargo lints)
+│   │   ├── project-init/
+│   │   │   ├── SKILL.md   ← Project scanning + context generation
+│   │   │   ├── README.md  ← Extension guide (add <language>-init.md for new languages)
+│   │   │   └── rust-init.md ← Rust-specific init (Cargo lints)
+│   │   └── project-sanity/
+│   │       ├── SKILL.md   ← Audit repo for common issues across detected technologies
+│   │       └── github-sanity.md ← GitHub Actions workflow checks
 │   ├── rules/             ← Unconditional + conditional rules
 │   │   ├── simplicity.md         ← [unconditional] KISS, YAGNI, etc.
+│   │   ├── github-workflows.md   ← [conditional: .github/workflows/**]
 │   │   ├── code-principles.md    ← [conditional: source files] SOLID, Kent Beck
 │   │   ├── lang-typescript.md    ← [conditional: *.ts, *.tsx]
 │   │   ├── lang-python.md        ← [conditional: *.py]

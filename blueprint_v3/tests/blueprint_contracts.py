@@ -17,6 +17,7 @@ REQUIRED_DIRECTORIES: list[str] = [
     ".claude/skills",
     ".claude/skills/ensure-plans-dir",
     ".claude/skills/project-init",
+    ".claude/skills/project-sanity",
 ]
 
 # Required files relative to blueprint root (outside .claude/)
@@ -25,6 +26,7 @@ REQUIRED_ROOT_FILES: list[str] = [
     ".claude/skills/ensure-plans-dir/plan-format.md",
     ".claude/skills/project-init/SKILL.md",
     ".claude/skills/project-init/project-context.md",
+    ".claude/skills/project-sanity/SKILL.md",
 ]
 
 # Settings.json required configuration

@@ -92,6 +92,7 @@ blueprint_v3/
 │   │   ├── simplicity.md         ← [unconditional] KISS, YAGNI, etc.
 │   │   ├── procedural-fidelity.md ← [unconditional] Execute every step
 │   │   ├── risk-assessment.md    ← [unconditional] When to consult advisors
+│   │   ├── github-workflows.md   ← [conditional: .github/workflows/**]
 │   │   ├── code-principles.md    ← [conditional: source files] SOLID, Kent Beck
 │   │   ├── lang-typescript.md    ← [conditional: *.ts, *.tsx]
 │   │   ├── lang-python.md        ← [conditional: *.py]
@@ -104,11 +105,14 @@ blueprint_v3/
 │       ├── ensure-plans-dir/
 │       │   ├── SKILL.md   ← Create .ai/plans/ and format guide if missing
 │       │   └── plan-format.md  ← Plan format template
-│       └── project-init/
-│           ├── SKILL.md   ← Project scanning + context generation
-│           ├── README.md  ← Extension guide (add <language>-init.md)
-│           ├── rust-init.md ← Rust-specific init (Cargo lints)
-│           └── project-context.md ← Project context template
+│       ├── project-init/
+│       │   ├── SKILL.md   ← Project scanning + context generation
+│       │   ├── README.md  ← Extension guide (add <language>-init.md)
+│       │   ├── rust-init.md ← Rust-specific init (Cargo lints)
+│       │   └── project-context.md ← Project context template
+│       └── project-sanity/
+│           ├── SKILL.md   ← Audit repo for common issues across detected technologies
+│           └── github-sanity.md ← GitHub Actions workflow checks
 └── tests/                 ← Blueprint verification tests
     ├── blueprint_contracts.py  ← Single source of truth for structure
     ├── conftest.py             ← Shared fixtures + helpers

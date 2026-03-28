@@ -63,10 +63,13 @@ claude_orchestration/
 │   │   ├── skills/          # Skill definitions
 │   │   │   ├── ensure-plans-dir/
 │   │   │   │   └── SKILL.md # Create .ai/plans/ and format guide if missing
-│   │   │   └── project-init/
-│   │   │       └── SKILL.md # Project scanning + context generation
+│   │   │   ├── project-init/
+│   │   │   │   └── SKILL.md # Project scanning + context generation
+│   │   │   └── project-sanity/
+│   │   │       └── SKILL.md # Audit repo for common issues
 │   │   ├── rules/           # Unconditional + conditional rules
 │   │   │   ├── simplicity.md       # KISS, YAGNI, Reveals Intent (unconditional)
+│   │   │   ├── github-workflows.md # GitHub Actions (conditional)
 │   │   │   ├── code-principles.md  # SOLID, Kent Beck (source files)
 │   │   │   ├── code-mass.md        # APP refactoring metric
 │   │   │   ├── documentation.md    # Documentation principles
@@ -104,11 +107,13 @@ claude_orchestration/
 │   │       ├── ensure-plans-dir/
 │   │       │   ├── SKILL.md # Create .ai/plans/ and format guide
 │   │       │   └── plan-format.md  # Plan format template
-│   │       └── project-init/
-│   │           ├── SKILL.md # Project scanning + context generation
-│   │           ├── project-context.md  # Project context template
-│   │           ├── README.md  # Extension guide
-│   │           └── rust-init.md  # Rust-specific init (Cargo lints)
+│   │       ├── project-init/
+│   │       │   ├── SKILL.md # Project scanning + context generation
+│   │       │   ├── project-context.md  # Project context template
+│   │       │   ├── README.md  # Extension guide
+│   │       │   └── rust-init.md  # Rust-specific init (Cargo lints)
+│   │       └── project-sanity/
+│   │           └── SKILL.md # Audit repo for common issues
 │   └── tests/               # Blueprint verification tests
 │       ├── blueprint_contracts.py  # Single source of truth
 │       ├── conftest.py      # Shared fixtures + helpers

@@ -17,6 +17,7 @@ REQUIRED_DIRECTORIES: list[str] = [
     ".claude/skills",
     ".claude/skills/ensure-plans-dir",
     ".claude/skills/project-init",
+    ".claude/skills/project-sanity",
     ".claude/templates",
     ".claude/workflows",
 ]
@@ -25,6 +26,7 @@ REQUIRED_DIRECTORIES: list[str] = [
 REQUIRED_ROOT_FILES: list[str] = [
     ".claude/skills/ensure-plans-dir/SKILL.md",
     ".claude/skills/project-init/SKILL.md",
+    ".claude/skills/project-sanity/SKILL.md",
     ".claude/templates/plan-format.md",
     ".claude/templates/project-context.md",
     ".claude/workflows/CLAUDE.md",
