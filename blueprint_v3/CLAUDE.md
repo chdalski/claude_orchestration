@@ -116,7 +116,10 @@ blueprint_v3/
 │   │   ├── lang-typescript.md    ← [conditional: *.ts, *.tsx]
 │   │   ├── lang-python.md        ← [conditional: *.py]
 │   │   ├── lang-go.md            ← [conditional: *.go]
-│   │   ├── lang-rust.md          ← [conditional: *.rs]
+│   │   ├── lang-rust.md          ← [conditional: *.rs] Core idioms
+│   │   ├── lang-rust-patterns.md ← [conditional: *.rs] FP, DDD, async
+│   │   ├── lang-rust-testing.md  ← [conditional: *.rs] Testing
+│   │   ├── benchmark-rust.md     ← [conditional: benches/**/*.rs]
 │   │   ├── functional-style.md   ← [conditional: *.ts, *.py, *.rs]
 │   │   ├── documentation.md      ← [conditional: README*, docs/**]
 │   │   └── code-mass.md          ← [conditional: source files]

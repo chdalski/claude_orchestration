@@ -82,7 +82,10 @@ claude_orchestration/
 │   │   │   ├── functional-style.md # FP principles (TS/Py/Rust)
 │   │   │   ├── lang-go.md          # Go idioms + testing
 │   │   │   ├── lang-python.md      # Python idioms + testing
-│   │   │   ├── lang-rust.md        # Rust idioms + testing
+│   │   │   ├── lang-rust.md        # Rust core idioms
+│   │   │   ├── lang-rust-patterns.md # Rust FP, DDD, async
+│   │   │   ├── lang-rust-testing.md  # Rust testing patterns
+│   │   │   ├── benchmark-rust.md  # Rust benchmarking (Criterion)
 │   │   │   └── lang-typescript.md  # TypeScript idioms + testing
 │   │   ├── templates/        # Canonical templates copied at runtime
 │   │   │   ├── plan-format.md       # Plan format guide (copied to .ai/plans/)
