@@ -27,6 +27,7 @@ REQUIRED_ROOT_FILES: list[str] = [
     ".claude/skills/project-init/SKILL.md",
     ".claude/skills/project-init/project-context.md",
     ".claude/skills/project-sanity/SKILL.md",
+    ".claude/skills/project-sanity/codecov-sanity.md",
 ]
 
 # Settings.json required configuration

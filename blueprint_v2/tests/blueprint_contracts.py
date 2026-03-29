@@ -27,6 +27,7 @@ REQUIRED_ROOT_FILES: list[str] = [
     ".claude/skills/ensure-plans-dir/SKILL.md",
     ".claude/skills/project-init/SKILL.md",
     ".claude/skills/project-sanity/SKILL.md",
+    ".claude/skills/project-sanity/codecov-sanity.md",
     ".claude/templates/plan-format.md",
     ".claude/templates/project-context.md",
     ".claude/workflows/CLAUDE.md",

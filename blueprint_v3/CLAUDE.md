@@ -131,7 +131,8 @@ blueprint_v3/
 │       │   └── project-context.md ← Project context template
 │       └── project-sanity/
 │           ├── SKILL.md   ← Audit repo for common issues across detected technologies
-│           └── github-sanity.md ← GitHub Actions workflow checks
+│           ├── github-sanity.md ← GitHub Actions workflow checks
+│           └── codecov-sanity.md ← Codecov configuration + coverage checks
 └── tests/                 ← Blueprint verification tests
     ├── blueprint_contracts.py  ← Single source of truth for structure
     ├── conftest.py             ← Shared fixtures + helpers

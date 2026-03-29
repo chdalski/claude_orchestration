@@ -84,7 +84,8 @@ blueprint_v2/
 │   │   │   └── rust-init.md ← Rust-specific init (Cargo lints)
 │   │   └── project-sanity/
 │   │       ├── SKILL.md   ← Audit repo for common issues across detected technologies
-│   │       └── github-sanity.md ← GitHub Actions workflow checks
+│   │       ├── github-sanity.md ← GitHub Actions workflow checks
+│   │       └── codecov-sanity.md ← Codecov configuration + coverage checks
 │   ├── rules/             ← Unconditional + conditional rules
 │   │   ├── simplicity.md         ← [unconditional] KISS, YAGNI, etc.
 │   │   ├── risk-assessment.md    ← [unconditional] Workflow selection risk check

@@ -69,7 +69,8 @@ claude_orchestration/
 │   │   │   │   └── rust-init.md  # Rust-specific init (Cargo lints)
 │   │   │   └── project-sanity/
 │   │   │       ├── SKILL.md # Audit repo for common issues
-│   │   │       └── github-sanity.md # GitHub Actions workflow checks
+│   │   │       ├── github-sanity.md # GitHub Actions workflow checks
+│   │   │       └── codecov-sanity.md # Codecov config + coverage checks
 │   │   ├── rules/           # Unconditional + conditional rules
 │   │   │   ├── simplicity.md       # KISS, YAGNI, Reveals Intent (unconditional)
 │   │   │   ├── risk-assessment.md  # Workflow selection risk check (unconditional)
@@ -119,7 +120,8 @@ claude_orchestration/
 │   │       │   └── rust-init.md  # Rust-specific init (Cargo lints)
 │   │       └── project-sanity/
 │   │           ├── SKILL.md # Audit repo for common issues
-│   │           └── github-sanity.md # GitHub Actions workflow checks
+│   │           ├── github-sanity.md # GitHub Actions workflow checks
+│   │           └── codecov-sanity.md # Codecov config + coverage checks
 │   └── tests/               # Blueprint verification tests
 │       ├── blueprint_contracts.py  # Single source of truth
 │       ├── conftest.py      # Shared fixtures + helpers
