@@ -95,6 +95,23 @@ AGENT_MODELS: dict[str, str] = {
     "security-engineer": "sonnet",
 }
 
+# Rule file length — hard ceiling for the static test.
+# The documented recommendation is 200 lines; this ceiling
+# allows some buffer for code-heavy files (e.g., language
+# idioms with inline examples) while still catching runaway
+# growth.  The test message points to 200 as the target.
+RULE_FILE_LINE_LIMIT: int = 250
+
+# Rule files that exceed the line limit and need splitting.
+# Each entry is a filename (not a path) in .claude/rules/.
+# These are tracked as known tech debt — remove entries as
+# files are split to comply with the limit.
+RULE_FILE_LENGTH_EXEMPTIONS: set[str] = {
+    "lang-go.md",          # 573 lines — needs split
+    "lang-python.md",      # 511 lines — needs split
+    "lang-typescript.md",  # 479 lines — needs split
+}
+
 DYNAMIC_CONTENT_ALLOWLIST: list[str] = [
     "YYYY-MM-DD",          # placeholder format strings
     "HH:MM:SS",            # placeholder format strings

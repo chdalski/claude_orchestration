@@ -318,6 +318,29 @@ section:
 
 ---
 
+## Check 9 — Rule File Length
+
+**Read:** All `.md` files in `<blueprint>/.claude/rules/`.
+
+For each rule file, count the lines (`wc -l` or equivalent).
+The documented recommendation is under 200 lines per file —
+beyond that, agent adherence degrades.
+
+**Severity levels:**
+
+- **Over 250 lines** — hard violation. The static tests
+  enforce this ceiling. Must be split before merging.
+- **201–250 lines** — warning. Acceptable for code-heavy
+  files (language idioms with inline examples) but should
+  be reviewed for split opportunities.
+- **Under 200 lines** — no action needed.
+
+Report each file with its line count, grouped by severity.
+If all files are under 200 lines, report "All rule files
+within target."
+
+---
+
 ## Output Format
 
 ```
@@ -386,6 +409,10 @@ section:
 [List each hardcoded value that settings.json owns, with
  file location and the key it should read instead,
  or "None found"]
+
+## Rule File Length
+[List files over 250 as violations, 201-250 as warnings,
+ or "All rule files within target"]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   OBSERVATIONS

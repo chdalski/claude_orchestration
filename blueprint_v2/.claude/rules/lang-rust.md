@@ -117,8 +117,7 @@ let config = Config {
 };
 ```
 
-Struct update syntax is appropriate when the intent is
-genuinely "copy all other fields from an existing instance."
+Struct update syntax is fine when copying from an existing instance.
 
 ### Result and Option
 

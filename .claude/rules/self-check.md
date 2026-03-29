@@ -125,7 +125,22 @@ key found" (step 1) as sufficient, skipping the format
 guide overwrite (step 2), and producing four plans with
 a stale template.
 
-### 8. Caching compliance
+### 8. Rule file length
+
+Rule files and CLAUDE.md files should target under 200
+lines each. Beyond that threshold, agent adherence
+degrades — Claude is less likely to follow every directive
+in a long file. The static tests enforce a hard ceiling at
+250 lines, but 200 is the target.
+
+After creating or expanding a rule file, check `wc -l` on
+the result. If it exceeds 200 lines, split it into focused
+files with appropriate `paths:` frontmatter. Code-heavy
+files (language idioms with inline examples) may land
+slightly above 200 — that is acceptable if the content is
+cohesive and cannot be split without losing context.
+
+### 9. Caching compliance
 
 Rule files, CLAUDE.md, and agent definitions are cached at
 session start (prompt cache level 3). They must not contain
