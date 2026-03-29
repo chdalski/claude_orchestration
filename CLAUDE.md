@@ -211,11 +211,13 @@ planning and a plan queue; the developer implements.**
 
 The lead checks for project context at startup, clarifies
 the task with the user, writes a plan, and manages a plan
-queue. For each task in the plan, the lead sends it to the
-developer. The developer assesses risk and uncertainty
-(using the shared risk-assessment rule) to decide whether
-to consult advisors, implements, and sends to the reviewer.
-The reviewer approves and commits or rejects. The lead
+queue. For each task in the plan, the lead assesses risk
+and uncertainty at dispatch time and directs the developer
+to consult advisors when warranted. The developer
+implements, and sends to the reviewer. The reviewer
+approves and commits or rejects — it also provides a test
+adequacy backstop, rejecting work that lacks tests or
+advisor consultation for non-trivial changes. The lead
 stays responsive to the user during execution — it can
 clarify and plan new work concurrently.
 

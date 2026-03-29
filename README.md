@@ -34,8 +34,14 @@ post-implementation sign-offs before review.
 | Security Engineer | Sonnet | Advisory — checks security gaps |
 | Reviewer | Opus | Quality gate — commits when satisfied |
 
-```text
-User -> Lead -> Architect -> Dev-Team -> Reviewer -> Commit
+```mermaid
+graph LR
+    User --> Lead
+    Lead --> Architect
+    Architect -->|feeds tasks| DevTeam[Dev-Team]
+    DevTeam --> Reviewer
+    Reviewer -->|approved| Commit
+    Reviewer -->|rejected| DevTeam
 ```
 
 The dev-team (Developer, Test Engineer, Security Engineer)
@@ -59,7 +65,7 @@ changes to CLAUDE.md.
 | Developer | Sonnet | Implements all code (source + tests) |
 | Test Engineer | Sonnet | Advisory — designs test specs, verifies coverage |
 | Security Engineer | Sonnet | Advisory — checks security gaps |
-| Reviewer | Sonnet | Quality gate — reviews and commits |
+| Reviewer | Opus | Quality gate — reviews and commits |
 
 **Workflows:**
 
@@ -81,41 +87,44 @@ conditional rules when agents touch matching files.
 
 The lead handles clarification, planning, and plan queue
 management. The Developer implements all code. After the
-user approves a plan, the lead feeds tasks to the Developer
-one at a time. The Developer assesses risk/uncertainty,
-consults advisors when warranted, implements, and sends to
-the Reviewer. The lead stays responsive to the user during
+user approves a plan, the lead assesses risk/uncertainty at
+dispatch time and directs the Developer to consult advisors
+when warranted. The Developer implements and sends to the
+Reviewer. The lead stays responsive to the user during
 execution — new requests become plans in the queue.
 
 | Agent | Model | Role |
 |-------|-------|------|
 | Developer | Sonnet | Implements all code (source + tests) |
-| Reviewer | Sonnet | Quality gate — reviews and commits |
+| Reviewer | Opus | Quality gate — reviews and commits |
 | Test Engineer | Sonnet | Advisory — test lists on demand |
 | Security Engineer | Sonnet | Advisory — security assessments on demand |
 
-```text
-User -> Lead -> Plan Queue -> Lead sends task
-                                    |
-                                Developer
-                                    |
-                          [Assess Risk/Uncertainty]
-                           /                    \
-                   Test Engineer          Security Engineer
-                   (if needed)             (if needed)
-                          \                    /
-                                Developer
-                                    |
-                                Reviewer -> Commit
-                                    |
-                              Lead (next task)
+```mermaid
+graph TD
+    User --> Lead
+    Lead -->|clarify + plan| PQ[Plan Queue]
+    PQ --> Assess{Lead assesses\nrisk/uncertainty}
+    Assess -->|sends task with\nadvisor directives| Dev[Developer]
+    Dev -.->|if directed| TE[Test Engineer]
+    Dev -.->|if directed| SE[Security Engineer]
+    TE -.->|test list| Dev
+    SE -.->|security assessment| Dev
+    Dev -->|implementation| Rev[Reviewer]
+    Rev -->|approved| Commit
+    Rev -->|rejected: missing tests\nor advisor consultation| Dev
+    Commit --> Lead
+    Lead -->|next task| Assess
 ```
 
-Advisors are consulted by the Developer based on risk and
-uncertainty indicators — not on every task. When consulted,
-they also verify the implementation post-implementation
-(test coverage conformance, security sign-off). The
-Developer-Reviewer rejection loop is opaque to the lead.
+The lead directs advisor consultation at dispatch time based
+on risk and uncertainty indicators — not on every task.
+When consulted, advisors also verify the implementation
+post-implementation (test coverage conformance, security
+sign-off). The Reviewer provides a backstop: non-trivial
+behavioral changes without tests or advisor consultation
+are rejected. The Developer-Reviewer rejection loop is
+opaque to the lead.
 
 ## Quick Start
 

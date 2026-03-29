@@ -52,7 +52,7 @@ mid-implementation, all plans are persisted as files and
 can be resumed; (2) new feature requests during execution
 have a clear mechanism — they become plans in the queue.
 
-### Selective advisor consultation
+### Selective advisor consultation (lead-directed)
 
 Advisors (test-engineer, security-engineer) are consulted
 based on risk and uncertainty indicators, not on every task.
@@ -64,7 +64,9 @@ signal when real issues arise.
 The framework lives in `.claude/rules/risk-assessment.md`
 (an unconditional rule loaded by both lead and developer):
 - **High uncertainty → test-engineer** — design trade-offs,
-  complex interactions, greenfield code, API surface changes.
+  complex interactions, greenfield code, API surface changes,
+  behavioral changes observable by callers, code with no
+  existing test coverage, new test files.
   When consulted, the test-engineer also verifies the
   implementation against the test list post-implementation.
 - **High risk → security-engineer** — trust boundaries,
@@ -73,7 +75,24 @@ The framework lives in `.claude/rules/risk-assessment.md`
   security-engineer also reviews the implementation and
   gives a post-implementation sign-off.
 - **Low risk + low uncertainty → skip advisors** — pure
-  functions, pattern-following, test-only, refactoring, docs
+  functions with existing test patterns,
+  pattern-following with test coverage, test-only,
+  refactoring, docs
+
+**The lead owns the consultation decision.** The lead
+assesses each task at dispatch time and includes an explicit
+directive ("consult the test advisor" or "no advisors
+needed"). The developer treats lead directives as mandatory
+and may add — but not remove — consultations based on what
+implementation reveals. This shifts the decision to the
+agent with full plan context and counterbalances the
+developer's natural optimization-speed bias.
+
+**The reviewer provides a backstop.** If the reviewer finds
+that non-trivial behavioral changes lack new tests and no
+test advisor was consulted, it rejects and directs the
+developer to consult the test advisor before resubmission.
+This catches cases where the lead misjudged uncertainty.
 
 ## Component Architecture
 
@@ -263,7 +282,7 @@ These are intentional omissions, not gaps:
 | Implementation | Developer agent (Sonnet) | Developer agent (Sonnet) |
 | Planning | Architect agent (Opus) | Lead (Opus) |
 | User checkpoints | Per-commit (Supervised) or none (Autonomous) | None after plan approval |
-| Advisor invocation | Every task (mandatory sign-offs) | On-demand (risk/uncertainty) |
+| Advisor invocation | Every task (mandatory sign-offs) | Lead-directed, on-demand (risk/uncertainty) |
 | Workflows | 4 variants (user chooses) | 1 flow (autonomous) |
 | Agents | 5 (Architect, Developer, Reviewer, TE, SE) | 4 (Developer, Reviewer, TE, SE) |
 | Agent communication | Peer-to-peer + lead relay | Developer-reviewer direct + lead hub |

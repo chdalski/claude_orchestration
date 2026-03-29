@@ -89,7 +89,7 @@ AGENT_TOOLS: dict[str, set[str]] = {
 AGENT_MODELS: dict[str, str] = {
     "architect": "opus",
     "developer": "sonnet",
-    "reviewer": "sonnet",
+    "reviewer": "opus",
     "test-engineer": "sonnet",
     "security-engineer": "sonnet",
 }
