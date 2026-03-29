@@ -28,7 +28,9 @@ claude_orchestration/
 │   │   ├── code-mass.md             # APP refactoring metric
 │   │   ├── documentation.md         # Documentation principles
 │   │   ├── functional-style.md      # FP principles
-│   │   └── lang-python.md           # Python idioms
+│   │   ├── lang-python.md           # Python core idioms
+│   │   ├── lang-python-patterns.md # Python types, FP
+│   │   └── lang-python-testing.md  # Python testing
 │   └── skills/
 │       └── blueprint-audit/
 │           └── SKILL.md             # Audit blueprint consistency
@@ -80,13 +82,19 @@ claude_orchestration/
 │   │   │   ├── code-mass.md        # APP refactoring metric
 │   │   │   ├── documentation.md    # Documentation principles
 │   │   │   ├── functional-style.md # FP principles (TS/Py/Rust)
-│   │   │   ├── lang-go.md          # Go idioms + testing
-│   │   │   ├── lang-python.md      # Python idioms + testing
+│   │   │   ├── lang-go.md          # Go core idioms
+│   │   │   ├── lang-go-concurrency.md # Go concurrency
+│   │   │   ├── lang-go-testing.md  # Go testing
+│   │   │   ├── lang-python.md      # Python core idioms
+│   │   │   ├── lang-python-patterns.md # Python types, FP
+│   │   │   ├── lang-python-testing.md  # Python testing
 │   │   │   ├── lang-rust.md        # Rust core idioms
 │   │   │   ├── lang-rust-patterns.md # Rust FP, DDD, async
 │   │   │   ├── lang-rust-testing.md  # Rust testing patterns
 │   │   │   ├── benchmark-rust.md  # Rust benchmarking (Criterion)
-│   │   │   └── lang-typescript.md  # TypeScript idioms + testing
+│   │   │   ├── lang-typescript.md  # TypeScript core idioms
+│   │   │   ├── lang-typescript-patterns.md # TypeScript FP, React, Node.js
+│   │   │   └── lang-typescript-testing.md  # TypeScript testing
 │   │   ├── templates/        # Canonical templates copied at runtime
 │   │   │   ├── plan-format.md       # Plan format guide (copied to .ai/plans/)
 │   │   │   └── project-context.md   # Project context template (filled by /project-init)
@@ -285,7 +293,8 @@ This project uses:
   blueprint files to prevent terminology drift
 - `.claude/rules/simplicity.md`, `code-principles.md`,
   `code-mass.md`, `documentation.md`, `functional-style.md`,
-  `lang-python.md` — coding and documentation standards
+  `lang-python.md`, `lang-python-patterns.md`,
+  `lang-python-testing.md` — coding and documentation standards
   that apply when editing source files in this repo
 
 ### Skills (`.claude/skills/`)

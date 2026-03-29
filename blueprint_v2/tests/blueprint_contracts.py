@@ -106,11 +106,7 @@ RULE_FILE_LINE_LIMIT: int = 250
 # Each entry is a filename (not a path) in .claude/rules/.
 # These are tracked as known tech debt — remove entries as
 # files are split to comply with the limit.
-RULE_FILE_LENGTH_EXEMPTIONS: set[str] = {
-    "lang-go.md",          # 573 lines — needs split
-    "lang-python.md",      # 511 lines — needs split
-    "lang-typescript.md",  # 479 lines — needs split
-}
+RULE_FILE_LENGTH_EXEMPTIONS: set[str] = set()
 
 DYNAMIC_CONTENT_ALLOWLIST: list[str] = [
     "YYYY-MM-DD",          # placeholder format strings

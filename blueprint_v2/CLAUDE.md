@@ -92,9 +92,15 @@ blueprint_v2/
 │   │   ├── procedural-fidelity.md ← [unconditional] Execute every step
 │   │   ├── github-workflows.md   ← [conditional: .github/workflows/**]
 │   │   ├── code-principles.md    ← [conditional: source files] SOLID, Kent Beck
-│   │   ├── lang-typescript.md    ← [conditional: *.ts, *.tsx]
-│   │   ├── lang-python.md        ← [conditional: *.py]
-│   │   ├── lang-go.md            ← [conditional: *.go]
+│   │   ├── lang-typescript.md    ← [conditional: *.ts, *.tsx] Core idioms
+│   │   ├── lang-typescript-patterns.md ← [conditional: *.ts, *.tsx] FP, React, Node.js
+│   │   ├── lang-typescript-testing.md  ← [conditional: *.ts, *.tsx] Testing
+│   │   ├── lang-python.md        ← [conditional: *.py] Core idioms
+│   │   ├── lang-python-patterns.md ← [conditional: *.py] Types, FP
+│   │   ├── lang-python-testing.md  ← [conditional: *.py] Testing
+│   │   ├── lang-go.md            ← [conditional: *.go] Core idioms
+│   │   ├── lang-go-concurrency.md ← [conditional: *.go] Concurrency
+│   │   ├── lang-go-testing.md   ← [conditional: *.go] Testing
 │   │   ├── lang-rust.md          ← [conditional: *.rs] Core idioms
 │   │   ├── lang-rust-patterns.md ← [conditional: *.rs] FP, DDD, async
 │   │   ├── lang-rust-testing.md  ← [conditional: *.rs] Testing
