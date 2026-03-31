@@ -26,7 +26,8 @@ On session start:
    auto-detection covers languages and structure, but not
    intent or conventions. If `/project-init` reports that
    files beyond `CLAUDE.md` were modified (e.g. Cargo.toml
-   lint updates), mention this during clarification and ask
+   lint updates, TypeScript strictness config changes),
+   mention this during clarification and ask
    whether the user wants to address any resulting issues
    before starting new work — new lints may surface warnings
    across the codebase.

@@ -137,6 +137,7 @@ blueprint_v3/
 │       │   ├── SKILL.md   ← Project scanning + context generation
 │       │   ├── README.md  ← Extension guide (add <language>-init.md)
 │       │   ├── rust-init.md ← Rust-specific init (Cargo lints)
+│       │   ├── typescript-init.md ← TypeScript-specific init (strictness)
 │       │   └── project-context.md ← Project context template
 │       └── project-sanity/
 │           ├── SKILL.md   ← Audit repo for common issues across detected technologies

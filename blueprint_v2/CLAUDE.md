@@ -81,7 +81,8 @@ blueprint_v2/
 │   │   ├── project-init/
 │   │   │   ├── SKILL.md   ← Project scanning + context generation
 │   │   │   ├── README.md  ← Extension guide (add <language>-init.md for new languages)
-│   │   │   └── rust-init.md ← Rust-specific init (Cargo lints)
+│   │   │   ├── rust-init.md ← Rust-specific init (Cargo lints)
+│   │   │   └── typescript-init.md ← TypeScript-specific init (strictness)
 │   │   └── project-sanity/
 │   │       ├── SKILL.md   ← Audit repo for common issues across detected technologies
 │   │       ├── github-sanity.md ← GitHub Actions workflow checks

@@ -68,7 +68,8 @@ claude_orchestration/
 │   │   │   ├── project-init/
 │   │   │   │   ├── SKILL.md # Project scanning + context generation
 │   │   │   │   ├── README.md  # Extension guide
-│   │   │   │   └── rust-init.md  # Rust-specific init (Cargo lints)
+│   │   │   │   ├── rust-init.md  # Rust-specific init (Cargo lints)
+│   │   │   │   └── typescript-init.md # TypeScript-specific init (strictness)
 │   │   │   └── project-sanity/
 │   │   │       ├── SKILL.md # Audit repo for common issues
 │   │   │       ├── github-sanity.md # GitHub Actions workflow checks
@@ -128,7 +129,8 @@ claude_orchestration/
 │   │       │   ├── SKILL.md # Project scanning + context generation
 │   │       │   ├── project-context.md  # Project context template
 │   │       │   ├── README.md  # Extension guide
-│   │       │   └── rust-init.md  # Rust-specific init (Cargo lints)
+│   │       │   ├── rust-init.md  # Rust-specific init (Cargo lints)
+│   │       │   └── typescript-init.md # TypeScript-specific init (strictness)
 │   │       └── project-sanity/
 │   │           ├── SKILL.md # Audit repo for common issues
 │   │           ├── github-sanity.md # GitHub Actions workflow checks
