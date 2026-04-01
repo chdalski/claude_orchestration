@@ -29,10 +29,11 @@ On session start:
    generate it. Project context gives all agents the
    information they need to produce project-appropriate
    code; without it, agents default to generic patterns.
-   After generating, commit the skill's outputs (see
-   Skill-Output Commits). The skill reports what it found
-   and what needs attention — relay relevant findings to
-   the user during clarification.
+   The skill interacts with the user to confirm detected
+   conventions and references before writing — no manual
+   fill-in is needed afterward. After generating, commit
+   the skill's outputs (see Skill-Output Commits). Relay
+   relevant findings to the user during clarification.
 2. **Invoke `/ensure-plans-dir`** — this refreshes the
    format guide to match the current blueprint version and
    configures `plansDirectory` if it is missing. Always

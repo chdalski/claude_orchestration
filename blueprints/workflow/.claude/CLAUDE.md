@@ -20,14 +20,12 @@ On session start:
    generate it. Project context gives all agents the
    information they need to produce project-appropriate
    code; without it, agents default to generic patterns.
-   After generating, mention to the user that the TODO
-   sections (Overview, Architecture, Code Exemplars,
-   Anti-Patterns, Trusted Sources) need human input —
-   auto-detection covers languages and structure, but not
-   intent or conventions. If `/project-init` reports that
-   files beyond `CLAUDE.md` were modified (e.g. Cargo.toml
-   lint updates, TypeScript strictness config changes),
-   mention this during clarification and ask
+   The skill interacts with the user to confirm detected
+   conventions and references before writing — no manual
+   fill-in is needed afterward. If `/project-init` reports
+   that files beyond `CLAUDE.md` were modified (e.g.
+   Cargo.toml lint updates, TypeScript strictness config
+   changes), mention this during clarification and ask
    whether the user wants to address any resulting issues
    before starting new work — new lints may surface warnings
    across the codebase.
