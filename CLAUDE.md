@@ -34,114 +34,94 @@ claude_orchestration/
 │   └── skills/
 │       └── blueprint-audit/
 │           └── SKILL.md             # Audit blueprint consistency
-├── blueprint_v1/            # Test-list blueprint (5 agents)
-│   ├── .claude/
-│   │   ├── CLAUDE.md        # Orchestration instructions
-│   │   ├── settings.json    # Enables agent teams + hooks
-│   │   ├── config.json      # Documentation files to check
-│   │   ├── agents/          # Architect, Developer, Test Engineer,
-│   │   │                    # Security Engineer, Reviewer
-│   │   ├── knowledge/
-│   │   │   ├── base/        # Language-agnostic principles
-│   │   │   ├── languages/   # Language-specific extensions
-│   │   │   └── extensions/  # Project-specific conventions
-│   │   ├── practices/       # Test-list workflow, conventional
-│   │   │                    # commits
-│   │   └── templates/       # Commit message template
-│   └── tests/               # Blueprint verification tests
-│       ├── blueprint_contracts.py  # Single source of truth
-│       ├── conftest.py      # Shared fixtures + helpers
-│       ├── static/          # Structure, caching, hook tests
-│       ├── behavioral/      # SDK-based runtime tests
-│       └── fixtures/        # Minimal project for behavioral
-│           └── minimal_project/
-├── blueprint_v2/            # V2 blueprint (clarify-first, workflow-based)
-│   ├── CLAUDE.md            # Design reference
-│   ├── .claude/
-│   │   ├── CLAUDE.md        # Lead instructions
-│   │   ├── settings.json    # Agent teams
-│   │   ├── agents/          # Architect, Developer, Reviewer,
-│   │   │                    # Security Engineer, Test Engineer
-│   │   ├── skills/          # Skill definitions
-│   │   │   ├── ensure-plans-dir/
-│   │   │   │   └── SKILL.md # Create .ai/plans/ and format guide if missing
-│   │   │   ├── project-init/
-│   │   │   │   ├── SKILL.md # Project scanning + context generation
-│   │   │   │   ├── README.md  # Extension guide
-│   │   │   │   ├── rust-init.md  # Rust-specific init (Cargo lints)
-│   │   │   │   └── typescript-init.md # TypeScript-specific init (strictness)
-│   │   │   └── project-sanity/
-│   │   │       ├── SKILL.md # Audit repo for common issues
-│   │   │       ├── github-sanity.md # GitHub Actions workflow checks
-│   │   │       └── codecov-sanity.md # Codecov config + coverage checks
-│   │   ├── rules/           # Unconditional + conditional rules
-│   │   │   ├── simplicity.md       # KISS, YAGNI, Reveals Intent (unconditional)
-│   │   │   ├── risk-assessment.md  # Workflow selection risk check (unconditional)
-│   │   │   ├── procedural-fidelity.md # Execute every step (unconditional)
-│   │   │   ├── github-workflows.md # GitHub Actions (conditional)
-│   │   │   ├── code-principles.md  # SOLID, Kent Beck (source files)
-│   │   │   ├── code-mass.md        # APP refactoring metric
-│   │   │   ├── documentation.md    # Documentation principles
-│   │   │   ├── functional-style.md # FP principles (TS/Py/Rust)
-│   │   │   ├── lang-go.md          # Go core idioms
-│   │   │   ├── lang-go-concurrency.md # Go concurrency
-│   │   │   ├── lang-go-testing.md  # Go testing
-│   │   │   ├── lang-python.md      # Python core idioms
-│   │   │   ├── lang-python-patterns.md # Python types, FP
-│   │   │   ├── lang-python-testing.md  # Python testing
-│   │   │   ├── lang-rust.md        # Rust core idioms
-│   │   │   ├── lang-rust-patterns.md # Rust FP, DDD, async
-│   │   │   ├── lang-rust-testing.md  # Rust testing patterns
-│   │   │   ├── benchmark-rust.md  # Rust benchmarking (Criterion)
-│   │   │   ├── lang-typescript.md  # TypeScript core idioms
-│   │   │   ├── lang-typescript-patterns.md # TypeScript FP, React, Node.js
-│   │   │   └── lang-typescript-testing.md  # TypeScript testing
-│   │   ├── templates/        # Canonical templates copied at runtime
-│   │   │   ├── plan-format.md       # Plan format guide (copied to .ai/plans/)
-│   │   │   └── project-context.md   # Project context template (filled by /project-init)
-│   │   └── workflows/       # Workflow definitions + format guide
-│   │       ├── CLAUDE.md          # Workflow format guide
-│   │       ├── develop-review-supervised.md  # Dev-team + review (user approves commits)
-│   │       ├── develop-review-autonomous.md # Dev-team + review (auto-commit after Reviewer)
-│   │       ├── direct-review.md   # Lead handles work directly
-│   │       └── tdd-user-in-the-loop.md  # TDD with user approval at phase transitions
-│   └── tests/               # Blueprint verification tests
-│       ├── blueprint_contracts.py  # Single source of truth
-│       ├── conftest.py      # Shared fixtures + helpers
-│       ├── static/          # Structure, caching, agent tests
-│       ├── behavioral/      # SDK-based runtime tests
-│       └── fixtures/        # Minimal project for behavioral
-│           └── minimal_project/
-├── blueprint_v3/            # V3 blueprint (plan queue + developer)
-│   ├── CLAUDE.md            # Design reference
-│   ├── .claude/
-│   │   ├── CLAUDE.md        # Lead instructions
-│   │   ├── settings.json    # Agent teams
-│   │   ├── agents/          # Developer, Reviewer, Test Engineer,
-│   │   │                    # Security Engineer
-│   │   ├── rules/           # Unconditional + conditional rules
-│   │   │                    # (includes risk-assessment.md)
-│   │   └── skills/          # Skill definitions (with co-located templates)
-│   │       ├── ensure-plans-dir/
-│   │       │   ├── SKILL.md # Create .ai/plans/ and format guide
-│   │       │   └── plan-format.md  # Plan format template
-│   │       ├── project-init/
-│   │       │   ├── SKILL.md # Project scanning + context generation
-│   │       │   ├── project-context.md  # Project context template
-│   │       │   ├── README.md  # Extension guide
-│   │       │   ├── rust-init.md  # Rust-specific init (Cargo lints)
-│   │       │   └── typescript-init.md # TypeScript-specific init (strictness)
-│   │       └── project-sanity/
-│   │           ├── SKILL.md # Audit repo for common issues
-│   │           ├── github-sanity.md # GitHub Actions workflow checks
-│   │           └── codecov-sanity.md # Codecov config + coverage checks
-│   └── tests/               # Blueprint verification tests
-│       ├── blueprint_contracts.py  # Single source of truth
-│       ├── conftest.py      # Shared fixtures + helpers
-│       ├── static/          # Structure, caching, agent tests
-│       ├── behavioral/      # SDK-based runtime tests
-│       └── fixtures/        # Minimal project for behavioral
-│           └── minimal_project/
+├── blueprints/
+│   ├── workflow/            # Workflow blueprint (clarify-first, user chooses workflow)
+│   │   ├── CLAUDE.md            # Design reference
+│   │   ├── .claude/
+│   │   │   ├── CLAUDE.md        # Lead instructions
+│   │   │   ├── settings.json    # Agent teams
+│   │   │   ├── agents/          # Architect, Developer, Reviewer,
+│   │   │   │                    # Security Engineer, Test Engineer
+│   │   │   ├── skills/          # Skill definitions
+│   │   │   │   ├── ensure-plans-dir/
+│   │   │   │   │   └── SKILL.md # Create .ai/plans/ and format guide if missing
+│   │   │   │   ├── project-init/
+│   │   │   │   │   ├── SKILL.md # Project scanning + context generation
+│   │   │   │   │   ├── README.md  # Extension guide
+│   │   │   │   │   ├── rust-init.md  # Rust-specific init (Cargo lints)
+│   │   │   │   │   └── typescript-init.md # TypeScript-specific init (strictness)
+│   │   │   │   └── project-sanity/
+│   │   │   │       ├── SKILL.md # Audit repo for common issues
+│   │   │   │       ├── github-sanity.md # GitHub Actions workflow checks
+│   │   │   │       └── codecov-sanity.md # Codecov config + coverage checks
+│   │   │   ├── rules/           # Unconditional + conditional rules
+│   │   │   │   ├── simplicity.md       # KISS, YAGNI, Reveals Intent (unconditional)
+│   │   │   │   ├── risk-assessment.md  # Workflow selection risk check (unconditional)
+│   │   │   │   ├── procedural-fidelity.md # Execute every step (unconditional)
+│   │   │   │   ├── github-workflows.md # GitHub Actions (conditional)
+│   │   │   │   ├── code-principles.md  # SOLID, Kent Beck (source files)
+│   │   │   │   ├── code-mass.md        # APP refactoring metric
+│   │   │   │   ├── documentation.md    # Documentation principles
+│   │   │   │   ├── functional-style.md # FP principles (TS/Py/Rust)
+│   │   │   │   ├── lang-go.md          # Go core idioms
+│   │   │   │   ├── lang-go-concurrency.md # Go concurrency
+│   │   │   │   ├── lang-go-testing.md  # Go testing
+│   │   │   │   ├── lang-python.md      # Python core idioms
+│   │   │   │   ├── lang-python-patterns.md # Python types, FP
+│   │   │   │   ├── lang-python-testing.md  # Python testing
+│   │   │   │   ├── lang-rust.md        # Rust core idioms
+│   │   │   │   ├── lang-rust-patterns.md # Rust FP, DDD, async
+│   │   │   │   ├── lang-rust-testing.md  # Rust testing patterns
+│   │   │   │   ├── benchmark-rust.md  # Rust benchmarking (Criterion)
+│   │   │   │   ├── lang-typescript.md  # TypeScript core idioms
+│   │   │   │   ├── lang-typescript-patterns.md # TypeScript FP, React, Node.js
+│   │   │   │   └── lang-typescript-testing.md  # TypeScript testing
+│   │   │   ├── templates/        # Canonical templates copied at runtime
+│   │   │   │   ├── plan-format.md       # Plan format guide (copied to .ai/plans/)
+│   │   │   │   └── project-context.md   # Project context template (filled by /project-init)
+│   │   │   └── workflows/       # Workflow definitions + format guide
+│   │   │       ├── CLAUDE.md          # Workflow format guide
+│   │   │       ├── develop-review-supervised.md  # Dev-team + review (user approves commits)
+│   │   │       ├── develop-review-autonomous.md # Dev-team + review (auto-commit after Reviewer)
+│   │   │       ├── direct-review.md   # Lead handles work directly
+│   │   │       └── tdd-user-in-the-loop.md  # TDD with user approval at phase transitions
+│   │   └── tests/               # Blueprint verification tests
+│   │       ├── blueprint_contracts.py  # Single source of truth
+│   │       ├── conftest.py      # Shared fixtures + helpers
+│   │       ├── static/          # Structure, caching, agent tests
+│   │       ├── behavioral/      # SDK-based runtime tests
+│   │       └── fixtures/        # Minimal project for behavioral
+│   │           └── minimal_project/
+│   └── autonomous/          # Autonomous blueprint (plan queue + developer)
+│       ├── CLAUDE.md            # Design reference
+│       ├── .claude/
+│       │   ├── CLAUDE.md        # Lead instructions
+│       │   ├── settings.json    # Agent teams
+│       │   ├── agents/          # Developer, Reviewer, Test Engineer,
+│       │   │                    # Security Engineer
+│       │   ├── rules/           # Unconditional + conditional rules
+│       │   │                    # (includes risk-assessment.md)
+│       │   └── skills/          # Skill definitions (with co-located templates)
+│       │       ├── ensure-plans-dir/
+│       │       │   ├── SKILL.md # Create .ai/plans/ and format guide
+│       │       │   └── plan-format.md  # Plan format template
+│       │       ├── project-init/
+│       │       │   ├── SKILL.md # Project scanning + context generation
+│       │       │   ├── project-context.md  # Project context template
+│       │       │   ├── README.md  # Extension guide
+│       │       │   ├── rust-init.md  # Rust-specific init (Cargo lints)
+│       │       │   └── typescript-init.md # TypeScript-specific init (strictness)
+│       │       └── project-sanity/
+│       │           ├── SKILL.md # Audit repo for common issues
+│       │           ├── github-sanity.md # GitHub Actions workflow checks
+│       │           └── codecov-sanity.md # Codecov config + coverage checks
+│       └── tests/               # Blueprint verification tests
+│           ├── blueprint_contracts.py  # Single source of truth
+│           ├── conftest.py      # Shared fixtures + helpers
+│           ├── static/          # Structure, caching, agent tests
+│           ├── behavioral/      # SDK-based runtime tests
+│           └── fixtures/        # Minimal project for behavioral
+│               └── minimal_project/
 ├── devcontainer_templates/   # Devcontainer templates for sandboxed runs
 │   ├── CLAUDE.md              # Keep templates in sync
 │   ├── .devcontainer/         # Base template (cross-platform)
@@ -157,30 +137,9 @@ claude_orchestration/
 │       └── ...                # Same files as base + audio additions
 ```
 
-## Blueprint
+## Blueprints
 
-### blueprint_v1 (5 agents)
-
-**Test-list (spec-first), Architect handles task decomposition.**
-
-The lead focuses on user communication and team
-coordination. The Architect reads the codebase, decomposes
-work into tasks, writes plans to `.claude/plan.md`, and
-feeds tasks to the dev-team sequentially. The Test Engineer
-produces test specs, the Developer writes all code (source
-and tests). Both Test Engineer and Security Engineer give
-post-implementation sign-offs before review.
-
-**Agents:**
-
-- Lead (user communication + team coordination)
-- Architect (codebase understanding + task decomposition + planning)
-- Developer (implements all code)
-- Test Engineer (advisory — designs test specs, verifies coverage)
-- Security Engineer (advisory — checks security)
-- Reviewer (independent quality gate)
-
-### blueprint_v2 (clarify-first, workflow-based)
+### workflow (clarify-first, workflow-based)
 
 **Clarify-first, the lead owns clarification and workflow
 proposal. The user chooses how work gets done.**
@@ -219,7 +178,7 @@ handles both quality review and git commits.
 - TDD User-in-the-Loop — strict Red-Green-Refactor with
   user approval at every phase transition
 
-### blueprint_v3 (plan queue + developer)
+### autonomous (plan queue + developer)
 
 **Autonomous after clarification. The lead coordinates
 planning and a plan queue; the developer implements.**
@@ -319,7 +278,7 @@ different purposes:
   *on* this repository: rules and skills that govern how
   blueprints are written and maintained. Never copied to
   target projects.
-- **Blueprint-level** (`blueprint_*/. claude/`) — the
+- **Blueprint-level** (`blueprints/*/. claude/`) — the
   `.claude/` setup that gets copied into target projects.
   These are the agent definitions, workflows, rules, and
   templates that end users receive.

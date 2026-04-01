@@ -1,4 +1,4 @@
-"""Shared fixtures for blueprint_v2 tests."""
+"""Shared fixtures for workflow blueprint tests."""
 
 import sys
 from pathlib import Path
@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 
 # Path constants
 BLUEPRINT_ROOT = Path(__file__).parent.parent
-REPO_ROOT = BLUEPRINT_ROOT.parent
+REPO_ROOT = BLUEPRINT_ROOT.parent.parent
 
 # Load .env.local from repo root (if it exists) before tests run
 load_dotenv(REPO_ROOT / ".env.local")

@@ -64,7 +64,7 @@ three problems from the v1 approach:
 ## Component Architecture
 
 ```text
-blueprint_v2/
+blueprints/workflow/
 ├── CLAUDE.md              ← You are here (design reference)
 ├── .claude/
 │   ├── CLAUDE.md          ← Lead instructions (session behavior)
@@ -273,7 +273,7 @@ repeating the independence principle.
    `code-principles.md` paths
 6. Update root `CLAUDE.md` and root `README.md`
    diagram
-7. Run `uv run pytest blueprint_v2/tests/ -m static -v`
+7. Run `uv run pytest blueprints/workflow/tests/ -m static -v`
 
 No changes to `.claude/CLAUDE.md`, agents, or workflows.
 

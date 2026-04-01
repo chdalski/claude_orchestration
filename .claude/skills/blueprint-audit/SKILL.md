@@ -15,8 +15,8 @@ description: Audit a blueprint for cross-file consistency, stale references, con
 
 1. Determine which blueprint to audit. If the user specifies
    one (e.g., "audit v2"), use that. If not, ask which
-   blueprint to audit — list the `blueprint_*` directories
-   in the repo root.
+   blueprint to audit — list the directories under
+   `blueprints/`.
 
 2. Run all checks below in order. Read all files before
    reporting — findings often require cross-referencing

@@ -17,7 +17,7 @@ implements and sends to the reviewer for independent review
 and commit. No user checkpoints gate individual task slices.
 
 This trades user control for speed. Users who want
-per-commit approval should use blueprint_v2's Supervised
+per-commit approval should use the workflow blueprint's Supervised
 workflow instead. V3 is for users who trust the quality
 gates (reviewer + advisors) and want maximum throughput.
 
@@ -97,7 +97,7 @@ This catches cases where the lead misjudged uncertainty.
 ## Component Architecture
 
 ```text
-blueprint_v3/
+blueprints/autonomous/
 ├── CLAUDE.md              ← You are here (design reference)
 ├── .claude/
 │   ├── CLAUDE.md          ← Lead instructions (session behavior)
@@ -233,7 +233,7 @@ contracts, static files contain no dynamic content.
 
 ## Rule System Design
 
-Identical to blueprint_v2. See the v2 design reference for
+Identical to the workflow blueprint. See its design reference for
 the full rule system design documentation. In summary:
 
 - **Unconditional** (no `paths:` frontmatter): `simplicity.md`,
@@ -250,7 +250,7 @@ the full rule system design documentation. In summary:
 4. Update `functional-style.md` paths if applicable
 5. Update `code-mass.md` and `code-principles.md` paths
 6. Update root `CLAUDE.md` and root `README.md`
-7. Run `uv run pytest blueprint_v3/tests/ -m static -v`
+7. Run `uv run pytest blueprints/autonomous/tests/ -m static -v`
 
 No changes to `.claude/CLAUDE.md` or agents.
 
@@ -283,12 +283,13 @@ These are intentional omissions, not gaps:
   pre-commit hooks
 - **Testing methodology** — the test-engineer advisor
   designs test specifications; the developer implements them
-- **User checkpoints** — v3 is fully autonomous after plan
-  approval; use v2 for per-commit user control
+- **User checkpoints** — the autonomous blueprint is fully
+  autonomous after plan approval; use the workflow blueprint
+  for per-commit user control
 
-## Comparison with Blueprint v2
+## Comparison with Workflow Blueprint
 
-| Aspect | v2 | v3 |
+| Aspect | workflow | autonomous |
 |---|---|---|
 | Implementation | Developer agent (Sonnet) | Developer agent (Sonnet) |
 | Planning | Architect agent (Opus) | Lead (Opus) |

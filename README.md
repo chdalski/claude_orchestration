@@ -11,48 +11,14 @@ session.
 
 | If you want... | Use |
 |---|---|
-| Full control, spec-first TDD with knowledge base | v1 |
-| Workflow options (supervised, autonomous, TDD) | v2 |
-| Maximum throughput, minimal interaction | v3 |
-| Per-commit user approval | v1 or v2 (Supervised) |
-| Full autonomy after plan approval | v3 |
-| Plan queue with concurrent clarification | v3 |
-| Lead stays responsive during execution | v3 |
+| Workflow options (supervised, autonomous, TDD) | workflow |
+| Maximum throughput, minimal interaction | autonomous |
+| Per-commit user approval | workflow (Supervised) |
+| Full autonomy after plan approval | autonomous |
+| Plan queue with concurrent clarification | autonomous |
+| Lead stays responsive during execution | autonomous |
 
-### v1 — Test-List (5 agents)
-
-Spec-first development. The Architect decomposes work, the
-Test Engineer designs what to test, the Developer writes all
-code. Both Test Engineer and Security Engineer give
-post-implementation sign-offs before review.
-
-| Agent | Model | Role |
-|-------|-------|------|
-| Architect | Sonnet | Reads codebase, decomposes tasks, writes plans |
-| Developer | Sonnet | Implements all code (source + tests) |
-| Test Engineer | Sonnet | Advisory — designs test specs, verifies coverage |
-| Security Engineer | Sonnet | Advisory — checks security gaps |
-| Reviewer | Opus | Quality gate — commits when satisfied |
-
-```mermaid
-graph LR
-    User --> Lead
-    Lead --> Architect
-    Architect -->|feeds tasks| DevTeam[Dev-Team]
-    DevTeam --> Reviewer
-    Reviewer -->|approved| Commit
-    Reviewer -->|rejected| DevTeam
-```
-
-The dev-team (Developer, Test Engineer, Security Engineer)
-discusses approach before implementing. The Architect feeds
-tasks sequentially; the lead coordinates review handoffs.
-
-Engineering principles live in `knowledge/` — language-agnostic
-base principles, language-specific extensions, and
-project-specific conventions in `extensions/`.
-
-### v2 — Clarify-First (workflow-based)
+### workflow — Clarify-First (workflow-based)
 
 The lead clarifies the task, then presents workflow options.
 The user chooses how work gets done. Workflows are separate
@@ -83,7 +49,7 @@ Language-specific guidance loads automatically via
 conditional rules when agents touch matching files.
 `/project-init` generates project context on first session.
 
-### v3 — Plan Queue + Developer (4 agents)
+### autonomous — Plan Queue + Developer (4 agents)
 
 The lead handles clarification, planning, and plan queue
 management. The Developer implements all code. After the
@@ -130,11 +96,9 @@ opaque to the lead.
 
 ```bash
 # Copy a blueprint into your project
-cp -r blueprint_v1/.claude/ /path/to/your/project/.claude/
+cp -r blueprints/workflow/.claude/ /path/to/your/project/.claude/
 # or
-cp -r blueprint_v2/.claude/ /path/to/your/project/.claude/
-# or
-cp -r blueprint_v3/.claude/ /path/to/your/project/.claude/
+cp -r blueprints/autonomous/.claude/ /path/to/your/project/.claude/
 ```
 
 Start Claude Code in your project directory. The CLAUDE.md

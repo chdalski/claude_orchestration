@@ -1,4 +1,4 @@
-"""Single source of truth for all blueprint_v3 behavioral contracts.
+"""Single source of truth for all workflow blueprint behavioral contracts.
 
 When the blueprint changes, update this file and the tests follow.
 """
@@ -18,16 +18,23 @@ REQUIRED_DIRECTORIES: list[str] = [
     ".claude/skills/ensure-plans-dir",
     ".claude/skills/project-init",
     ".claude/skills/project-sanity",
+    ".claude/templates",
+    ".claude/workflows",
 ]
 
 # Required files relative to blueprint root (outside .claude/)
 REQUIRED_ROOT_FILES: list[str] = [
     ".claude/skills/ensure-plans-dir/SKILL.md",
-    ".claude/skills/ensure-plans-dir/plan-format.md",
     ".claude/skills/project-init/SKILL.md",
-    ".claude/skills/project-init/project-context.md",
     ".claude/skills/project-sanity/SKILL.md",
     ".claude/skills/project-sanity/codecov-sanity.md",
+    ".claude/templates/plan-format.md",
+    ".claude/templates/project-context.md",
+    ".claude/workflows/CLAUDE.md",
+    ".claude/workflows/direct-review.md",
+    ".claude/workflows/develop-review-supervised.md",
+    ".claude/workflows/develop-review-autonomous.md",
+    ".claude/workflows/tdd-user-in-the-loop.md",
 ]
 
 # Settings.json required configuration
@@ -45,6 +52,49 @@ DYNAMIC_CONTENT_PATTERNS: list[str] = [
 ]
 
 # Allowlist for date-like patterns that are actually static content
+# Agent definitions — filename must match exactly
+AGENT_FILES: dict[str, str] = {
+    "architect": "architect.md",
+    "developer": "developer.md",
+    "reviewer": "reviewer.md",
+    "test-engineer": "test-engineer.md",
+    "security-engineer": "security-engineer.md",
+}
+
+# Agent tools — exact tool set for each agent
+AGENT_TOOLS: dict[str, set[str]] = {
+    "architect": {
+        "Read", "Glob", "Grep", "Write", "Edit",
+        "SendMessage", "TaskCreate", "TaskUpdate",
+        "TaskList", "TaskGet",
+    },
+    "developer": {
+        "Read", "Write", "Edit", "Bash", "Glob", "Grep",
+        "WebSearch", "WebFetch", "SendMessage",
+        "TaskList", "TaskGet",
+    },
+    "reviewer": {
+        "Read", "Glob", "Grep", "Bash", "SendMessage",
+    },
+    "test-engineer": {
+        "Read", "Glob", "Grep", "Bash", "SendMessage",
+        "TaskList", "TaskGet",
+    },
+    "security-engineer": {
+        "Read", "Glob", "Grep", "Bash", "SendMessage",
+        "TaskList", "TaskGet",
+    },
+}
+
+# Agent models — required model for each agent
+AGENT_MODELS: dict[str, str] = {
+    "architect": "opus",
+    "developer": "sonnet",
+    "reviewer": "opus",
+    "test-engineer": "sonnet",
+    "security-engineer": "sonnet",
+}
+
 # Rule file length — hard ceiling for the static test.
 # The documented recommendation is 200 lines; this ceiling
 # allows some buffer for code-heavy files (e.g., language
@@ -66,36 +116,3 @@ DYNAMIC_CONTENT_ALLOWLIST: list[str] = [
     r"\d{1,2}:\d{2}:\d{2}",
     r"version\s*[:=]\s*\d+\.\d+",
 ]
-
-# Agent definitions — filename must match exactly
-AGENT_FILES: dict[str, str] = {
-    "developer": "developer.md",
-    "reviewer": "reviewer.md",
-    "test-engineer": "test-engineer.md",
-    "security-engineer": "security-engineer.md",
-}
-
-# Agent tools — exact tool set for each agent
-AGENT_TOOLS: dict[str, set[str]] = {
-    "developer": {
-        "Read", "Write", "Edit", "Bash", "Glob", "Grep",
-        "WebSearch", "WebFetch", "SendMessage",
-    },
-    "reviewer": {
-        "Read", "Glob", "Grep", "Bash", "SendMessage",
-    },
-    "test-engineer": {
-        "Read", "Glob", "Grep", "Bash", "SendMessage",
-    },
-    "security-engineer": {
-        "Read", "Glob", "Grep", "Bash", "SendMessage",
-    },
-}
-
-# Agent models — required model for each agent
-AGENT_MODELS: dict[str, str] = {
-    "developer": "sonnet",
-    "reviewer": "opus",
-    "test-engineer": "sonnet",
-    "security-engineer": "sonnet",
-}
