@@ -1,66 +1,73 @@
 # Claude Orchestration Kit
 
-Drop-in multi-agent orchestration for Claude Code. Copy a
-blueprint's `.claude/` directory into any project to get a
-team of specialized agents coordinated by your Claude Code
-session.
+Drop-in multi-agent orchestration for Claude Code. This
+repository contains two things:
+
+- **Blueprints** — `.claude/` setups that you copy into a
+  project to get a team of specialized agents coordinated
+  by your Claude Code session
+- **Devcontainer templates** — Docker-based sandboxes for
+  running agents in isolation
 
 ## Blueprints
 
-### Choosing a Blueprint
+A blueprint is a `.claude/` directory containing agent
+definitions, workflows, rules, and skills. Copy one into
+your project, start Claude Code, and your session becomes
+the team lead.
+
+| Blueprint | Approach | Agents |
+|-----------|----------|--------|
+| **autonomous** | Full autonomy after plan approval via a plan queue | Lead, Developer, Reviewer, Test Engineer, Security Engineer |
+| **workflow** | User chooses a workflow after clarification | Lead, Architect, Developer, Test Engineer, Security Engineer, Reviewer |
+
+### When to Use Which
 
 | If you want... | Use |
 |---|---|
-| Workflow options (supervised, autonomous, TDD) | workflow |
 | Maximum throughput, minimal interaction | autonomous |
-| Per-commit user approval | workflow (Supervised) |
 | Full autonomy after plan approval | autonomous |
 | Plan queue with concurrent clarification | autonomous |
 | Lead stays responsive during execution | autonomous |
+| Multiple workflow options (supervised, autonomous, TDD) | workflow |
+| Per-commit user approval | workflow (Supervised) |
 
-### workflow — Clarify-First (workflow-based)
+### Quick Start
 
-The lead clarifies the task, then presents workflow options.
-The user chooses how work gets done. Workflows are separate
-files in `.claude/workflows/` — adding one requires no
-changes to CLAUDE.md.
+```bash
+# Copy a blueprint into your project
+cp -r blueprints/autonomous/.claude/ /path/to/your/project/.claude/
+# or
+cp -r blueprints/workflow/.claude/ /path/to/your/project/.claude/
+```
 
-| Agent | Model | Role |
-|-------|-------|------|
-| Architect | Opus | Reads codebase, writes plans, feeds tasks |
-| Developer | Sonnet | Implements all code (source + tests) |
-| Test Engineer | Sonnet | Advisory — designs test specs, verifies coverage |
-| Security Engineer | Sonnet | Advisory — checks security gaps |
-| Reviewer | Opus | Quality gate — reviews and commits |
+Start Claude Code in your project directory. The CLAUDE.md
+loads automatically and configures your session as the team
+lead.
 
-**Workflows:**
+Agent teams are an experimental Claude Code feature,
+disabled by default. Each blueprint's `settings.json`
+enables them automatically. You can also set the environment
+variable directly:
 
-- **Direct-Review** — lead handles work directly, Reviewer
-  checks quality. For well-scoped tasks.
-- **Develop-Review (Supervised)** — full dev cycle with
-  Architect planning, test-list development, and user
-  approval per commit.
-- **Develop-Review (Autonomous)** — same as Supervised but
-  commits automatically after Reviewer approval.
-- **TDD User-in-the-Loop** — strict Red-Green-Refactor with
-  user approval at every phase transition.
+```bash
+export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+```
 
-Language-specific guidance loads automatically via
-conditional rules when agents touch matching files.
-`/project-init` generates project context on first session.
-
-### autonomous — Plan Queue + Developer (4 agents)
+### autonomous — Plan Queue + Developer
 
 The lead handles clarification, planning, and plan queue
-management. The Developer implements all code. After the
-user approves a plan, the lead assesses risk/uncertainty at
-dispatch time and directs the Developer to consult advisors
-when warranted. The Developer implements and sends to the
-Reviewer. The lead stays responsive to the user during
-execution — new requests become plans in the queue.
+management. For each task, the lead assesses risk and
+uncertainty at dispatch time and directs the Developer to
+consult advisors when warranted. The lead stays responsive
+to the user during execution — new requests become plans in
+the queue.
+
+**Agents:**
 
 | Agent | Model | Role |
 |-------|-------|------|
+| Lead | Opus | Clarifies task, writes plans, manages plan queue |
 | Developer | Sonnet | Implements all code (source + tests) |
 | Reviewer | Opus | Quality gate — reviews and commits |
 | Test Engineer | Sonnet | Advisory — test lists on demand |
@@ -83,49 +90,60 @@ graph TD
     Lead -->|next task| Assess
 ```
 
-The lead directs advisor consultation at dispatch time based
-on risk and uncertainty indicators — not on every task.
-When consulted, advisors also verify the implementation
-post-implementation (test coverage conformance, security
-sign-off). The Reviewer provides a backstop: non-trivial
-behavioral changes without tests or advisor consultation
-are rejected. The Developer-Reviewer rejection loop is
-opaque to the lead.
+The Reviewer provides a backstop: non-trivial behavioral
+changes without tests or advisor consultation are rejected.
+The Developer-Reviewer rejection loop is opaque to the lead.
 
-## Quick Start
+### workflow — Clarify-First
+
+The lead clarifies the task, then presents workflow options.
+The user chooses how work gets done. Workflows are separate
+files in `.claude/workflows/` — adding one requires no
+changes to CLAUDE.md.
+
+**Agents:**
+
+| Agent | Model | Role |
+|-------|-------|------|
+| Lead | Opus | Clarifies task, presents workflow options, coordinates |
+| Architect | Opus | Reads codebase, writes plans, feeds tasks |
+| Developer | Sonnet | Implements all code (source + tests) |
+| Test Engineer | Sonnet | Advisory — designs test specs, verifies coverage |
+| Security Engineer | Sonnet | Advisory — checks security gaps |
+| Reviewer | Opus | Quality gate — reviews and commits |
+
+**Workflows:**
+
+- **Direct-Review** — lead handles work directly, Reviewer
+  checks quality. For well-scoped tasks.
+- **Develop-Review (Supervised)** — full dev cycle with
+  Architect planning, test-list development, and user
+  approval per commit.
+- **Develop-Review (Autonomous)** — same as Supervised but
+  commits automatically after Reviewer approval.
+- **TDD User-in-the-Loop** — strict Red-Green-Refactor with
+  user approval at every phase transition.
+
+Language-specific guidance loads automatically via
+conditional rules when agents touch matching files.
+`/project-init` generates project context on first session.
+
+## Devcontainer Templates
+
+`devcontainer_templates/` provides Docker-based sandboxes
+for running agents in isolation. Two variants are available:
+
+| Template | Directory | Platform |
+|----------|-----------|----------|
+| **Base** | `.devcontainer/` | Cross-platform |
+| **Audio** | `.devcontainer_audio/` | Linux (PulseAudio passthrough) |
 
 ```bash
-# Copy a blueprint into your project
-cp -r blueprints/workflow/.claude/ /path/to/your/project/.claude/
-# or
-cp -r blueprints/autonomous/.claude/ /path/to/your/project/.claude/
-```
-
-Start Claude Code in your project directory. The CLAUDE.md
-loads automatically and configures your session as the team
-lead.
-
-## Prerequisites
-
-Agent teams are an experimental Claude Code feature,
-disabled by default. Each blueprint's `settings.json`
-enables them automatically. You can also set the environment
-variable directly:
-
-```bash
-export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
-```
-
-## Devcontainer Template
-
-`devcontainer_templates/` provides a devcontainer setup for
-sandboxed agent execution. Copy it alongside `.claude/`:
-
-```bash
+# Copy into your project
 cp -r devcontainer_templates/.devcontainer/ /path/to/your/project/.devcontainer/
 ```
 
-Features:
+**Features:**
 
 - **Dual auth mode** — proxy (default) or OAuth, controlled
   by `CLAUDE_AUTH` in `.devcontainer/.env.local`
@@ -134,8 +152,8 @@ Features:
 - **Host config as template** — `~/.claude/` mounted
   read-only, copied into container on startup
 
-See `devcontainer_templates/.devcontainer/README.md` for
-auth configuration, troubleshooting, and mount details.
+See each template's README for auth configuration,
+troubleshooting, and mount details.
 
 ## Known Limitations
 
@@ -148,5 +166,7 @@ Agent teams are experimental. Be aware of:
 - **No nested teams** — only the lead can manage the team.
 - **Lead is fixed** — the session that creates the team
   stays the lead.
-- **Permissions inherit** — all teammates inherit the
-  lead's permission settings.
+- **Permission mode inherits** — all teammates start with
+  the lead's permission mode (e.g., whether tool use
+  prompts for approval). Agent `tools:` frontmatter
+  independently restricts which tools each agent can use.
