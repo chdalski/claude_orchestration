@@ -23,6 +23,7 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 | `blueprints/workflow/` | Clarify-first blueprint — user chooses workflow |
 | `blueprints/autonomous/` | Autonomous blueprint — plan queue + developer |
 | `devcontainer_templates/` | Devcontainer setup for sandboxed agent execution |
+| `CONTRIBUTING.md` | How to develop and extend blueprints |
 
 ### workflow
 

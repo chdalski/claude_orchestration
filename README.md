@@ -155,6 +155,12 @@ cp -r devcontainer_templates/.devcontainer/ /path/to/your/project/.devcontainer/
 See each template's README for auth configuration,
 troubleshooting, and mount details.
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to develop
+and extend blueprints — adding languages, workflows, agents,
+skills, and running the test suite.
+
 ## Known Limitations
 
 Agent teams are experimental. Be aware of:
