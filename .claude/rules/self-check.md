@@ -140,7 +140,18 @@ files (language idioms with inline examples) may land
 slightly above 200 — that is acceptable if the content is
 cohesive and cannot be split without losing context.
 
-### 9. Caching compliance
+### 9. Handoff coverage
+
+If the change affects a multi-agent pipeline (agent
+responsibilities, handoff messages, verification steps),
+run the analysis described in `handoff-coverage.md`. For
+each guarantee the pipeline should provide, verify that
+a specific agent owns the check and receives sufficient
+input. Gaps in handoff coverage are invisible during
+normal operation — they only surface when a real task
+hits the uncovered case.
+
+### 10. Caching compliance
 
 Rule files, CLAUDE.md, and agent definitions are cached at
 session start (prompt cache level 3). They must not contain
