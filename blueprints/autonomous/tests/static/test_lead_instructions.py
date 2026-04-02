@@ -15,12 +15,13 @@ def lead_instructions():
 # --- Plan progress ---
 
 
-def test_plan_progress_commit_after_reviewer_approval(lead_instructions):
-    """Lead must commit plan updates after each task completion."""
-    assert "commit the plan update" in lead_instructions.lower(), (
-        "CLAUDE.md must instruct the lead to commit plan progress "
-        "after reviewer approval — without this, plan updates are "
-        "lost on session crash"
+def test_reviewer_owns_plan_updates_during_execution(lead_instructions):
+    """Lead must delegate plan tracking to the reviewer during execution."""
+    text = lead_instructions.lower()
+    assert "reviewer" in text and "plan update" in text, (
+        "CLAUDE.md must state that the reviewer updates the plan "
+        "during execution — without this, no agent verifies scope "
+        "completeness against the plan"
     )
 
 
@@ -106,11 +107,11 @@ def test_skill_output_commit_covers_ensure_plans_dir(lead_instructions):
     )
 
 
-def test_skill_output_commit_covers_plan_progress(lead_instructions):
-    """Plan progress updates must be listed under skill-output commits."""
+def test_skill_output_commit_covers_plan_status(lead_instructions):
+    """Plan status changes must be listed under skill-output commits."""
     text = lead_instructions.lower()
-    assert "plan progress" in text and "skill-output commit" in text, (
-        "Plan progress updates must be documented as skill-output "
-        "commits — they are outputs of the lead's plan-management "
-        "instructions, not ad-hoc commits"
+    assert "plan status" in text and "skill-output commit" in text, (
+        "Plan status changes (Completed, Canceled) must be documented "
+        "as skill-output commits — task-level updates are committed "
+        "by the reviewer, but plan-level status is the lead's decision"
     )
