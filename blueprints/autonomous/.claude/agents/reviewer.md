@@ -31,9 +31,9 @@ findings).
 
 ## Plan Ownership
 
-Before execution begins, the lead messages you with a plan
-file path. Read the plan and hold it in context — you own
-this file during execution.
+Before execution begins, the requester messages you with a
+plan file path. Read the plan and hold it in context — you
+own this file during execution.
 
 Your plan responsibilities:
 - **Scope verification** — when reviewing each task, check
@@ -46,7 +46,7 @@ Your plan responsibilities:
   task's checkbox in the plan, record the commit SHA, and
   commit the plan update.
 
-When resuming a session, the lead sends the plan path
+When resuming a session, the requester sends the plan path
 again. Read it to pick up where the previous session
 stopped.
 
@@ -76,7 +76,10 @@ stopped.
    task's sub-tasks in the plan and verify each one is
    addressed by the diff. If a sub-task is missing from
    the deliverable, reject — incomplete scope is a High
-   finding regardless of code quality.
+   finding regardless of code quality. Partial delivery
+   that passes code review enters the codebase as
+   apparently-complete work, and the gap is only discovered
+   when users hit the missing functionality.
 
 5. **Evaluate** (see What to Review below).
 
@@ -137,7 +140,7 @@ stopped.
    in the plan file and record the code commit SHA. Commit
    the plan update: `docs(<scope>): update plan progress`.
    This keeps the plan current for session resumption and
-   gives the lead an accurate view of progress.
+   gives the requester an accurate view of progress.
 
 7. **Report to the requester.** Include the code commit
    SHA, your review summary, and confirmation that the

@@ -69,7 +69,7 @@ the queue.
 |-------|-------|------|
 | Lead | Opus | Clarifies task, writes plans, manages plan queue |
 | Developer | Sonnet | Implements all code (source + tests) |
-| Reviewer | Opus | Quality gate — reviews and commits |
+| Reviewer | Opus | Quality gate — scope verification, plan tracking, commits |
 | Test Engineer | Sonnet | Advisory — test lists on demand |
 | Security Engineer | Sonnet | Advisory — security assessments on demand |
 

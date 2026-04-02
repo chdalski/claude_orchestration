@@ -104,7 +104,7 @@ blueprints/autonomous/
 │   ├── settings.json      ← Agent teams config
 │   ├── agents/            ← Agent definitions (4 agents)
 │   │   ├── developer.md   ← Implements all code (source + tests)
-│   │   ├── reviewer.md    ← Independent quality gate + commits
+│   │   ├── reviewer.md    ← Quality gate + scope verification + plan tracking
 │   │   ├── test-engineer.md   ← Advisory — test design on demand
 │   │   └── security-engineer.md ← Advisory — security assessment on demand
 │   ├── rules/             ← Unconditional + conditional rules
@@ -164,9 +164,10 @@ execution pipeline.
 agent's model, tools, and instructions via YAML frontmatter
 and markdown body. All four agents are general-purpose
 building blocks — the developer implements code, the
-reviewer evaluates and commits, and advisors respond to
-consultation requests without knowing which workflow or
-blueprint invoked them. The developer-reviewer handoff
+reviewer evaluates code quality, verifies scope against
+the plan, tracks plan progress, and commits. Advisors
+respond to consultation requests without knowing which
+workflow or blueprint invoked them. The developer-reviewer handoff
 includes a working-tree delta: the developer snapshots
 `git diff --name-only` before and after implementation,
 reports the exact file list (including incidental formatter
