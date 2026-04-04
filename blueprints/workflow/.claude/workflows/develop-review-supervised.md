@@ -171,7 +171,12 @@ multi-minute stalls from undetected message loss.
 
 ### Review
 
-12. **Lead sends to Reviewer.** Reviewer evaluates
+12. **Lead sends to Reviewer** — include the task
+    description and acceptance criteria from the plan so
+    the Reviewer can verify scope completeness. Without
+    the task context, the Reviewer can only evaluate code
+    quality, not whether every requested feature was
+    delivered. Reviewer evaluates scope completeness,
     correctness, security, test coverage, design, and
     language idioms.
 

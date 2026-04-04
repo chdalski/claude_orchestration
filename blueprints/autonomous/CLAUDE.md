@@ -120,9 +120,11 @@ blueprints/autonomous/
 │   │   ├── lang-python-patterns.md ← [conditional: *.py] Types, FP
 │   │   ├── lang-python-testing.md  ← [conditional: *.py] Testing
 │   │   ├── lang-go.md            ← [conditional: *.go] Core idioms
+│   │   ├── lang-go-errors.md    ← [conditional: *.go] Error handling
 │   │   ├── lang-go-concurrency.md ← [conditional: *.go] Concurrency
 │   │   ├── lang-go-testing.md   ← [conditional: *.go] Testing
 │   │   ├── lang-rust.md          ← [conditional: *.rs] Core idioms
+│   │   ├── lang-rust-errors.md   ← [conditional: *.rs] Error handling
 │   │   ├── lang-rust-patterns.md ← [conditional: *.rs] FP, DDD, async
 │   │   ├── lang-rust-testing.md  ← [conditional: *.rs] Testing
 │   │   ├── benchmark-rust.md     ← [conditional: benches/**/*.rs]

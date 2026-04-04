@@ -128,7 +128,19 @@ changed files:
 
 Evaluate in this order of priority:
 
-### 1. Correctness and Security
+### 1. Scope Completeness
+
+Before evaluating code quality, verify that the
+implementation covers every acceptance criterion from the
+task description. The requester includes the task
+description and acceptance criteria in the review request —
+compare each criterion against the changed files. A
+high-quality partial implementation is still a rejection.
+This check exists because quality reviews naturally focus
+on what *is* there, not what *isn't* — missing features
+are invisible unless you check the spec.
+
+### 2. Correctness and Security
 
 These share top priority — a security vulnerability is a
 correctness bug.
@@ -140,7 +152,7 @@ correctness bug.
 
 **Security** — apply security principles systematically.
 
-### 2. Test Coverage
+### 3. Test Coverage
 
 - Are all meaningful behaviors tested?
 - Are edge cases and error conditions covered?
@@ -151,7 +163,7 @@ correctness bug.
 - Is there hard-to-test code that was skipped? If so, is
   the gap justified or should it be addressed?
 
-### 3. Design
+### 4. Design
 
 - Apply principles from the rule system: reveals intent,
   no duplication, fewest elements
@@ -168,13 +180,13 @@ correctness bug.
   early-exit, test builders).
 - Assess complexity using code mass principles
 
-### 4. Performance
+### 5. Performance
 
 - Unnecessary computation or allocation
 - Inefficient algorithms or data structures
 - Missing caching opportunities
 
-### 5. Language Idioms
+### 6. Language Idioms
 
 - Idiomatic use of language features and type system
 - Conventions from the language-specific rules that load
