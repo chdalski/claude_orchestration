@@ -112,6 +112,7 @@ blueprints/workflow/
 │   │   ├── documentation.md      ← [conditional: README*, docs/**]
 │   │   ├── code-mass.md          ← [conditional: source files]
 │   │   ├── integration-testing.md ← [conditional: source files] Dead-infrastructure prevention
+│   │   ├── dependency-hygiene.md  ← [conditional: source files] Remove unused dependencies
 │   ├── templates/         ← Canonical templates copied at runtime
 │   │   ├── plan-format.md ← Plan format guide (copied to .ai/plans/ by /ensure-plans-dir)
 │   │   └── project-context.md ← Project context output format (used by /project-init)
