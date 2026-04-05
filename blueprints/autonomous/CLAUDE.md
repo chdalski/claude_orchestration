@@ -54,6 +54,7 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 - Generated project `CLAUDE.md` follows `project-context.md`: Overview, Build and Test, Components, Conventions, References
 - On `CLAUDE.md` re-generation: Overview/Build/Components refresh; Conventions/References entries preserve
 - Execution pipeline: Lead → Developer → Reviewer → Lead (developer-reviewer rejection loop is opaque to lead)
+- Team is cycled (TeamDelete + TeamCreate) between task slices — prevents developer context degradation across tasks
 - Plan queue supports multiple concurrent plans — ordered by dependency and impact, with supersession detection
 - Blueprint does not prescribe architecture, security practices, data modeling, CI/CD, formatting, or testing methodology
 - Terminology: "launch" subagents, "create" teams, "spawn" teammates, "message" within teams
