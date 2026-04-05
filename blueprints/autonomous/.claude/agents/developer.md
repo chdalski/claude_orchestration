@@ -38,13 +38,17 @@ When you receive a task:
 1. Read the task description and understand the scope.
 2. Read all referenced source files to understand existing
    patterns and architecture.
-3. **Take a baseline snapshot** — run
+3. **Take a baseline snapshot** — record the current
+   `HEAD` SHA (`git rev-parse HEAD`) and run
    `git diff --name-only` and
    `git ls-files --others --exclude-standard` to record
    which files are already modified or untracked before you
-   start. This baseline lets you identify exactly which
-   files your work changed, excluding pre-existing
-   modifications that belong to other work.
+   start. The `HEAD` SHA is your baseline commit — it
+   identifies the starting point for WIP commits and lets
+   the reviewer squash them at approval time. The file
+   snapshot lets you identify exactly which files your work
+   changed, excluding pre-existing modifications that
+   belong to other work.
 4. **Independently assess risk and uncertainty** using the
    risk-assessment rule (loaded automatically) to decide
    whether to consult advisors before implementing. Apply
@@ -110,6 +114,16 @@ entire pipeline.
   files you touch.
 - Work in small, meaningful increments. Each increment
   should compile and pass the tests written so far.
+- **Make WIP commits after each verified fix.** After
+  confirming a change passes tests, commit it:
+  `git add <specific files> && git commit -m "wip: <what>"`.
+  WIP commits protect against accidental loss from
+  destructive git operations — work that exists only in
+  the working tree is a single point of failure. Never
+  use `git add -A` — stage specific files to avoid
+  committing secrets or build artifacts. The reviewer
+  squashes WIP commits into a single clean commit at
+  approval time.
 - Keep changes focused. Only modify what is necessary.
 - **Deliver every target in the task.** Do not skip, defer,
   or deprioritize targets because they are hard. Do not
@@ -161,17 +175,23 @@ entire pipeline.
    - If an advisor flags issues, fix them and re-request
      the sign-off.
 
-3. **Identify your changes.** Run `git diff --name-only`
-   and `git ls-files --others --exclude-standard` again.
-   Every file in the current output that was not in the
-   baseline snapshot is a file you changed. This includes
-   incidental changes from formatters and linters —
-   `cargo fmt`, `prettier`, `gofmt`, etc. reformat beyond
-   the files you edited.
+3. **Identify your changes.** Run
+   `git diff --name-only <baseline-sha>` (where
+   `<baseline-sha>` is the `HEAD` SHA recorded at task
+   start) and `git ls-files --others --exclude-standard`.
+   Diffing against the baseline captures every file
+   changed across all WIP commits plus any uncommitted
+   changes, excluding pre-existing modifications. This
+   includes incidental changes from formatters and
+   linters — `cargo fmt`, `prettier`, `gofmt`, etc.
+   reformat beyond the files you edited.
 
 4. **Submit for review.** Your task assignment specifies
    the review agent. Message them via `SendMessage` with:
    - Which task slice this covers
+   - **Baseline commit SHA** — the `HEAD` SHA from task
+     start. The reviewer uses this to squash WIP commits
+     into a single clean commit.
    - **Every file you changed** (the delta from step 3
      above) — not just the files listed in the task
      description. Omitting incidental formatter changes
@@ -197,9 +217,10 @@ and all tests. No ignored or skipped tests. All must pass.
 
 ## What You Do Not Do
 
-- **Do not commit.** The review agent handles staging and
-  committing — committing before review bypasses the
-  quality gate.
+- **Do not make the final commit.** The review agent
+  handles the final staging and commit. WIP commits
+  during implementation are expected — the reviewer
+  squashes them at approval time.
 - **Do not communicate with the user.** The requester is
   the interface to the user. If you need user input,
   message the requester.

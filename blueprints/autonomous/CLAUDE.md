@@ -38,13 +38,14 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 - Agent files define role only — no named teammates, no workflow coordination, no workflow conditionals
 - Use "the requester" / "the implementor" in agent files — never role-specific names
 - Agent `name:` fields use lowercase hyphenated form: `developer`, `test-engineer`
-- Unconditional rules (no `paths:` frontmatter): `simplicity.md`, `risk-assessment.md`, `procedural-fidelity.md`, `acceptance-criteria.md`
+- Unconditional rules (no `paths:` frontmatter): `simplicity.md`, `risk-assessment.md`, `procedural-fidelity.md`, `acceptance-criteria.md`, `safe-git.md`
 - Conditional rules load automatically when agents touch matching file extensions
 - Universal principles stated once in unconditional rules — language rules extend without restating
 - Adding a new language: create `lang-<language>.md` with `paths:` frontmatter, update `functional-style.md`/`code-mass.md`/`code-principles.md` paths — no changes to CLAUDE.md or agents
 - Lead-directed advisor consultation — lead assesses risk at dispatch time per `risk-assessment.md`
 - Developer may add advisor consultations but not remove lead's directives
 - Reviewer owns plan file during execution — marks tasks done, records commit SHAs
+- Developer makes WIP commits during implementation — reviewer squashes at approval time via `git reset <baseline-sha>`
 - Reviewer backstop: rejects if non-trivial behavioral changes lack tests and no advisor was consulted
 - Lead verifies plan goal at completion — adds follow-up tasks if quantitative targets not met
 - All blueprint files must be fully static — no dates, counters, versions (prompt cache level 3)

@@ -118,16 +118,30 @@ stopped.
    - **Tests line:** one line noting what tests were added
      or changed. Omit for non-code changes.
 
-3. **Cross-reference the implementor's file list.** The
-   implementor's handoff message includes every file changed
-   during implementation (built from a before/after
-   working-tree diff). Run `git status --porcelain` and
-   verify that every file the implementor reported appears
-   as modified or added. If `git status` shows files the
-   implementor did not report, do not include them — they
-   are pre-existing modifications unrelated to this task.
+3. **Squash WIP commits.** The implementor's handoff
+   includes a baseline commit SHA — the `HEAD` before the
+   task started. Run `git reset <baseline-sha>` to move
+   HEAD back to the baseline and unstage all WIP-committed
+   changes into the working tree. This puts you in the
+   same state as if the implementor had never committed —
+   all changes are unstaged, and step 5 controls exactly
+   what gets staged and committed. Do not use `--soft`
+   here — it leaves WIP changes staged, and `git commit`
+   would include all of them regardless of the file list
+   in step 5. If the handoff does not include a baseline
+   SHA, the implementor made no WIP commits — skip this
+   step.
 
-4. **Stage and commit.** Approval means the work meets
+4. **Cross-reference the implementor's file list.** The
+   implementor's handoff message includes every file changed
+   during implementation (diffed against the baseline).
+   Run `git status --porcelain` and verify that every file
+   the implementor reported appears as modified or added.
+   If `git status` shows files the implementor did not
+   report, do not include them — they are pre-existing
+   modifications unrelated to this task.
+
+5. **Stage and commit.** Approval means the work meets
    quality standards — commit promptly to avoid state drift.
    Stage every file from the
    implementor's verified file list using `git add` with
@@ -135,14 +149,14 @@ stopped.
    those can pick up secrets, build artifacts, or unrelated
    work-in-progress. Commit with the message from step 2.
 
-5. **Verify commit completeness.** Run
+6. **Verify commit completeness.** Run
    `git diff --name-only` and check that none of the files
    the implementor reported as changed remain uncommitted.
    If any do, stage them and amend the commit. This catches
    selective staging errors — the most common cause of
    dirty trees after "clean" commits.
 
-6. **Update the plan.** Mark all checkboxes for the
+7. **Update the plan.** Mark all checkboxes for the
    completed task — both the step-level checkbox and every
    sub-task checkbox within the task description. Record
    the code commit SHA. Commit
@@ -150,7 +164,7 @@ stopped.
    This keeps the plan current for session resumption and
    gives the requester an accurate view of progress.
 
-7. **Report to the requester.** Include the code commit
+8. **Report to the requester.** Include the code commit
    SHA, your review summary, and confirmation that the
    plan is updated.
 
