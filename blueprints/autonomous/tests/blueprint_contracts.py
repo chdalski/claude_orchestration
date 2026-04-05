@@ -94,7 +94,7 @@ AGENT_TOOLS: dict[str, set[str]] = {
 
 # Agent models — required model for each agent
 AGENT_MODELS: dict[str, str] = {
-    "developer": "sonnet",
+    "developer": "opus",
     "reviewer": "opus",
     "test-engineer": "sonnet",
     "security-engineer": "sonnet",
