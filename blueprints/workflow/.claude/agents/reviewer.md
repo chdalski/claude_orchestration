@@ -136,9 +136,12 @@ task description. The requester includes the task
 description and acceptance criteria in the review request —
 compare each criterion against the changed files. A
 high-quality partial implementation is still a rejection.
-This check exists because quality reviews naturally focus
-on what *is* there, not what *isn't* — missing features
-are invisible unless you check the spec.
+This applies equally to items the implementor labels
+"deferred," "blocked," or "out of scope" — the implementor
+cannot unilaterally reduce task scope. This check exists
+because quality reviews naturally focus on what *is* there,
+not what *isn't* — missing features are invisible unless
+you check the spec.
 
 ### 2. Correctness and Security
 
@@ -261,7 +264,8 @@ and lose trust in the instructions.
 
 If during review you discover a non-obvious convention or
 authoritative reference that is not in the project root
-`CLAUDE.md`, add it to the appropriate section:
+`CLAUDE.md`, include it in your review findings so the
+requester can add it. Target section:
 
 - **Conventions** — project-specific patterns a future
   agent would need to know to avoid mistakes
@@ -269,11 +273,11 @@ authoritative reference that is not in the project root
   implementation decisions
 
 The bar is high: "would a future agent make a mistake
-without knowing this?" If yes, add a one-line entry. If
-the answer is "it would be slightly less efficient," skip
-it — CLAUDE.md is not a changelog.
+without knowing this?" If yes, flag it. If the answer is
+"it would be slightly less efficient," skip it — CLAUDE.md
+is not a changelog.
 
-Only add to sections that have the
+Only flag entries for sections that have the
 `<!-- Agents: ... -->` HTML comment — this indicates the
 section was set up for progressive enrichment by
 `/project-init`. If the comment is absent, the CLAUDE.md

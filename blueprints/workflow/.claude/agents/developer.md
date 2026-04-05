@@ -87,6 +87,10 @@ of cadence:
 - Work in small, meaningful increments. Each increment
   should compile and pass the tests written so far.
 - Keep changes focused. Only modify what is necessary.
+- **Deliver every target in the task.** Do not skip, defer,
+  or deprioritize targets because they are hard. Do not
+  submit for review until all assigned targets are
+  addressed — the review agent rejects incomplete scope.
 - Do not skip, weaken, or remove tests during
   implementation. If a test seems wrong, discuss with
   the test design advisor rather than changing it —
