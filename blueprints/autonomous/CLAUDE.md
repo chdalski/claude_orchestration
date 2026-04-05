@@ -20,7 +20,7 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 |---|---|
 | `.claude/CLAUDE.md` | Lead instructions — clarification, planning, plan queue, task dispatch |
 | `.claude/settings.json` | Agent teams config, plans directory path |
-| `.claude/agents/developer.md` | Implements all code — source and tests (Opus) |
+| `.claude/agents/developer.md` | Implements all code — source and tests (Sonnet) |
 | `.claude/agents/reviewer.md` | Quality gate — scope verification, plan tracking, commits (Opus) |
 | `.claude/agents/test-engineer.md` | Advisory — test design on demand (Sonnet) |
 | `.claude/agents/security-engineer.md` | Advisory — security assessment on demand (Sonnet) |

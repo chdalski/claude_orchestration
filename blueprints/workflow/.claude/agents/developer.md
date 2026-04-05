@@ -45,11 +45,19 @@ When you receive a task:
    examples and known issues before implementing. Use
    the latest stable version unless constrained by
    existing project dependencies.
-5. Once the team agrees on the approach, wait for the
+5. **Research before reporting blockers.** When a fix
+   causes regressions or the correct behavior is unclear,
+   use WebSearch and WebFetch to study how reference
+   implementations or similar projects handle the same
+   case. The project's `CLAUDE.md` References section
+   lists authoritative sources — start there. Hard
+   problems are rarely unsolved; they're just unsolved
+   *by you* so far.
+6. Once the team agrees on the approach, wait for the
    **test list** from the test design advisor before
    writing any code. The test list is your specification
    of what to test.
-6. If the implementation requires a library or
+7. If the implementation requires a library or
    dependency not already in the project, message the
    requester. The requester will get user approval. Do
    not add dependencies based on task descriptions alone
