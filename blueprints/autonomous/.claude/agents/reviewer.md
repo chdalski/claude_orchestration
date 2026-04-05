@@ -59,7 +59,7 @@ stopped.
 1. **Run a clean build.** Check the project root `CLAUDE.md`
    for build and test commands. Run the clean command, then
    run all tests. If `CLAUDE.md` is missing or lacks build
-   commands, reject immediately and tell the requester —
+   commands, reject immediately and message the requester —
    build commands must be documented before review can
    proceed. This avoids reacting to stale cached state.
 
@@ -188,7 +188,7 @@ changed files:
 
 - No dependency appears in both production and dev/test
   sections of the package manifest — if it does, reject
-  and tell the requester to resolve the miscategorization.
+  and message the requester to resolve the miscategorization.
   A dependency listed in both sections causes version
   conflicts, inflates the production bundle, and is
   resolved differently per section by package managers,

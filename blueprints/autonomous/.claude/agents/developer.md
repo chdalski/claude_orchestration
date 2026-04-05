@@ -164,16 +164,21 @@ entire pipeline.
    before proceeding — sending broken code to advisors or
    for review wastes a review cycle.
 
-2. **Request advisor sign-offs** (if advisors were consulted
+2. **Obtain advisor sign-offs** (if advisors were consulted
    before implementation). Send the completed implementation
    to each consulted advisor via `SendMessage` for
-   post-implementation review:
+   post-implementation review, then **wait for every
+   consulted advisor to respond before proceeding to
+   step 3.** Submitting for review without sign-offs
+   defeats the advisory gate — the reviewer cannot
+   evaluate work that advisors haven't verified.
    - **Test advisor:** verifies no tests were skipped,
      weakened, or removed from the test list.
    - **Security advisor:** reviews the actual code against
      the security assessment.
    - If an advisor flags issues, fix them and re-request
-     the sign-off.
+     the sign-off. Do not proceed until every consulted
+     advisor has explicitly signed off.
 
 3. **Identify your changes.** Run
    `git diff --name-only <baseline-sha>` (where

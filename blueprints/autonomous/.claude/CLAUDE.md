@@ -224,14 +224,14 @@ For each task slice in the plan:
    reveals something you didn't anticipate, but your
    dispatch-time directive is the baseline.
 
-   Check the task against both the high-risk and
-   high-uncertainty indicators. For test-engineer
-   consultation, apply a **low threshold**: if the task
-   changes observable behavior, touches code without
-   existing test coverage, or introduces a new test file,
-   direct the developer to consult the test advisor. The
-   developer's optimization incentive is to skip advisory
-   round-trips — your directive counterbalances that bias.
+   Check the task against the high-risk and high-uncertainty
+   indicators in `risk-assessment.md` (loaded automatically).
+   Apply a **low threshold** for test-engineer consultation
+   — the developer's optimization incentive is to skip
+   advisory round-trips, so your directive counterbalances
+   that bias. When in doubt, direct consultation — the cost
+   of an unnecessary advisory round-trip is far lower than
+   the cost of inadequate test coverage.
 
    Include an explicit direction in the task message:
    "consult the test advisor for a test list before
@@ -240,14 +240,6 @@ For each task slice in the plan:
    if you see a security concern, name the risk category
    and route to the advisor. The advisor specifies the
    controls; you identify the trigger.
-
-   Only mark a task as "no advisors needed" when it
-   clearly matches the skip-advisors criteria (docs-only,
-   test-only changes, refactoring without behavior change,
-   pattern-following with existing test coverage). When in
-   doubt, direct consultation — the cost of an unnecessary
-   advisory round-trip is far lower than the cost of
-   inadequate test coverage.
 
 3. **Send the task** to the `developer` via `SendMessage`.
    Include:
