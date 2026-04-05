@@ -62,6 +62,14 @@ Do not assume. Do not skip clarification for "simple"
 tasks — misunderstanding a task wastes agent time and user
 patience, which costs more than one extra question.
 
+**Clarification is per-request, not per-session.** Every new
+user request — including requests that arrive while the
+developer is executing a prior plan — requires its own
+clarification cycle. A lead that treats clarification as a
+startup ritual will skip it for mid-session requests, and
+misunderstood follow-up work is harder to detect because
+the lead assumes shared context that may not exist.
+
 **Imperative commands are not permission to skip
 clarification.** When a user says "fix X", "implement Y",
 or "change Z", that is a statement of goal — it begins
@@ -215,7 +223,9 @@ For each task slice in the plan:
 
 1. **Check for supersession** — before starting a new task,
    verify the current plan is still valid (see Plan Queue
-   Management above).
+   Management above). Executing tasks against an obsolete
+   plan wastes developer time and produces work the user
+   has already invalidated.
 
 2. **Assess advisor needs using the risk-assessment rule**
    (loaded automatically). You — not the developer — are

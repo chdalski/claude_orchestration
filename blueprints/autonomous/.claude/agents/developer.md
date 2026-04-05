@@ -43,12 +43,13 @@ When you receive a task:
    `git diff --name-only` and
    `git ls-files --others --exclude-standard` to record
    which files are already modified or untracked before you
-   start. The `HEAD` SHA is your baseline commit — it
-   identifies the starting point for WIP commits and lets
-   the reviewer squash them at approval time. The file
-   snapshot lets you identify exactly which files your work
-   changed, excluding pre-existing modifications that
-   belong to other work.
+   start. The `HEAD` SHA is your baseline commit — the
+   reviewer uses it to squash WIP commits into a single
+   clean commit via `git reset <baseline-sha>`. Without it,
+   the reviewer cannot identify which commits belong to this
+   task. The file snapshot lets you identify exactly which
+   files your work changed, excluding pre-existing
+   modifications that belong to other work.
 4. **Independently assess risk and uncertainty** using the
    risk-assessment rule (loaded automatically) to decide
    whether to consult advisors before implementing. Apply
@@ -153,6 +154,17 @@ entire pipeline.
   case. The project's `CLAUDE.md` References section lists
   authoritative sources — start there. Hard problems are
   rarely unsolved; they're just unsolved *by you* so far.
+- **Be specific when reporting infeasibility.** If after
+  research you conclude that a target genuinely cannot be
+  done, describe the concrete barrier — not a category
+  label. State which file and function would need to
+  change, whether it is in the project's codebase or an
+  external dependency, and the estimated scope. "Needs
+  parser enhancements" is not actionable — "needs
+  `loader.rs:build_mapping()` to set `span.end` from
+  `MappingEnd` events — ~10 lines, in our crate" lets
+  the requester and reviewer evaluate the actual effort.
+  The `claim-verification` rule explains why this matters.
 - If a new dependency is needed, message the requester.
   The requester will get user approval. Do not add
   dependencies without confirmation — the user may have
