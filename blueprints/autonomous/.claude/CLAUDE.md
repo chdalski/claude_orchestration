@@ -258,6 +258,11 @@ For each task slice in the plan:
    - Which advisors to consult (from the risk check above),
      or "no advisors needed" if the task is low risk and
      low uncertainty
+   - Who to submit completed work to for review (the
+     review agent's name for `SendMessage`) — the
+     developer's instructions reference this rather than
+     hardcoding a teammate name, keeping the agent file
+     reusable across workflows
 
    Send one task at a time — the developer works on a single
    task until it is committed, then receives the next one.
