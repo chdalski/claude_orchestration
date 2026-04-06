@@ -43,6 +43,7 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 - Universal principles stated once in unconditional rules — language rules extend without restating
 - Adding a new language: create `lang-<language>.md` with `paths:` frontmatter, update `functional-style.md`/`code-mass.md`/`code-principles.md` paths — no changes to CLAUDE.md or agents
 - Lead-directed advisor consultation — lead assesses risk at dispatch time per `risk-assessment.md`
+- Advisor consultation requires two gates in the dispatch message: input gate (consult before implementing) and output gate (get sign-off before submitting to reviewer)
 - Developer may add advisor consultations but not remove lead's directives
 - Reviewer owns plan file during execution — marks tasks done, records commit SHAs
 - Developer makes WIP commits during implementation — reviewer squashes at approval time via `git reset <baseline-sha>`
