@@ -3,7 +3,14 @@
 <!-- SYNC NOTE: The Flow section (steps 1–14) is identical to
      develop-review-supervised.md. When editing the dev-team
      flow, apply the same change to the other file. Only the
-     Commit section (step 15) differs between the two. -->
+     Commit section (step 15) differs between the two.
+
+     Additionally, the Handoff Protocol section (Team Roster,
+     Acknowledgment Rule, Lead-Monitored Transitions) and
+     Flow steps 1–2 ("Architect sends task" and "Dev-team
+     discusses the task") are shared verbatim with
+     tdd-user-in-the-loop.md. When editing those sections,
+     update tdd-user-in-the-loop.md as well. -->
 
 ## When to Use
 

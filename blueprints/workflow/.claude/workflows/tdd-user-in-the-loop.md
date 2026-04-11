@@ -1,5 +1,15 @@
 # TDD User-in-the-Loop
 
+<!-- SYNC NOTE: The Handoff Protocol section (Team Roster,
+     Acknowledgment Rule, Lead-Monitored Transitions) and
+     Flow steps 1–2 ("Architect sends task" and "Dev-team
+     discusses the task") are shared verbatim with
+     develop-review-supervised.md and
+     develop-review-autonomous.md. When editing those
+     sections, update the other two files as well.
+     Note: the TDD Cycles (steps 5–11) and Sign-offs
+     (steps 12–13) are TDD-specific and do not sync. -->
+
 ## When to Use
 
 Use this workflow when the user wants fine-grained control

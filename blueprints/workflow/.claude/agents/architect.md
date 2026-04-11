@@ -102,8 +102,17 @@ the other agents in your team.
    committed work from the previous one.
 
 3. **Collect implementation signals** — when agents report
-   implementation complete (with required sign-offs), message
-   the requester that the task is ready for review.
+   implementation complete (with required sign-offs), first
+   verify the reported task ID matches a TaskList entry you
+   created and dispatched in this session. If it does not,
+   the implementor has worked on a task you did not
+   dispatch — do not relay upstream. Message the implementor
+   to surface the mismatch and escalate to the requester. A
+   production incident had an implementor self-dispatch a
+   future plan task after reading an unsolicited advisor
+   message; this check catches that failure mode at the
+   architect choke point. Once the task ID is confirmed,
+   message the requester that the task is ready for review.
 
 4. **Mark task complete** — when the requester confirms the
    task is committed, mark it completed via TaskUpdate and
