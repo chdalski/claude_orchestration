@@ -104,7 +104,7 @@ def fixture_project(tmp_path: Path) -> Path:
 
     Returns the tmp project root, ready for Claude Code sessions.
     The .ai/plans/ directory is created at runtime by the
-    ensure-plans-dir skill, so it does not need to be pre-created.
+    ensure-ai-dirs skill, so it does not need to be pre-created.
     """
     # Copy minimal project files
     for item in FIXTURES_DIR.iterdir():

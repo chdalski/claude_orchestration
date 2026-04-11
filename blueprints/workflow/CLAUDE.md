@@ -19,17 +19,17 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 | Path | Purpose |
 |---|---|
 | `.claude/CLAUDE.md` | Lead instructions — clarification, workflow proposal, agent coordination |
-| `.claude/settings.json` | Agent teams config, plans directory path |
+| `.claude/settings.json` | Agent teams config, plans and memory directory paths |
 | `.claude/agents/architect.md` | Reads codebase, writes plans, decomposes into task slices (Opus) |
 | `.claude/agents/developer.md` | Implements all code — source and tests (Sonnet) |
 | `.claude/agents/reviewer.md` | Quality gate — scope verification, commits approved work (Opus) |
 | `.claude/agents/test-engineer.md` | Advisory — test design and verification (Sonnet) |
 | `.claude/agents/security-engineer.md` | Advisory — security assessment (Sonnet) |
 | `.claude/rules/` | Unconditional + conditional rules injected by Claude Code |
-| `.claude/skills/ensure-plans-dir/` | Skill: creates `.ai/plans/` directory and format guide |
+| `.claude/skills/ensure-ai-dirs/` | Skill: creates `.ai/plans/` and `.ai/memory/` directories, syncs plan format guide |
 | `.claude/skills/project-init/` | Skill: scans project, generates `CLAUDE.md` per `project-context.md` |
 | `.claude/skills/project-sanity/` | Skill: audits repo for common issues (report-only) |
-| `.claude/templates/plan-format.md` | Plan format guide (copied to `.ai/plans/` by `/ensure-plans-dir`) |
+| `.claude/templates/plan-format.md` | Plan format guide (copied to `.ai/plans/` by `/ensure-ai-dirs`) |
 | `.claude/templates/project-context.md` | Output format for generated project `CLAUDE.md` |
 | `.claude/workflows/` | Workflow definitions — one file per workflow variant |
 | `tests/blueprint_contracts.py` | Single source of truth for required structure and agent frontmatter |

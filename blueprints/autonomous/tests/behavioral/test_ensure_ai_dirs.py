@@ -1,12 +1,14 @@
-"""Behavioral tests verifying the ensure-plans-dir skill creates .ai/plans/ and its format guide.
+"""Behavioral tests verifying the ensure-ai-dirs skill creates .ai/ directories and plan format guide.
 
-These tests spawn a real Claude Code session and invoke the /ensure-plans-dir
+These tests spawn a real Claude Code session and invoke the /ensure-ai-dirs
 skill in a tmp project that has no .ai/ directory. The skill should read
-the canonical template from .claude/skills/ensure-plans-dir/plan-format.md
+the canonical template from .claude/skills/ensure-ai-dirs/plan-format.md
 and write it to .ai/plans/CLAUDE.md, creating the directory if needed.
+It should also create .ai/memory/ for Claude Code's auto-memory system.
 
-When plansDirectory is absent from settings.json, the skill should create
-settings.local.json with the default value rather than silently defaulting.
+When plansDirectory or autoMemoryDirectory is absent from settings.json,
+the skill should create settings.local.json with the default values rather
+than silently defaulting.
 """
 
 import json
@@ -23,29 +25,32 @@ pytestmark = pytest.mark.behavioral
 
 # Invoke the skill via its slash command. The skill instructions are injected
 # into context automatically; the prompt triggers execution.
-ENSURE_PLANS_DIR_PROMPT = (
-    "Run /ensure-plans-dir now. Follow the skill instructions exactly:\n"
+ENSURE_AI_DIRS_PROMPT = (
+    "Run /ensure-ai-dirs now. Follow the skill instructions exactly:\n"
     "1. Check if .ai/plans/CLAUDE.md exists.\n"
-    "2. If missing, read .claude/skills/ensure-plans-dir/plan-format.md and write "
+    "2. If missing, read .claude/skills/ensure-ai-dirs/plan-format.md and write "
     "its content to .ai/plans/CLAUDE.md.\n"
     "3. If present and matching the template, do nothing.\n"
     "4. If present but different from the template, overwrite it.\n"
-    "5. Report what you did.\n"
+    "5. Ensure .ai/memory/ directory exists.\n"
+    "6. Report what you did.\n"
     "Do this now."
 )
 
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(120)
-async def test_ensure_plans_dir_creates_directory_and_format_guide(fixture_project):
-    """The skill should create .ai/plans/CLAUDE.md from the template when it doesn't exist."""
+async def test_ensure_ai_dirs_creates_directories_and_format_guide(fixture_project):
+    """The skill should create .ai/plans/CLAUDE.md from the template and .ai/memory/ when they don't exist."""
     plans_dir = fixture_project / ".ai" / "plans"
+    memory_dir = fixture_project / ".ai" / "memory"
     format_guide = plans_dir / "CLAUDE.md"
-    template = fixture_project / ".claude" / "skills" / "ensure-plans-dir" / "plan-format.md"
+    template = fixture_project / ".claude" / "skills" / "ensure-ai-dirs" / "plan-format.md"
 
-    # Preconditions: .ai/plans/ does not exist, template does
+    # Preconditions: .ai/ does not exist, template does
     assert not plans_dir.exists(), "Test precondition: .ai/plans/ should not exist yet"
-    assert template.exists(), "Test precondition: template must exist in .claude/skills/ensure-plans-dir/"
+    assert not memory_dir.exists(), "Test precondition: .ai/memory/ should not exist yet"
+    assert template.exists(), "Test precondition: template must exist in .claude/skills/ensure-ai-dirs/"
 
     options = ClaudeAgentOptions(
         cwd=str(fixture_project),
@@ -54,11 +59,12 @@ async def test_ensure_plans_dir_creates_directory_and_format_guide(fixture_proje
         permission_mode="bypassPermissions",
     )
 
-    async for _ in query(prompt=ENSURE_PLANS_DIR_PROMPT, options=options):
+    async for _ in query(prompt=ENSURE_AI_DIRS_PROMPT, options=options):
         pass
 
     assert plans_dir.is_dir(), "Skill should have created .ai/plans/"
     assert format_guide.is_file(), "Skill should have written .ai/plans/CLAUDE.md"
+    assert memory_dir.is_dir(), "Skill should have created .ai/memory/"
 
     expected = template.read_text().rstrip("\n")
     actual = format_guide.read_text().rstrip("\n")
@@ -69,11 +75,11 @@ async def test_ensure_plans_dir_creates_directory_and_format_guide(fixture_proje
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(120)
-async def test_ensure_plans_dir_overwrites_outdated_format_guide(fixture_project):
+async def test_ensure_ai_dirs_overwrites_outdated_format_guide(fixture_project):
     """The skill should overwrite .ai/plans/CLAUDE.md when it differs from the template."""
     plans_dir = fixture_project / ".ai" / "plans"
     format_guide = plans_dir / "CLAUDE.md"
-    template = fixture_project / ".claude" / "skills" / "ensure-plans-dir" / "plan-format.md"
+    template = fixture_project / ".claude" / "skills" / "ensure-ai-dirs" / "plan-format.md"
 
     # Precondition: create an outdated format guide
     plans_dir.mkdir(parents=True, exist_ok=True)
@@ -86,7 +92,7 @@ async def test_ensure_plans_dir_overwrites_outdated_format_guide(fixture_project
         permission_mode="bypassPermissions",
     )
 
-    async for _ in query(prompt=ENSURE_PLANS_DIR_PROMPT, options=options):
+    async for _ in query(prompt=ENSURE_AI_DIRS_PROMPT, options=options):
         pass
 
     expected = template.read_text().rstrip("\n")
@@ -98,11 +104,11 @@ async def test_ensure_plans_dir_overwrites_outdated_format_guide(fixture_project
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(120)
-async def test_ensure_plans_dir_leaves_current_format_guide_unchanged(fixture_project):
+async def test_ensure_ai_dirs_leaves_current_format_guide_unchanged(fixture_project):
     """The skill should not rewrite .ai/plans/CLAUDE.md when it already matches the template."""
     plans_dir = fixture_project / ".ai" / "plans"
     format_guide = plans_dir / "CLAUDE.md"
-    template = fixture_project / ".claude" / "skills" / "ensure-plans-dir" / "plan-format.md"
+    template = fixture_project / ".claude" / "skills" / "ensure-ai-dirs" / "plan-format.md"
 
     # Precondition: format guide already matches template
     plans_dir.mkdir(parents=True, exist_ok=True)
@@ -116,7 +122,7 @@ async def test_ensure_plans_dir_leaves_current_format_guide_unchanged(fixture_pr
         permission_mode="bypassPermissions",
     )
 
-    async for _ in query(prompt=ENSURE_PLANS_DIR_PROMPT, options=options):
+    async for _ in query(prompt=ENSURE_AI_DIRS_PROMPT, options=options):
         pass
 
     actual = format_guide.read_text()
@@ -125,26 +131,27 @@ async def test_ensure_plans_dir_leaves_current_format_guide_unchanged(fixture_pr
     )
 
 
-# Prompt that covers the missing-plansDirectory → settings.local.json flow.
+# Prompt that covers the missing config keys → settings.local.json flow.
 # Separate from the main prompt because the main one re-states steps that
 # don't include this behavior, and mixing them could confuse the agent.
-ENSURE_PLANS_DIR_MISSING_CONFIG_PROMPT = (
-    "Run /ensure-plans-dir now. Follow the skill instructions exactly:\n"
-    "1. Read .claude/settings.json and check for plansDirectory.\n"
+ENSURE_AI_DIRS_MISSING_CONFIG_PROMPT = (
+    "Run /ensure-ai-dirs now. Follow the skill instructions exactly:\n"
+    "1. Read .claude/settings.json and check for plansDirectory and autoMemoryDirectory.\n"
     "2. If plansDirectory is absent, read .claude/settings.local.json (if it "
     "exists), add plansDirectory set to '.ai/plans/' to it, and write it back "
     "to .claude/settings.local.json. If settings.local.json does not exist, "
-    "create it with just {\"plansDirectory\": \".ai/plans/\"}.\n"
-    "3. Read .claude/skills/ensure-plans-dir/plan-format.md and write its "
+    'create it with just {"plansDirectory": ".ai/plans/"}.\n'
+    "3. Read .claude/skills/ensure-ai-dirs/plan-format.md and write its "
     "content to .ai/plans/CLAUDE.md (creating the directory if needed).\n"
-    "4. Report what you did.\n"
+    "4. Ensure .ai/memory/ directory exists.\n"
+    "5. Report what you did.\n"
     "Do this now."
 )
 
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(120)
-async def test_ensure_plans_dir_creates_settings_local_when_plans_directory_missing(
+async def test_ensure_ai_dirs_creates_settings_local_when_plans_directory_missing(
     fixture_project,
 ):
     """When plansDirectory is absent from settings.json, the skill should create
@@ -157,7 +164,7 @@ async def test_ensure_plans_dir_creates_settings_local_when_plans_directory_miss
     settings_local_file = fixture_project / ".claude" / "settings.local.json"
     plans_dir = fixture_project / ".ai" / "plans"
     format_guide = plans_dir / "CLAUDE.md"
-    template = fixture_project / ".claude" / "skills" / "ensure-plans-dir" / "plan-format.md"
+    template = fixture_project / ".claude" / "skills" / "ensure-ai-dirs" / "plan-format.md"
 
     # Precondition: remove plansDirectory from settings.json
     settings = json.loads(settings_file.read_text())
@@ -171,13 +178,13 @@ async def test_ensure_plans_dir_creates_settings_local_when_plans_directory_miss
 
     options = ClaudeAgentOptions(
         cwd=str(fixture_project),
-        max_turns=7,
+        max_turns=10,
         env=NESTED_SESSION_ENV,
         permission_mode="bypassPermissions",
     )
 
     async for _ in query(
-        prompt=ENSURE_PLANS_DIR_MISSING_CONFIG_PROMPT, options=options
+        prompt=ENSURE_AI_DIRS_MISSING_CONFIG_PROMPT, options=options
     ):
         pass
 

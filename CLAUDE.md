@@ -30,8 +30,9 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 Clarify-first: the lead clarifies the task, then presents
 workflow options. The user chooses: Direct-Review for simple
 tasks, Develop-Review (Supervised or Autonomous) for complex
-ones, or TDD User-in-the-Loop. 6 agents (Lead, Architect,
-Developer, Test Engineer, Security Engineer, Reviewer).
+ones, or TDD User-in-the-Loop. 5 agents (Architect,
+Developer, Test Engineer, Security Engineer, Reviewer)
+plus the lead.
 Workflows defined as separate files — adding one requires
 no changes to CLAUDE.md or agents.
 

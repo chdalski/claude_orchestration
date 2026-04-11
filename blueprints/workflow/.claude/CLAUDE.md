@@ -29,7 +29,7 @@ On session start:
    whether the user wants to address any resulting issues
    before starting new work — new lints may surface warnings
    across the codebase.
-2. **Invoke `/ensure-plans-dir`** — this refreshes the
+2. **Invoke `/ensure-ai-dirs`** — this refreshes the
    format guide to match the current blueprint version and
    creates the plans directory if it does not exist. Always
    invoke this, even if the plans directory already exists —
@@ -87,7 +87,7 @@ The Architect writes plans — you do not. When the user
 chooses a workflow that requires planning (Develop-Review
 Supervised, Develop-Review Autonomous, TDD User-in-the-Loop):
 
-1. **Invoke `/ensure-plans-dir`** before creating the team.
+1. **Invoke `/ensure-ai-dirs`** before creating the team.
    This ensures the configured plans directory and its
    format guide exist before the Architect starts writing.
    Do not skip this even if the directory appears to exist

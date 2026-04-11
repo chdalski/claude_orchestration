@@ -120,7 +120,7 @@ For each multi-step procedure, ask:
   step description.
 
 This check exists because a production session
-short-circuited `/ensure-plans-dir` by treating "config
+short-circuited `/ensure-ai-dirs` by treating "config
 key found" (step 1) as sufficient, skipping the format
 guide overwrite (step 2), and producing four plans with
 a stale template.

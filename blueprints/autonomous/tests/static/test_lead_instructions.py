@@ -98,11 +98,11 @@ def test_skill_output_commit_covers_project_init(lead_instructions):
     )
 
 
-def test_skill_output_commit_covers_ensure_plans_dir(lead_instructions):
-    """The rule must list /ensure-plans-dir as a covered skill."""
-    assert "/ensure-plans-dir" in lead_instructions, (
+def test_skill_output_commit_covers_ensure_ai_dirs(lead_instructions):
+    """The rule must list /ensure-ai-dirs as a covered skill."""
+    assert "/ensure-ai-dirs" in lead_instructions, (
         "The skill-output commit rule must explicitly list "
-        "/ensure-plans-dir outputs — without this, the format "
+        "/ensure-ai-dirs outputs — without this, the format "
         "guide goes uncommitted between sessions"
     )
 

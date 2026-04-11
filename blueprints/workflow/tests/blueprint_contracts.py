@@ -15,7 +15,7 @@ REQUIRED_DIRECTORIES: list[str] = [
     ".claude/agents",
     ".claude/rules",
     ".claude/skills",
-    ".claude/skills/ensure-plans-dir",
+    ".claude/skills/ensure-ai-dirs",
     ".claude/skills/project-init",
     ".claude/skills/project-sanity",
     ".claude/templates",
@@ -24,7 +24,7 @@ REQUIRED_DIRECTORIES: list[str] = [
 
 # Required files relative to blueprint root (outside .claude/)
 REQUIRED_ROOT_FILES: list[str] = [
-    ".claude/skills/ensure-plans-dir/SKILL.md",
+    ".claude/skills/ensure-ai-dirs/SKILL.md",
     ".claude/skills/project-init/SKILL.md",
     ".claude/skills/project-sanity/SKILL.md",
     ".claude/skills/project-sanity/codecov-sanity.md",
@@ -40,6 +40,7 @@ REQUIRED_ROOT_FILES: list[str] = [
 # Settings.json required configuration
 REQUIRED_SETTINGS: dict[str, object] = {
     "plansDirectory": ".ai/plans/",
+    "autoMemoryDirectory": ".ai/memory/",
 }
 
 # Caching compliance — patterns that indicate dynamic content

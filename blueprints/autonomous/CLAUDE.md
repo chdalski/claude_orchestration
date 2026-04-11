@@ -19,13 +19,13 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 | Path | Purpose |
 |---|---|
 | `.claude/CLAUDE.md` | Lead instructions — clarification, planning, plan queue, task dispatch |
-| `.claude/settings.json` | Agent teams config, plans directory path |
+| `.claude/settings.json` | Agent teams config, plans and memory directory paths |
 | `.claude/agents/developer.md` | Implements all code — source and tests (Sonnet) |
 | `.claude/agents/reviewer.md` | Quality gate — scope verification, plan tracking, commits (Opus) |
 | `.claude/agents/test-engineer.md` | Advisory — test design on demand (Sonnet) |
 | `.claude/agents/security-engineer.md` | Advisory — security assessment on demand (Sonnet) |
 | `.claude/rules/` | Unconditional + conditional rules injected by Claude Code |
-| `.claude/skills/ensure-plans-dir/` | Skill: creates `.ai/plans/` directory and format guide |
+| `.claude/skills/ensure-ai-dirs/` | Skill: creates `.ai/plans/` and `.ai/memory/` directories, syncs plan format guide |
 | `.claude/skills/project-init/` | Skill: scans project, generates `CLAUDE.md` per `project-context.md` |
 | `.claude/skills/project-sanity/` | Skill: audits repo for common issues (report-only) |
 | `tests/blueprint_contracts.py` | Single source of truth for required structure and agent frontmatter |
