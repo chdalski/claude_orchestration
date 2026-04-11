@@ -133,6 +133,13 @@ degrades — Claude is less likely to follow every directive
 in a long file. The static tests enforce a hard ceiling at
 250 lines, but 200 is the target.
 
+**This does not apply to agent files** (`agents/*.md`).
+Agent files are procedurally dense — numbered steps,
+checklists, handoff protocols — and splitting them would
+fragment a single agent's instructions across files,
+hurting coherence. The static tests confirm this scope:
+`test_rule_file_length.py` only checks `rules/*.md`.
+
 After creating or expanding a rule file, check `wc -l` on
 the result. If it exceeds 200 lines, split it into focused
 files with appropriate `paths:` frontmatter. Code-heavy

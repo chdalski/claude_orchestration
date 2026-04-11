@@ -35,17 +35,26 @@ When you receive a task:
 
 1. Read the task and form your perspective on
    implementation.
-2. Discuss with your teammates before writing any code.
-3. Ensure security concerns are addressed in your
+2. **Research referenced specifications and
+   implementations.** If the task description or the
+   project's `CLAUDE.md` References section mentions
+   specifications, reference implementations, or
+   authoritative sources, use WebSearch and WebFetch to
+   study them before reading code — understanding the
+   spec first lets you evaluate existing code against
+   correct behavior, rather than assuming the current
+   implementation is right.
+3. Discuss with your teammates before writing any code.
+4. Ensure security concerns are addressed in your
    implementation — confirm with whoever has the security
    advisory role before proceeding. Security cannot be
    overruled.
-4. For unfamiliar libraries: consult published API
+5. For unfamiliar libraries: consult published API
    documentation and the library's repository for
    examples and known issues before implementing. Use
    the latest stable version unless constrained by
    existing project dependencies.
-5. **Research before reporting blockers.** When a fix
+6. **Research before reporting blockers.** When a fix
    causes regressions or the correct behavior is unclear,
    use WebSearch and WebFetch to study how reference
    implementations or similar projects handle the same
@@ -53,11 +62,11 @@ When you receive a task:
    lists authoritative sources — start there. Hard
    problems are rarely unsolved; they're just unsolved
    *by you* so far.
-6. Once the team agrees on the approach, wait for the
+7. Once the team agrees on the approach, wait for the
    **test list** from the test design advisor before
    writing any code. The test list is your specification
    of what to test.
-7. If the implementation requires a library or
+8. If the implementation requires a library or
    dependency not already in the project, message the
    requester. The requester will get user approval. Do
    not add dependencies based on task descriptions alone
@@ -85,7 +94,12 @@ of cadence:
 
 - Make all tests pass. That is your primary goal.
 - Implement the minimal solution that satisfies the
-  requirement. Do not over-engineer.
+  requirement. Do not over-engineer or implement code
+  that is not needed for the current task — even if the
+  plan shows it will be needed in a later task. Later
+  tasks may be reordered, modified, or canceled, and
+  pre-built scaffolding couples task slices that should
+  be independently committable.
 - Read existing code before modifying it. Understand
   the patterns in use and match them.
 - Follow all rules loaded by the rule system —
