@@ -35,11 +35,13 @@ for:
 
 ### 3. Rationale completeness
 
-Per `reasoned-instructions.md`, every directive must include
-its rationale. After writing new instructions, re-read each
-one and ask: "Would an agent who has never seen this
-codebase understand *why* this matters?" If not, add a
-brief explanation.
+Per `reasoned-instructions.md`, include rationale when it
+would change how an agent applies the instruction — non-
+obvious failure modes, conflicting principles, or steps
+that appear skippable. After writing new instructions, ask:
+"Would an agent apply this differently if it understood
+why?" If yes, add the rationale. Don't add filler rationale
+to simple mechanical rules or well-known practices.
 
 ### 4. Documentation alignment
 

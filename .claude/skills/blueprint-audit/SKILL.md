@@ -131,16 +131,26 @@ State-once-reference-elsewhere is the correct pattern.
 
 **Reference:** `.claude/rules/reasoned-instructions.md`
 
-For every directive, constraint, or recommendation in the
-blueprint's instruction files, check: does it include its
-rationale? A directive without a "why" tells agents what to
-do but gives no basis for judgment in novel situations.
+Check whether directives that *need* rationale have it.
+Not every instruction benefits — rationale matters when it
+would change how an agent applies the rule:
 
-Focus on recently changed or added directives — these are
-most likely to be missing rationale. Skip well-established
-sections that clearly include rationale.
+- **Non-obvious failure modes** — the instruction exists
+  because of a specific incident or edge case not
+  predictable from the rule alone
+- **Conflicting instructions** — two principles pull in
+  opposite directions and the agent needs a priority
+  framework
+- **Steps that appear skippable** — an instruction looks
+  redundant but isn't; without rationale, an agent under
+  optimization pressure skips it
 
-Report directives that lack rationale, grouped by file.
+Do not flag simple mechanical rules ("use lowercase names"),
+well-known practices ("validate external input"), or
+unambiguous directives with no edge cases.
+
+Report directives that need rationale but lack it, grouped
+by file.
 
 ---
 
@@ -372,8 +382,8 @@ within target."
  or "None found"]
 
 ## Rationale Completeness
-[List directives missing rationale, grouped by file,
- or "All directives include rationale"]
+[List directives that need rationale but lack it, grouped
+ by file, or "No gaps found"]
 
 ## Documentation Alignment
 [List mismatches between the three doc layers,

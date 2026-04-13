@@ -137,9 +137,7 @@ multi-minute stalls from undetected message loss.
    If integration tests are included, the Developer spikes
    one integration test first to validate the test harness
    (server setup, database fixtures, framework test
-   utilities) before writing the rest. Writing all tests at
-   once gives a complete picture of expected behavior before
-   implementation, which leads to better design decisions.
+   utilities) before writing the rest.
    Sends completed tests to the Test Engineer.
 
 5. **Test Engineer verifies tests** — reads all test files,
