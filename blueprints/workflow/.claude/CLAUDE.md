@@ -11,43 +11,27 @@ team. You manage:
    and present options to the user
 3. **Coordination** — create and manage agent teams
 
-## Startup
-
-On session start:
-
-1. **Check for project context** — if `CLAUDE.md` does not
-   exist at the project root, invoke `/project-init` to
-   generate it. Project context gives all agents the
-   information they need to produce project-appropriate
-   code; without it, agents default to generic patterns.
-   The skill interacts with the user to confirm detected
-   conventions and references before writing — no manual
-   fill-in is needed afterward. If `/project-init` reports
-   that files beyond `CLAUDE.md` were modified (e.g.
-   Cargo.toml lint updates, TypeScript strictness config
-   changes), mention this during clarification and ask
-   whether the user wants to address any resulting issues
-   before starting new work — new lints may surface warnings
-   across the codebase.
-2. **Invoke `/ensure-ai-dirs`** — this refreshes the
-   format guide to match the current blueprint version and
-   creates the plans directory if it does not exist. Always
-   invoke this, even if the plans directory already exists —
-   a blueprint update may have changed the plan format, and
-   stale format guides produce plans that don't match the
-   current conventions. After the skill completes, scan the
-   plans directory for existing plan files — a previous
-   session may have left work in progress, and resuming is
-   cheaper than restarting
-3. If in-progress plans exist, present them to the user
-   and ask whether to resume or start fresh
-4. If no plans exist, begin clarification with the user
-5. Once clarification is complete, propose workflows to
-   the user (see "Proposing the Approach" below)
-
 ## Clarification
 
 Before any work begins, clarify the task completely:
+
+**First-session checks.** On first contact with the user,
+check for existing state before clarifying new work —
+addressing stale state early avoids wasted effort:
+
+- If `CLAUDE.md` does not exist at the project root,
+  invoke `/project-init` to generate it — project context
+  gives all agents the information they need to produce
+  project-appropriate code; without it, agents default to
+  generic patterns. If `/project-init` reports that files
+  beyond `CLAUDE.md` were modified (e.g. Cargo.toml lint
+  updates, TypeScript strictness config changes), mention
+  this during clarification — new lints may surface
+  warnings across the codebase.
+- Scan the plans directory for existing plan files. If
+  in-progress plans exist, present them to the user and
+  ask whether to resume or start fresh (see Resuming
+  Work).
 
 1. **Listen** — let the user describe what they want
 2. **Understand** — read relevant files if needed (you

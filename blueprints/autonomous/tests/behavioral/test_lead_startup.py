@@ -1,12 +1,11 @@
-"""Behavioral tests verifying the lead follows its startup procedure.
+"""Behavioral tests verifying the lead clarifies before implementing.
 
-The startup sequence is defined in .claude/CLAUDE.md and instructs the
-lead to check for project context, check for existing plans, and clarify
-with the user before implementing.
+The Clarification section in .claude/CLAUDE.md instructs the lead to
+check for project context, check for existing plans, and clarify with
+the user before any implementation work.
 
-These tests verify observable startup behavior:
-1. The lead follows the startup sequence (reads context, clarifies with
-   user) instead of jumping to implementation
+These tests verify that the lead reads context and clarifies with the
+user instead of jumping to implementation.
 """
 
 import pytest
@@ -27,12 +26,12 @@ def tool_log():
 @pytest.mark.asyncio
 @pytest.mark.timeout(180)
 async def test_lead_follows_startup_sequence(fixture_project, tool_log):
-    """The lead should follow the startup sequence instead of jumping to work.
+    """The lead should clarify before jumping to implementation.
 
-    The startup sequence requires the lead to check for project context
-    and clarify with the user before any implementation. This test
-    verifies the lead uses read tools or AskUserQuestion in its first
-    actions — not implementation tools.
+    The Clarification section requires the lead to check for project
+    context and clarify with the user before any implementation. This
+    test verifies the lead uses read tools or AskUserQuestion in its
+    first actions — not implementation tools.
 
     We check that within the first few tool calls, the lead either:
     - Reads files to understand context (Read, Glob, Grep)
@@ -61,25 +60,25 @@ async def test_lead_follows_startup_sequence(fixture_project, tool_log):
                     tool_log.record(block.name, block.input or {})
 
     # The lead should have used at least one tool
-    assert tool_log.records, "Lead should have used tools during startup"
+    assert tool_log.records, "Lead should have used tools before implementing"
 
     # Only Write and Edit are implementation tools. Bash is dual-purpose
-    # (information gathering vs. implementation) and is legitimate during
-    # startup for checking git status, running tests, etc.
+    # (information gathering vs. implementation) and is legitimate for
+    # checking git status, running tests, etc.
     implementation_tools = {"Write", "Edit"}
 
     first_tools = [r.tool_name for r in tool_log.records[:5]]
     premature_impl = [t for t in first_tools if t in implementation_tools]
 
     assert not premature_impl, (
-        f"Lead jumped to implementation instead of following startup: "
+        f"Lead jumped to implementation instead of clarifying: "
         f"{premature_impl}. First 5 tools: {first_tools}"
     )
 
-    # At least one startup-appropriate tool should be present
-    startup_tools = {"Read", "Glob", "Grep", "Bash", "Agent", "AskUserQuestion"}
-    startup_used = [t for t in first_tools if t in startup_tools]
-    assert startup_used, (
-        f"Lead did not use any startup-appropriate tools in its first "
-        f"actions. First 5 tools: {first_tools}"
+    # At least one clarification-appropriate tool should be present
+    clarify_tools = {"Read", "Glob", "Grep", "Bash", "Agent", "AskUserQuestion"}
+    clarify_used = [t for t in first_tools if t in clarify_tools]
+    assert clarify_used, (
+        f"Lead did not use any clarification-appropriate tools in its "
+        f"first actions. First 5 tools: {first_tools}"
     )

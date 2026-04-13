@@ -52,7 +52,7 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 - Lead verifies plan goal at completion — adds follow-up tasks if quantitative targets not met
 - All blueprint files must be fully static — no dates, counters, versions (prompt cache level 3)
 - Rule files target under 200 lines — agent adherence degrades beyond that threshold
-- Skills run at startup before team exists — lead commits skill outputs directly per skill-output commit rule
+- Skills run before team creation — lead commits skill outputs directly per skill-output commit rule
 - Templates live in their skill's directory, not a separate `templates/` directory
 - Generated project `CLAUDE.md` follows `project-context.md`: Overview, Build and Test, Components, Conventions, References
 - On `CLAUDE.md` re-generation: Overview/Build/Components refresh; Conventions/References entries preserve
