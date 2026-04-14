@@ -8,5 +8,5 @@ When writing or editing plans, read plan-format.md in this
 directory for the required format, naming conventions, and
 structure.
 
-Plans should follow the project conventions documented in
+Plans must follow the project conventions documented in
 the project root CLAUDE.md.
