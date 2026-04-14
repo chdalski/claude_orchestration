@@ -24,13 +24,13 @@ def _extract_section(text, heading):
 # --- Plan progress ---
 
 
-def test_reviewer_owns_plan_updates_during_execution(lead_instructions):
-    """Lead must delegate plan tracking to the reviewer during execution."""
+def test_lead_owns_plan_updates_during_execution(lead_instructions):
+    """Lead must own plan progress updates during execution."""
     text = lead_instructions.lower()
-    assert "reviewer" in text and "plan update" in text, (
-        "CLAUDE.md must state that the reviewer updates the plan "
-        "during execution — without this, no agent verifies scope "
-        "completeness against the plan"
+    assert "update the plan" in text and "mark all checkboxes" in text, (
+        "CLAUDE.md must instruct the lead to update the plan after "
+        "each task approval — marking checkboxes and recording "
+        "commit SHAs in a single commit with the code changes"
     )
 
 
@@ -122,7 +122,7 @@ def test_skill_output_commit_covers_plan_status(lead_instructions):
     assert "plan status" in text and "skill-output commit" in text, (
         "Plan status changes (Completed, Canceled) must be documented "
         "as skill-output commits — task-level updates are committed "
-        "by the reviewer, but plan-level status is the lead's decision"
+        "with the code, but plan-level status is a separate lead commit"
     )
 
 

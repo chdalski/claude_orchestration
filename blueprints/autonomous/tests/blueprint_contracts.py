@@ -84,7 +84,7 @@ AGENT_TOOLS: dict[str, set[str]] = {
         "WebSearch", "WebFetch", "SendMessage",
     },
     "reviewer": {
-        "Read", "Edit", "Glob", "Grep", "Bash", "SendMessage",
+        "Read", "Glob", "Grep", "Bash", "SendMessage",
     },
     "test-engineer": {
         "Read", "Glob", "Grep", "Bash", "SendMessage",

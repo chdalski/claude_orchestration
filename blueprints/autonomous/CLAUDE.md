@@ -4,7 +4,7 @@ Multi-agent orchestration blueprint for Claude Code.
 After clarification and user-approved planning, the lead
 feeds tasks to the developer autonomously. The developer
 implements and sends to the reviewer for independent
-quality review and commit. No user checkpoints gate
+quality review. No user checkpoints gate
 individual tasks after plan approval. 4 agents (developer,
 reviewer, test-engineer, security-engineer) plus the lead.
 
@@ -21,7 +21,7 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 | `.claude/CLAUDE.md` | Lead instructions — clarification, planning, plan queue, task dispatch |
 | `.claude/settings.json` | Agent teams config, plans and memory directory paths |
 | `.claude/agents/developer.md` | Implements all code — source and tests (Sonnet) |
-| `.claude/agents/reviewer.md` | Quality gate — scope verification, plan tracking, commits (Opus) |
+| `.claude/agents/reviewer.md` | Quality gate — scope verification, code review (Opus) |
 | `.claude/agents/test-engineer.md` | Advisory — test design on demand (Sonnet) |
 | `.claude/agents/security-engineer.md` | Advisory — security assessment on demand (Sonnet) |
 | `.claude/rules/` | Unconditional + conditional rules injected by Claude Code |
@@ -45,8 +45,8 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 - Lead-directed advisor consultation — lead assesses risk at dispatch time per `risk-assessment.md`
 - Advisor consultation requires two gates in the dispatch message: input gate (consult before implementing) and output gate (get sign-off before submitting to reviewer)
 - Developer may add advisor consultations but not remove lead's directives
-- Reviewer owns plan file during execution — marks tasks done, records commit SHAs
-- Developer makes WIP commits during implementation — reviewer squashes at approval time via `git reset <baseline-sha>`
+- Lead owns plan progress — marks tasks done, records commit SHAs, commits code with plan updates in a single commit per task
+- Developer makes WIP commits during implementation — lead squashes at commit time via `git reset <baseline-sha>`
 - Reviewer backstop: rejects if non-trivial behavioral changes lack tests and no advisor was consulted
 - Infeasibility claims require specific evidence (file, function, scope, own code vs dependency) per `claim-verification.md` — category labels are not sufficient
 - Lead verifies plan goal at completion — adds follow-up tasks if quantitative targets not met

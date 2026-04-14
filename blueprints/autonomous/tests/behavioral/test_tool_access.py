@@ -82,6 +82,21 @@ async def test_reviewer_does_not_commit_unprompted(fixture_project, tool_log):
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(90)
+async def test_reviewer_denied_edit(fixture_project, tool_log):
+    """Reviewer should use Read and Bash but not Edit (no longer edits plan files)."""
+    prompt = (
+        "Read src/lib.py and assess the code quality. "
+        "List any issues you find. Do NOT edit or commit anything. Be brief."
+    )
+    await _run_agent_session(fixture_project, prompt, tool_log)
+
+    assert tool_log.has("Read"), "Reviewer should have read source files"
+    assert not tool_log.has("Edit"), "Reviewer should not attempt Edit"
+    assert not tool_log.has("Write"), "Reviewer should not attempt Write"
+
+
+@pytest.mark.asyncio
+@pytest.mark.timeout(90)
 async def test_advisory_te_denied_write(fixture_project, tool_log):
     """Test Engineer should use Read but not Write/Edit (advisory role)."""
     prompt = (
