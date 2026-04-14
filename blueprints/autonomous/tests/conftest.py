@@ -27,6 +27,7 @@ CLAUDE_MD = CLAUDE_DIR / "CLAUDE.md"
 
 SKILLS_DIR = CLAUDE_DIR / "skills"
 PLAN_FORMAT_TEMPLATE = SKILLS_DIR / "ensure-ai-dirs" / "plan-format.md"
+CLAUDE_MD_TEMPLATE = SKILLS_DIR / "ensure-ai-dirs" / "claude-md-template.md"
 PROJECT_CONTEXT_TEMPLATE = SKILLS_DIR / "project-init" / "project-context.md"
 
 

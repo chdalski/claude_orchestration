@@ -1,10 +1,10 @@
-"""Behavioral tests verifying the ensure-ai-dirs skill creates .ai/ directories and plan format guide.
+"""Behavioral tests verifying the ensure-ai-dirs skill creates .ai/ directories and syncs templates.
 
 These tests spawn a real Claude Code session and invoke the /ensure-ai-dirs
-skill in a tmp project that has no .ai/ directory. The skill should read
-the canonical template from .claude/skills/ensure-ai-dirs/plan-format.md
-and write it to .ai/plans/CLAUDE.md, creating the directory if needed.
-It should also create .ai/memory/ for Claude Code's auto-memory system.
+skill in a tmp project that has no .ai/ directory. The skill should:
+- Copy .claude/skills/ensure-ai-dirs/plan-format.md to .ai/plans/plan-format.md
+- Copy .claude/skills/ensure-ai-dirs/claude-md-template.md to .ai/plans/CLAUDE.md
+- Create .ai/memory/ for Claude Code's auto-memory system
 
 When plansDirectory or autoMemoryDirectory is absent from settings.json,
 the skill should create settings.local.json with the default values rather
@@ -27,30 +27,34 @@ pytestmark = pytest.mark.behavioral
 # into context automatically; the prompt triggers execution.
 ENSURE_AI_DIRS_PROMPT = (
     "Run /ensure-ai-dirs now. Follow the skill instructions exactly:\n"
-    "1. Check if .ai/plans/CLAUDE.md exists.\n"
-    "2. If missing, read .claude/skills/ensure-ai-dirs/plan-format.md and write "
-    "its content to .ai/plans/CLAUDE.md.\n"
-    "3. If present and matching the template, do nothing.\n"
-    "4. If present but different from the template, overwrite it.\n"
-    "5. Ensure .ai/memory/ directory exists.\n"
-    "6. Report what you did.\n"
+    "1. Read .claude/settings.json for plansDirectory and autoMemoryDirectory.\n"
+    "2. Sync two files to the plans directory:\n"
+    "   a. Read .claude/skills/ensure-ai-dirs/plan-format.md and write to "
+    ".ai/plans/plan-format.md\n"
+    "   b. Read .claude/skills/ensure-ai-dirs/claude-md-template.md and write to "
+    ".ai/plans/CLAUDE.md\n"
+    "3. Ensure .ai/memory/ directory exists.\n"
+    "4. Report what you did.\n"
     "Do this now."
 )
 
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(120)
-async def test_ensure_ai_dirs_creates_directories_and_format_guide(fixture_project):
-    """The skill should create .ai/plans/CLAUDE.md from the template and .ai/memory/ when they don't exist."""
+async def test_ensure_ai_dirs_creates_directories_and_syncs_templates(fixture_project):
+    """The skill should create .ai/plans/ with both templates and .ai/memory/ when they don't exist."""
     plans_dir = fixture_project / ".ai" / "plans"
     memory_dir = fixture_project / ".ai" / "memory"
-    format_guide = plans_dir / "CLAUDE.md"
-    template = fixture_project / ".claude" / "skills" / "ensure-ai-dirs" / "plan-format.md"
+    format_guide = plans_dir / "plan-format.md"
+    plans_claude_md = plans_dir / "CLAUDE.md"
+    format_template = fixture_project / ".claude" / "skills" / "ensure-ai-dirs" / "plan-format.md"
+    claude_md_template = fixture_project / ".claude" / "skills" / "ensure-ai-dirs" / "claude-md-template.md"
 
-    # Preconditions: .ai/ does not exist, template does
+    # Preconditions: .ai/ does not exist, templates do
     assert not plans_dir.exists(), "Test precondition: .ai/plans/ should not exist yet"
     assert not memory_dir.exists(), "Test precondition: .ai/memory/ should not exist yet"
-    assert template.exists(), "Test precondition: template must exist in .claude/skills/ensure-ai-dirs/"
+    assert format_template.exists(), "Test precondition: plan-format.md template must exist"
+    assert claude_md_template.exists(), "Test precondition: claude-md-template.md must exist"
 
     options = ClaudeAgentOptions(
         cwd=str(fixture_project),
@@ -63,23 +67,30 @@ async def test_ensure_ai_dirs_creates_directories_and_format_guide(fixture_proje
         pass
 
     assert plans_dir.is_dir(), "Skill should have created .ai/plans/"
-    assert format_guide.is_file(), "Skill should have written .ai/plans/CLAUDE.md"
+    assert format_guide.is_file(), "Skill should have written .ai/plans/plan-format.md"
+    assert plans_claude_md.is_file(), "Skill should have written .ai/plans/CLAUDE.md"
     assert memory_dir.is_dir(), "Skill should have created .ai/memory/"
 
-    expected = template.read_text().rstrip("\n")
-    actual = format_guide.read_text().rstrip("\n")
-    assert actual == expected, (
-        "Skill should copy the template verbatim to .ai/plans/CLAUDE.md"
+    expected_format = format_template.read_text().rstrip("\n")
+    actual_format = format_guide.read_text().rstrip("\n")
+    assert actual_format == expected_format, (
+        "Skill should copy plan-format.md template verbatim to .ai/plans/plan-format.md"
+    )
+
+    expected_claude_md = claude_md_template.read_text().rstrip("\n")
+    actual_claude_md = plans_claude_md.read_text().rstrip("\n")
+    assert actual_claude_md == expected_claude_md, (
+        "Skill should copy claude-md-template.md verbatim to .ai/plans/CLAUDE.md"
     )
 
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(120)
 async def test_ensure_ai_dirs_overwrites_outdated_format_guide(fixture_project):
-    """The skill should overwrite .ai/plans/CLAUDE.md when it differs from the template."""
+    """The skill should overwrite .ai/plans/plan-format.md when it differs from the template."""
     plans_dir = fixture_project / ".ai" / "plans"
-    format_guide = plans_dir / "CLAUDE.md"
-    template = fixture_project / ".claude" / "skills" / "ensure-ai-dirs" / "plan-format.md"
+    format_guide = plans_dir / "plan-format.md"
+    format_template = fixture_project / ".claude" / "skills" / "ensure-ai-dirs" / "plan-format.md"
 
     # Precondition: create an outdated format guide
     plans_dir.mkdir(parents=True, exist_ok=True)
@@ -95,7 +106,7 @@ async def test_ensure_ai_dirs_overwrites_outdated_format_guide(fixture_project):
     async for _ in query(prompt=ENSURE_AI_DIRS_PROMPT, options=options):
         pass
 
-    expected = template.read_text().rstrip("\n")
+    expected = format_template.read_text().rstrip("\n")
     actual = format_guide.read_text().rstrip("\n")
     assert actual == expected, (
         "Skill should have overwritten the outdated format guide with the template"
@@ -105,14 +116,14 @@ async def test_ensure_ai_dirs_overwrites_outdated_format_guide(fixture_project):
 @pytest.mark.asyncio
 @pytest.mark.timeout(120)
 async def test_ensure_ai_dirs_leaves_current_format_guide_unchanged(fixture_project):
-    """The skill should not rewrite .ai/plans/CLAUDE.md when it already matches the template."""
+    """The skill should not rewrite .ai/plans/plan-format.md when it already matches the template."""
     plans_dir = fixture_project / ".ai" / "plans"
-    format_guide = plans_dir / "CLAUDE.md"
-    template = fixture_project / ".claude" / "skills" / "ensure-ai-dirs" / "plan-format.md"
+    format_guide = plans_dir / "plan-format.md"
+    format_template = fixture_project / ".claude" / "skills" / "ensure-ai-dirs" / "plan-format.md"
 
     # Precondition: format guide already matches template
     plans_dir.mkdir(parents=True, exist_ok=True)
-    template_content = template.read_text()
+    template_content = format_template.read_text()
     format_guide.write_text(template_content)
 
     options = ClaudeAgentOptions(
@@ -141,8 +152,11 @@ ENSURE_AI_DIRS_MISSING_CONFIG_PROMPT = (
     "exists), add plansDirectory set to '.ai/plans/' to it, and write it back "
     "to .claude/settings.local.json. If settings.local.json does not exist, "
     'create it with just {"plansDirectory": ".ai/plans/"}.\n'
-    "3. Read .claude/skills/ensure-ai-dirs/plan-format.md and write its "
-    "content to .ai/plans/CLAUDE.md (creating the directory if needed).\n"
+    "3. Sync two files to the plans directory:\n"
+    "   a. Read .claude/skills/ensure-ai-dirs/plan-format.md and write to "
+    ".ai/plans/plan-format.md\n"
+    "   b. Read .claude/skills/ensure-ai-dirs/claude-md-template.md and write to "
+    ".ai/plans/CLAUDE.md\n"
     "4. Ensure .ai/memory/ directory exists.\n"
     "5. Report what you did.\n"
     "Do this now."
@@ -163,8 +177,10 @@ async def test_ensure_ai_dirs_creates_settings_local_when_plans_directory_missin
     settings_file = fixture_project / ".claude" / "settings.json"
     settings_local_file = fixture_project / ".claude" / "settings.local.json"
     plans_dir = fixture_project / ".ai" / "plans"
-    format_guide = plans_dir / "CLAUDE.md"
-    template = fixture_project / ".claude" / "skills" / "ensure-ai-dirs" / "plan-format.md"
+    format_guide = plans_dir / "plan-format.md"
+    plans_claude_md = plans_dir / "CLAUDE.md"
+    format_template = fixture_project / ".claude" / "skills" / "ensure-ai-dirs" / "plan-format.md"
+    claude_md_template = fixture_project / ".claude" / "skills" / "ensure-ai-dirs" / "claude-md-template.md"
 
     # Precondition: remove plansDirectory from settings.json
     settings = json.loads(settings_file.read_text())
@@ -202,12 +218,19 @@ async def test_ensure_ai_dirs_creates_settings_local_when_plans_directory_missin
         "settings.local.json plansDirectory should default to .ai/plans/"
     )
 
-    # The skill should still have created the plans directory and format guide
+    # The skill should still have created both files in the plans directory
     assert plans_dir.is_dir(), "Skill should have created .ai/plans/"
-    assert format_guide.is_file(), "Skill should have written .ai/plans/CLAUDE.md"
+    assert format_guide.is_file(), "Skill should have written .ai/plans/plan-format.md"
+    assert plans_claude_md.is_file(), "Skill should have written .ai/plans/CLAUDE.md"
 
-    expected = template.read_text().rstrip("\n")
-    actual = format_guide.read_text().rstrip("\n")
-    assert actual == expected, (
-        "Skill should copy the template verbatim to .ai/plans/CLAUDE.md"
+    expected_format = format_template.read_text().rstrip("\n")
+    actual_format = format_guide.read_text().rstrip("\n")
+    assert actual_format == expected_format, (
+        "Skill should copy plan-format.md template verbatim to .ai/plans/plan-format.md"
+    )
+
+    expected_claude_md = claude_md_template.read_text().rstrip("\n")
+    actual_claude_md = plans_claude_md.read_text().rstrip("\n")
+    assert actual_claude_md == expected_claude_md, (
+        "Skill should copy claude-md-template.md verbatim to .ai/plans/CLAUDE.md"
     )

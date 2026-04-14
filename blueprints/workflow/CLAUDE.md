@@ -29,7 +29,8 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 | `.claude/skills/ensure-ai-dirs/` | Skill: creates `.ai/plans/` and `.ai/memory/` directories, syncs plan format guide |
 | `.claude/skills/project-init/` | Skill: scans project, generates `CLAUDE.md` per `project-context.md` |
 | `.claude/skills/project-sanity/` | Skill: audits repo for common issues (report-only) |
-| `.claude/templates/plan-format.md` | Plan format guide (copied to `.ai/plans/` by `/ensure-ai-dirs`) |
+| `.claude/templates/plan-format.md` | Plan format guide (copied to `.ai/plans/plan-format.md` by `/ensure-ai-dirs`) |
+| `.claude/templates/claude-md-template.md` | Slim CLAUDE.md for plans dir — points to plan-format.md (copied to `.ai/plans/CLAUDE.md`) |
 | `.claude/templates/project-context.md` | Output format for generated project `CLAUDE.md` |
 | `.claude/workflows/` | Workflow definitions — one file per workflow variant |
 | `tests/blueprint_contracts.py` | Single source of truth for required structure and agent frontmatter |
