@@ -24,8 +24,9 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 | `.claude/agents/reviewer.md` | Quality gate — scope verification, code review (Opus) |
 | `.claude/agents/test-engineer.md` | Advisory — test design on demand (Sonnet) |
 | `.claude/agents/security-engineer.md` | Advisory — security assessment on demand (Sonnet) |
+| `.claude/agents/plan-reviewer.md` | Plan quality gate — launched as subagent before user presentation (Sonnet) |
 | `.claude/rules/` | Unconditional + conditional rules injected by Claude Code |
-| `.claude/skills/ensure-ai-dirs/` | Skill: creates `.ai/plans/` and `.ai/memory/` directories, syncs plan format guide |
+| `.claude/skills/ensure-ai-dirs/` | Skill: creates `.ai/plans/` and `.ai/memory/` directories, syncs plan format guide and review checklist |
 | `.claude/skills/project-init/` | Skill: scans project, generates `CLAUDE.md` per `project-context.md` |
 | `.claude/skills/project-sanity/` | Skill: audits repo for common issues (report-only) |
 | `tests/blueprint_contracts.py` | Single source of truth for required structure and agent frontmatter |
@@ -49,6 +50,10 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 - Developer makes WIP commits during implementation — lead squashes at commit time via `git reset <baseline-sha>`
 - Reviewer backstop: rejects if non-trivial behavioral changes lack tests and no advisor was consulted
 - Infeasibility claims require specific evidence (file, function, scope, own code vs dependency) per `claim-verification.md` — category labels are not sufficient
+- Plans are reviewed by a Sonnet subagent before user presentation — review cycles until the subagent reports no issues
+- Plan review checklist and format guide are synced to the plans directory by `/ensure-ai-dirs`
+- Plan-format.md contains `<!-- agent: -->` comments as authoring hints for the lead
+- Plans are committed only after user approval, not before
 - Lead verifies plan goal at completion — adds follow-up tasks if quantitative targets not met
 - All blueprint files must be fully static — no dates, counters, versions (prompt cache level 3)
 - Rule files target under 200 lines — agent adherence degrades beyond that threshold

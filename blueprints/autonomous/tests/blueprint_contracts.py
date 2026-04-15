@@ -25,6 +25,7 @@ REQUIRED_ROOT_FILES: list[str] = [
     ".claude/skills/ensure-ai-dirs/SKILL.md",
     ".claude/skills/ensure-ai-dirs/claude-md-template.md",
     ".claude/skills/ensure-ai-dirs/plan-format.md",
+    ".claude/skills/ensure-ai-dirs/plan-review-checklist.md",
     ".claude/skills/project-init/SKILL.md",
     ".claude/skills/project-init/project-context.md",
     ".claude/skills/project-sanity/SKILL.md",
@@ -75,6 +76,7 @@ AGENT_FILES: dict[str, str] = {
     "reviewer": "reviewer.md",
     "test-engineer": "test-engineer.md",
     "security-engineer": "security-engineer.md",
+    "plan-reviewer": "plan-reviewer.md",
 }
 
 # Agent tools — exact tool set for each agent
@@ -92,6 +94,9 @@ AGENT_TOOLS: dict[str, set[str]] = {
     "security-engineer": {
         "Read", "Glob", "Grep", "Bash", "SendMessage",
     },
+    "plan-reviewer": {
+        "Read", "Glob", "Grep", "Bash",
+    },
 }
 
 # Agent models — required model for each agent
@@ -100,4 +105,5 @@ AGENT_MODELS: dict[str, str] = {
     "reviewer": "opus",
     "test-engineer": "sonnet",
     "security-engineer": "sonnet",
+    "plan-reviewer": "sonnet",
 }

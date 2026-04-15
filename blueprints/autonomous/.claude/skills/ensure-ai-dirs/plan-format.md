@@ -38,6 +38,11 @@ progresses — stale status misleads the next session:
 
 ### Goal
 
+<!-- agent: The goal must be self-contained — readable
+     without opening any other plan file. If this plan
+     supersedes another, note that in Decisions as a
+     single line, not here. -->
+
 What was requested and why. One to three sentences that
 capture the intent, not just the action — an agent that
 understands intent can make better decisions when
@@ -49,6 +54,11 @@ dashboard. Add a login page with email/password that
 integrates with the existing auth service."
 
 ### Context
+
+<!-- agent: Use descriptive categories ("Explicit keys
+     and empty keys") not cross-plan references ("From
+     Task 5"). Use commit SHAs, not "previous plan's
+     Task N." -->
 
 Relevant background that someone picking up this plan
 would need. Without context, a new agent or user will
@@ -88,6 +98,22 @@ fine-grained that the list becomes noise — a 50-item
 checklist obscures status rather than revealing it.
 
 ### Tasks
+
+<!-- agent: Acceptance criteria must be hard numbers — no
+     parenthetical fallbacks like "(or user-approved
+     residual)." Flexibility is the user's decision at
+     review time, not a pre-authorized escape hatch. -->
+
+<!-- agent: Each task needs specific verification criteria.
+     "Improves" is not verifiable; "tests X, Y, Z now
+     pass" is. Replace hedge words ("should," "many,"
+     "ideally") with concrete expectations. -->
+
+<!-- agent: If a task changes a data structure or removes
+     code, add sub-tasks to update docs and test fixtures
+     that reference the old state. If a task reaches a
+     "zero" state, add a sub-task to remove the tracking
+     mechanism — leaving it invites regression. -->
 
 Vertical task slices decomposed from the steps above. Each
 task is a committable unit of work with clear acceptance

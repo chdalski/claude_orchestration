@@ -8,7 +8,7 @@ from blueprint_contracts import (
     DYNAMIC_CONTENT_ALLOWLIST,
     DYNAMIC_CONTENT_PATTERNS,
 )
-from conftest import AGENTS_DIR, CLAUDE_MD, CLAUDE_MD_TEMPLATE, PLAN_FORMAT_TEMPLATE, RULES_DIR
+from conftest import AGENTS_DIR, CLAUDE_MD, CLAUDE_MD_TEMPLATE, PLAN_FORMAT_TEMPLATE, PLAN_REVIEW_CHECKLIST_TEMPLATE, RULES_DIR
 
 pytestmark = pytest.mark.static
 
@@ -17,6 +17,7 @@ def _static_files():
     """Yield all files that must be static (CLAUDE.md, plan template, agent files, rule files)."""
     yield CLAUDE_MD
     yield PLAN_FORMAT_TEMPLATE
+    yield PLAN_REVIEW_CHECKLIST_TEMPLATE
     yield CLAUDE_MD_TEMPLATE
     if AGENTS_DIR.is_dir():
         yield from sorted(AGENTS_DIR.glob("*.md"))
