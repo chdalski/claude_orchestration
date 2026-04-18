@@ -46,6 +46,7 @@ REQUIRED_CHECKLIST_SECTIONS = [
     "Goal Covers User Request",
     "Goal-Task Alignment",
     "Format Compliance",
+    "Separable Concerns",
 ]
 
 
@@ -216,4 +217,29 @@ def test_lead_instructions_reference_plan_reviewer_agent(lead_instructions):
     assert "plan-reviewer" in lead_instructions, (
         "CLAUDE.md must reference the plan-reviewer agent by name — "
         "the agent file defines the review process and output format"
+    )
+
+
+# --- Scope bleed prevention ---
+
+
+def test_lead_instructions_prohibit_other_tasks_in_dispatch(lead_instructions):
+    """Lead must not include other tasks' descriptions in developer dispatch."""
+    text = lead_instructions.lower()
+    assert "do not include other tasks" in text, (
+        "CLAUDE.md must prohibit including other tasks' descriptions "
+        "in the developer dispatch message — the developer attends to "
+        "all visible context and pulls scope from future tasks into "
+        "the current one, corrupting plan progress tracking"
+    )
+
+
+def test_lead_instructions_prohibit_plan_file_path_to_developer(lead_instructions):
+    """Lead must not send the plan file path to the developer."""
+    text = lead_instructions.lower()
+    assert "do not send the plan file path" in text, (
+        "CLAUDE.md must prohibit sending the plan file path to the "
+        "developer — if the developer reads the full plan, it sees "
+        "all tasks and scope bleed occurs regardless of what the "
+        "dispatch message contains"
     )
