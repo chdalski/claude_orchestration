@@ -58,6 +58,7 @@ DYNAMIC_CONTENT_PATTERNS: list[str] = [
 AGENT_FILES: dict[str, str] = {
     "architect": "architect.md",
     "developer": "developer.md",
+    "plan-reviewer": "plan-reviewer.md",
     "reviewer": "reviewer.md",
     "test-engineer": "test-engineer.md",
     "security-engineer": "security-engineer.md",
@@ -65,6 +66,9 @@ AGENT_FILES: dict[str, str] = {
 
 # Agent tools — exact tool set for each agent
 AGENT_TOOLS: dict[str, set[str]] = {
+    "plan-reviewer": {
+        "Read", "Glob", "Grep", "Bash",
+    },
     "architect": {
         "Read", "Glob", "Grep", "Write", "Edit",
         "SendMessage", "TaskCreate", "TaskUpdate",
@@ -90,6 +94,7 @@ AGENT_TOOLS: dict[str, set[str]] = {
 
 # Agent models — required model for each agent
 AGENT_MODELS: dict[str, str] = {
+    "plan-reviewer": "sonnet",
     "architect": "opus",
     "developer": "sonnet",
     "reviewer": "opus",

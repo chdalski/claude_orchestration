@@ -103,10 +103,42 @@ Supervised, Develop-Review Autonomous, TDD User-in-the-Loop):
 
 The Architect reads the codebase, writes a plan to the
 plans directory, decomposes it into task slices, and reports
-back via `SendMessage`. You then present the plan to the
-user for approval. This separation exists because plan
+back via `SendMessage`. This separation exists because plan
 writing requires deep codebase analysis that would overwhelm
 your user-facing role.
+
+4. **Review the plan via subagent.** When the Architect
+   reports the plan is ready, launch the `plan-reviewer`
+   agent to review it before presenting to the user.
+   Pass it:
+   - The plan file path (from the Architect's message)
+   - The plans directory path (so it can find
+     `plan-format.md` and `plan-review-checklist.md`)
+   - The user's original request — what the user asked
+     for in their own words during clarification. The
+     plan-reviewer uses this as ground truth to verify
+     the goal captures the full scope of the request.
+
+   This is a cycle — not a one-shot check:
+   a. Launch the `plan-reviewer` with all three inputs.
+   b. If the subagent reports issues: revise the plan to
+      address each finding, then re-launch the subagent.
+   c. Repeat until the subagent returns "No issues found."
+
+   Each launch is stateless — every review pass gets fresh
+   eyes on the current plan state.
+
+   Do not skip this step for "simple" plans — the Architect
+   wrote the plan and is poorly positioned to spot its
+   own escape hatches, ambiguous language, and missing
+   cleanup tasks. The same anti-pattern that justifies
+   independent code review applies to plans.
+
+5. **Present the plan to the user** for approval. Use
+   `AskUserQuestion` to confirm. If the user requests
+   changes, revise the plan and restart the review cycle
+   (step 4) — revisions based on user feedback can
+   reintroduce issues the subagent would catch.
 
 Creating one team upfront is simpler than spawning agents
 individually — it ensures all agents can communicate via
