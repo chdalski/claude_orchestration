@@ -48,6 +48,7 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 - Developer may add advisor consultations but not remove lead's directives
 - Lead owns plan progress — marks tasks done, records commit SHAs, commits code with plan updates in a single commit per task
 - Developer makes WIP commits during implementation — lead squashes at commit time via `git reset <baseline-sha>`
+- Lead's ad-hoc commits happen only in team-down windows — mid-task commits land in the squash reset range and are lost
 - Reviewer backstop: rejects if non-trivial behavioral changes lack tests and no advisor was consulted
 - Infeasibility claims require specific evidence (file, function, scope, own code vs dependency) per `claim-verification.md` — category labels are not sufficient
 - Plans are reviewed by a Sonnet subagent before user presentation — review cycles until the subagent reports no issues
