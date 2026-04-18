@@ -26,12 +26,13 @@ SETTINGS_FILE = CLAUDE_DIR / "settings.json"
 CLAUDE_MD = CLAUDE_DIR / "CLAUDE.md"
 
 SKILLS_DIR = CLAUDE_DIR / "skills"
-TEMPLATES_DIR = CLAUDE_DIR / "templates"
 WORKFLOWS_DIR = CLAUDE_DIR / "workflows"
 WORKFLOWS_CLAUDE_MD = WORKFLOWS_DIR / "CLAUDE.md"
-PLAN_FORMAT_TEMPLATE = TEMPLATES_DIR / "plan-format.md"
-CLAUDE_MD_TEMPLATE = TEMPLATES_DIR / "claude-md-template.md"
-PROJECT_CONTEXT_TEMPLATE = TEMPLATES_DIR / "project-context.md"
+ENSURE_AI_DIRS_SKILL = SKILLS_DIR / "ensure-ai-dirs"
+PROJECT_INIT_SKILL = SKILLS_DIR / "project-init"
+PLAN_FORMAT_TEMPLATE = ENSURE_AI_DIRS_SKILL / "plan-format.md"
+CLAUDE_MD_TEMPLATE = ENSURE_AI_DIRS_SKILL / "claude-md-template.md"
+PROJECT_CONTEXT_TEMPLATE = PROJECT_INIT_SKILL / "project-context.md"
 
 
 def parse_frontmatter(filepath: Path) -> dict:

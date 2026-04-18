@@ -18,19 +18,19 @@ REQUIRED_DIRECTORIES: list[str] = [
     ".claude/skills/ensure-ai-dirs",
     ".claude/skills/project-init",
     ".claude/skills/project-sanity",
-    ".claude/templates",
     ".claude/workflows",
 ]
 
 # Required files relative to blueprint root (outside .claude/)
 REQUIRED_ROOT_FILES: list[str] = [
     ".claude/skills/ensure-ai-dirs/SKILL.md",
-    ".claude/templates/claude-md-template.md",
+    ".claude/skills/ensure-ai-dirs/claude-md-template.md",
     ".claude/skills/project-init/SKILL.md",
     ".claude/skills/project-sanity/SKILL.md",
     ".claude/skills/project-sanity/codecov-sanity.md",
-    ".claude/templates/plan-format.md",
-    ".claude/templates/project-context.md",
+    ".claude/skills/ensure-ai-dirs/plan-format.md",
+    ".claude/skills/ensure-ai-dirs/plan-review-checklist.md",
+    ".claude/skills/project-init/project-context.md",
     ".claude/workflows/CLAUDE.md",
     ".claude/workflows/direct-review.md",
     ".claude/workflows/develop-review-supervised.md",

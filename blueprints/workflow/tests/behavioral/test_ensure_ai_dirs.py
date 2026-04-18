@@ -2,8 +2,8 @@
 
 These tests spawn a real Claude Code session and invoke the /ensure-ai-dirs
 skill in a tmp project that has no .ai/ directory. The skill should:
-- Copy .claude/templates/plan-format.md to .ai/plans/plan-format.md
-- Copy .claude/templates/claude-md-template.md to .ai/plans/CLAUDE.md
+- Copy .claude/skills/ensure-ai-dirs/plan-format.md to .ai/plans/plan-format.md
+- Copy .claude/skills/ensure-ai-dirs/claude-md-template.md to .ai/plans/CLAUDE.md
 - Create .ai/memory/ for Claude Code's auto-memory system
 """
 
@@ -24,8 +24,8 @@ ENSURE_AI_DIRS_PROMPT = (
     "Run /ensure-ai-dirs now. Follow the skill instructions exactly:\n"
     "1. Read .claude/settings.json for plansDirectory and autoMemoryDirectory.\n"
     "2. Sync two files to the plans directory:\n"
-    "   a. Read .claude/templates/plan-format.md and write to .ai/plans/plan-format.md\n"
-    "   b. Read .claude/templates/claude-md-template.md and write to .ai/plans/CLAUDE.md\n"
+    "   a. Read .claude/skills/ensure-ai-dirs/plan-format.md and write to .ai/plans/plan-format.md\n"
+    "   b. Read .claude/skills/ensure-ai-dirs/claude-md-template.md and write to .ai/plans/CLAUDE.md\n"
     "3. Ensure .ai/memory/ directory exists.\n"
     "4. Report what you did.\n"
     "Do this now."

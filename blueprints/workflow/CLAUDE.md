@@ -26,12 +26,10 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 | `.claude/agents/test-engineer.md` | Advisory — test design and verification (Sonnet) |
 | `.claude/agents/security-engineer.md` | Advisory — security assessment (Sonnet) |
 | `.claude/rules/` | Unconditional + conditional rules injected by Claude Code |
-| `.claude/skills/ensure-ai-dirs/` | Skill: creates `.ai/plans/` and `.ai/memory/` directories, syncs plan format guide |
+| `.claude/skills/ensure-ai-dirs/` | Skill: creates `.ai/plans/` and `.ai/memory/` directories, syncs plan format guide and review checklist |
 | `.claude/skills/project-init/` | Skill: scans project, generates `CLAUDE.md` per `project-context.md` |
 | `.claude/skills/project-sanity/` | Skill: audits repo for common issues (report-only) |
-| `.claude/templates/plan-format.md` | Plan format guide (copied to `.ai/plans/plan-format.md` by `/ensure-ai-dirs`) |
-| `.claude/templates/claude-md-template.md` | Slim CLAUDE.md for plans dir — points to plan-format.md (copied to `.ai/plans/CLAUDE.md`) |
-| `.claude/templates/project-context.md` | Output format for generated project `CLAUDE.md` |
+| `.claude/skills/project-init/project-context.md` | Output format for generated project `CLAUDE.md` |
 | `.claude/workflows/` | Workflow definitions — one file per workflow variant |
 | `tests/blueprint_contracts.py` | Single source of truth for required structure and agent frontmatter |
 | `tests/static/` | Structure, caching compliance, agent frontmatter, rule length tests |
@@ -53,7 +51,7 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 - Lead does not prescribe security mitigations — names risk categories and routes to Security Engineer
 - All blueprint files must be fully static — no dates, counters, versions (prompt cache level 3)
 - Rule files target under 200 lines — agent adherence degrades beyond that threshold
-- Templates live in `.claude/templates/` — canonical sources copied at runtime by skills
+- Templates live in their skill's directory, not a separate `templates/` directory
 - Generated project `CLAUDE.md` follows `project-context.md`: Overview, Build and Test, Components, Conventions, References
 - On `CLAUDE.md` re-generation: Overview/Build/Components refresh; Conventions/References entries preserve
 - Blueprint does not prescribe architecture, security practices, data modeling, CI/CD, formatting, or testing methodology

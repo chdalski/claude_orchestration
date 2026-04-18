@@ -2,8 +2,8 @@
 name: ensure-ai-dirs
 description: >
   Ensure the configured plans and memory directories exist,
-  and sync the plan format guide. Run once before Phase 1
-  planning.
+  and sync the plan format guide and review checklist. Run
+  once before Phase 1 planning.
 ---
 
 # /ensure-ai-dirs
@@ -30,22 +30,31 @@ skip step 3 because the memory directory already exists.
    `.ai/memory/` respectively. This respects the project's
    configured locations rather than assuming fixed paths.
 
-2. **Sync the plans directory files** — sync two files
-   from `.claude/templates/` to `<plansDirectory>`:
+2. **Sync the plans directory files** — sync three files
+   from `.claude/skills/ensure-ai-dirs/` to `<plansDirectory>`:
 
    a. **Plan format guide** — read the canonical template
-      from `.claude/templates/plan-format.md`. Read
+      from `.claude/skills/ensure-ai-dirs/plan-format.md`. Read
       `<plansDirectory>/plan-format.md` if it exists. If
       the file does not exist or its content differs from
       the template, write the template to
       `<plansDirectory>/plan-format.md` using Write.
 
    b. **Plans CLAUDE.md** — read the template from
-      `.claude/templates/claude-md-template.md`. Read
+      `.claude/skills/ensure-ai-dirs/claude-md-template.md`. Read
       `<plansDirectory>/CLAUDE.md` if it exists. If the
       file does not exist or its content differs from the
       template, write the template to
       `<plansDirectory>/CLAUDE.md` using Write.
+
+   c. **Plan review checklist** — read the canonical
+      template from
+      `.claude/skills/ensure-ai-dirs/plan-review-checklist.md`.
+      Read `<plansDirectory>/plan-review-checklist.md` if it
+      exists. If the file does not exist or its content
+      differs from the template, write the template to
+      `<plansDirectory>/plan-review-checklist.md` using
+      Write.
 
    The CLAUDE.md is intentionally slim — it points agents
    to plan-format.md rather than embedding the full format

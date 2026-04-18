@@ -13,7 +13,7 @@ description: >
 Generate `CLAUDE.md` files by scanning the project and
 synthesizing context that agents cannot infer from code
 alone. The output format is defined in
-`.claude/templates/project-context.md`.
+`.claude/skills/project-init/project-context.md`.
 
 For projects with git-repository subdirectories (e.g., git
 submodules), also generate a `CLAUDE.md` in each
@@ -99,7 +99,7 @@ homepages, npm/crates.io package pages).
 ## Steps
 
 1. **Read output format** — read
-   `.claude/templates/project-context.md` for
+   `.claude/skills/project-init/project-context.md` for
    the output structure.
 
 2. **Check for existing CLAUDE.md** — if `CLAUDE.md`
@@ -165,7 +165,7 @@ homepages, npm/crates.io package pages).
     user adds new entries, include them.
 
 12. **Write CLAUDE.md** — assemble the output following the
-    format in `.claude/templates/project-context.md`.
+    format in `.claude/skills/project-init/project-context.md`.
     Write to the project root. Then check for subdirectories
     with their own `.git/` — for each one, scan it
     independently (repeat steps 3-11 scoped to that
