@@ -26,7 +26,7 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 | `.claude/agents/security-engineer.md` | Advisory — security assessment on demand (Sonnet) |
 | `.claude/agents/plan-reviewer.md` | Plan quality gate — launched as subagent before user presentation (Sonnet) |
 | `.claude/rules/` | Unconditional + conditional rules injected by Claude Code |
-| `.claude/skills/ensure-ai-dirs/` | Skill: creates `.ai/plans/` and `.ai/memory/` directories, syncs plan format guide and review checklist |
+| `.claude/skills/ensure-ai-dirs/` | Skill: creates `.ai/plans/` and `.ai/memory/` directories, syncs plan format guide and review checklist, archives plans older than 14 days |
 | `.claude/skills/project-init/` | Skill: scans project, generates `CLAUDE.md` per `project-context.md` |
 | `.claude/skills/project-sanity/` | Skill: audits repo for common issues (report-only) |
 | `tests/blueprint_contracts.py` | Single source of truth for required structure and agent frontmatter |

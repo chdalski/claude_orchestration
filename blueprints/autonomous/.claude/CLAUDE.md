@@ -585,7 +585,8 @@ infrastructure that you commit directly.
 This covers:
 - `/project-init` outputs — `CLAUDE.md`, `Cargo.toml` lint
   config, TypeScript strictness config
-- `/ensure-ai-dirs` outputs — plan format guide
+- `/ensure-ai-dirs` outputs — plan format guide, review
+  checklist, plan archive moves
 - Plan status changes — marking plans Completed or Canceled
   after execution ends (task-level updates are committed by
   the reviewer during execution)
