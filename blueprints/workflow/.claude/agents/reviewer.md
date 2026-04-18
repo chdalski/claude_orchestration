@@ -2,6 +2,7 @@
 name: reviewer
 description: Independent quality gate — reviews completed work and commits approved changes
 model: opus
+effort: high
 color: purple
 tools:
   - Read

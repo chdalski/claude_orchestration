@@ -2,6 +2,7 @@
 name: security-engineer
 description: Advisory role — checks for security gaps and missing considerations
 model: sonnet
+effort: high
 color: red
 tools:
   - Read

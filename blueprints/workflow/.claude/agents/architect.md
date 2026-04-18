@@ -2,6 +2,7 @@
 name: architect
 description: Reads codebase, writes plans, decomposes into task slices, feeds tasks to agents
 model: opus
+effort: high
 color: orange
 tools:
   - Read

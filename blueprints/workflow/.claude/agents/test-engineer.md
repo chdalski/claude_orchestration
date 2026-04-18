@@ -2,6 +2,7 @@
 name: test-engineer
 description: Advisory role — designs test specifications and verifies test coverage
 model: sonnet
+effort: high
 color: blue
 tools:
   - Read
