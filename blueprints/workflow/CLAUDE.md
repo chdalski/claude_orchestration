@@ -44,7 +44,7 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 - Agent `name:` fields use lowercase hyphenated form: `developer`, `test-engineer`
 - Workflow files define team composition, coordination sequences, and sign-off requirements
 - Adding a new workflow: create a file in `.claude/workflows/` — no changes to CLAUDE.md, agents, or rules
-- Unconditional rules (no `paths:` frontmatter): `simplicity.md`, `risk-assessment.md`, `procedural-fidelity.md`, `acceptance-criteria.md`
+- Unconditional rules (no `paths:` frontmatter): `acceptance-criteria.md`, `advisor-gate-independence.md`, `claim-verification.md`, `no-silent-target-weakening.md`, `procedural-fidelity.md`, `risk-assessment.md`, `simplicity.md`
 - Conditional rules load automatically when agents touch matching file extensions
 - Universal principles stated once in unconditional rules — language rules extend without restating
 - Adding a new language: create `lang-<language>.md` with `paths:` frontmatter, update `functional-style.md`/`code-mass.md`/`code-principles.md` paths — no changes to CLAUDE.md, agents, or workflows
