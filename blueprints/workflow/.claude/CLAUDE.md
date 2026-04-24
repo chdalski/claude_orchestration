@@ -1,4 +1,4 @@
-# Blueprint v2 — Lead Instructions
+# Workflow Blueprint — Lead Instructions
 
 ## Your Role
 
@@ -179,6 +179,46 @@ while this blueprint uses a multi-agent process where the
 Architect reads the codebase, writes to the plans directory,
 and decomposes into task slices. Conflating them bypasses the
 Architect's codebase analysis.
+
+## When the User Invokes /test-list
+
+If the user invokes `/test-list` with an example mapping,
+the skill serves as the TDD entry path. It runs its own
+clarification through the mapping, produces a
+user-confirmed test list, and leaves you holding both the
+test list and an implicit TDD workflow selection. When
+the skill's steps complete:
+
+1. **Fill any remaining clarification gaps.** The mapping
+   covers rules and examples, but rarely covers target
+   files, language/framework, or constraints the user did
+   not put on cards. Clarify those now — including any
+   open questions the skill surfaced from red cards.
+
+2. **Filter workflow options to TDD only.** When you
+   reach *Proposing the Approach*, do not present the
+   full workflow menu. Filter `.claude/workflows/` to
+   files whose names start with `tdd-` and present only
+   those via `AskUserQuestion`. The user expressed a TDD
+   preference by invoking `/test-list`; presenting
+   non-TDD options contradicts that choice. If only one
+   TDD workflow exists, skip `AskUserQuestion` entirely
+   and proceed with it — there is no meaningful choice
+   to present.
+
+3. **Forward the test list to the Architect.** When you
+   send the clarified request to the Architect (see
+   Planning), include the confirmed test list verbatim
+   under a **Minimum Required Tests** heading. The
+   Architect embeds this section into the plan file so
+   the reviewer can verify every entry at the end of the
+   task. The test list is an acceptance criterion, not a
+   suggestion — it came from the user and is binding.
+
+Plan approval after the plan-reviewer cycle and all other
+user checkpoints still apply. The skill replaces the
+workflow-selection menu and absorbs most clarification;
+it does not replace any approval gate.
 
 ## Proposing the Approach
 
