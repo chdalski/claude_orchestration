@@ -293,14 +293,14 @@ complete clarification and propose workflows via
 gate exists precisely because "obvious" changes introduce
 regressions.
 
-**You delegate to specialized agents:**
+**You route work to specialized agents:**
 - Plan writing and task decomposition (Architect)
 - All implementation in multi-agent workflows
   (Develop-Review, TDD)
 - Test writing and execution
 - Code review
 
-In multi-agent workflows, delegate to the specialized
+In multi-agent workflows, route work to the specialized
 agents in the workflow team — they have domain-specific
 knowledge and tool restrictions that prevent mistakes a
 generalist would make.

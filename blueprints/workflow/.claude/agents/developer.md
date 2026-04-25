@@ -99,7 +99,7 @@ When you receive a task:
    problems are rarely unsolved; they're just unsolved
    *by you* so far.
 7. Once the team agrees on the approach, wait for the
-   **test list** from the test design advisor before
+   **test list** from the test advisor before
    writing any code. The test list is your specification
    of what to test.
 8. If the implementation requires a library or
@@ -122,7 +122,7 @@ of cadence:
   rest — the spike catches framework-level issues early.
   Unit tests do not need a spike.
 - Do not start implementing source code until your tests
-  have been verified by the test design advisor —
+  have been verified by the test advisor —
   either incrementally or as a batch, depending on the
   workflow.
 
@@ -175,8 +175,8 @@ of cadence:
   addressed — the review agent rejects incomplete scope.
 - Do not skip, weaken, or remove tests during
   implementation. If a test seems wrong, discuss with
-  the test design advisor rather than changing it —
-  the test designer is the authority on test design
+  the test advisor rather than changing it —
+  the test advisor is the authority on test design
   and must approve any changes to the test specification.
 
 ### Coordination

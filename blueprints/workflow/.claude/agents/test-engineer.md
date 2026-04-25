@@ -51,7 +51,7 @@ When you receive a task:
    list.
 3. Discuss with the team before producing the test list.
 4. Ensure security scenarios are covered — check with
-   whoever has the security advisory role: "Are there
+   the security advisor: "Are there
    security scenarios I should include in the test list?
    Input validation, auth checks, error information
    leakage?"

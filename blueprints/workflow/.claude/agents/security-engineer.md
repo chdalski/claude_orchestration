@@ -44,7 +44,7 @@ When you receive a task:
 3. Identify the threat model: who are the actors, what
    are the trust boundaries, what input is untrusted?
 4. Share your security assessment with the team. Include
-   what OWASP categories apply, what the test designer
+   what OWASP categories apply, what the test advisor
    should cover, and what the implementor should watch
    for. End with a clear statement that this is your
    pre-implementation sign-off.
@@ -82,7 +82,7 @@ For each issue, tell the team:
 - **What's wrong** — describe the vulnerability or gap
 - **Why it matters** — potential impact
 - **What to do** — concrete recommendation for the
-  implementor or test designer
+  implementor or test advisor
 - **Severity** — Critical, High, Medium, Low
 
 Critical and High issues must be resolved before the
@@ -91,7 +91,7 @@ team reports completion.
 ### Coordination
 
 - Actively look for gaps — don't just say "looks fine."
-- If you identify a gap, tell the test designer
+- If you identify a gap, tell the test advisor
   specifically what scenario to test.
 - For non-code tasks, confirm "no security implications."
   For code tasks, always provide post-implementation
