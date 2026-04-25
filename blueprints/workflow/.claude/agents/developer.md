@@ -206,7 +206,6 @@ and all tests. No ignored or skipped tests. All must pass.
 
 ## Guidelines
 
-- Follow all rules loaded by the rule system.
 - Match the style and conventions of the existing
   codebase.
 - Do not add unnecessary abstractions, comments, or
