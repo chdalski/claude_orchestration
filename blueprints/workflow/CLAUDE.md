@@ -26,10 +26,12 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 | `.claude/agents/test-engineer.md` | Advisory — test design and verification (Sonnet) |
 | `.claude/agents/plan-reviewer.md` | Plan quality gate — launched as subagent before user presentation (Sonnet) |
 | `.claude/agents/security-engineer.md` | Advisory — security assessment (Sonnet) |
+| `.claude/agents/test-list.md` | Subagent — converts an example mapping into a minimum-required test list (Sonnet) |
 | `.claude/rules/` | Unconditional + conditional rules injected by Claude Code |
 | `.claude/skills/ensure-ai-dirs/` | Skill: creates `.ai/plans/` and `.ai/memory/` directories, syncs plan format guide and review checklist, archives plans older than 14 days |
 | `.claude/skills/project-init/` | Skill: scans project, generates `CLAUDE.md` per `project-context.md` |
 | `.claude/skills/project-sanity/` | Skill: audits repo for common issues (report-only) |
+| `.claude/skills/test-list/` | Skill: TDD entry path — invokes the test-list subagent and embeds the confirmed list in the plan |
 | `.claude/skills/project-init/project-context.md` | Output format for generated project `CLAUDE.md` |
 | `.claude/workflows/` | Workflow definitions — one file per workflow variant |
 | `tests/blueprint_contracts.py` | Single source of truth for required structure and agent frontmatter |

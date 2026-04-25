@@ -18,6 +18,7 @@ REQUIRED_DIRECTORIES: list[str] = [
     ".claude/skills/ensure-ai-dirs",
     ".claude/skills/project-init",
     ".claude/skills/project-sanity",
+    ".claude/skills/test-list",
     ".claude/workflows",
 ]
 
@@ -31,6 +32,7 @@ REQUIRED_ROOT_FILES: list[str] = [
     ".claude/skills/ensure-ai-dirs/plan-format.md",
     ".claude/skills/ensure-ai-dirs/plan-review-checklist.md",
     ".claude/skills/project-init/project-context.md",
+    ".claude/skills/test-list/SKILL.md",
     ".claude/workflows/CLAUDE.md",
     ".claude/workflows/direct-review.md",
     ".claude/workflows/develop-review-supervised.md",
@@ -62,6 +64,7 @@ AGENT_FILES: dict[str, str] = {
     "reviewer": "reviewer.md",
     "test-engineer": "test-engineer.md",
     "security-engineer": "security-engineer.md",
+    "test-list": "test-list.md",
 }
 
 # Agent tools — exact tool set for each agent
@@ -90,6 +93,9 @@ AGENT_TOOLS: dict[str, set[str]] = {
         "Read", "Glob", "Grep", "Bash", "SendMessage",
         "TaskList", "TaskGet",
     },
+    "test-list": {
+        "Read",
+    },
 }
 
 # Agent models — required model for each agent
@@ -100,6 +106,7 @@ AGENT_MODELS: dict[str, str] = {
     "reviewer": "opus",
     "test-engineer": "sonnet",
     "security-engineer": "sonnet",
+    "test-list": "sonnet",
 }
 
 # Rule file length — hard ceiling for the static test.
