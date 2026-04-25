@@ -168,6 +168,24 @@ dynamic content — dates, timestamps, counters, or version
 numbers that change between sessions. The caching compliance
 tests catch this, but awareness prevents the mistake.
 
+### 11. Behavior-preserving cuts
+
+When editing a file with substantial prose — older agent
+files, CLAUDE.md, rules accumulated over many sessions —
+apply the test in `behavior-preserving-cuts.md`: for each
+paragraph, ask whether removing it would change any of the
+agent's actions, ordering, conditions, or error handling.
+If no to all four, cut.
+
+Bias toward keeping. Most prose that looks like decorative
+rationale is actually encoding a non-obvious failure mode —
+the rule documents four false-positive shapes
+(restatements that address different failure modes,
+section openings mistaken for restatements, operational
+prose disguised as rationale, "no exceptions" clauses).
+Real cuts are measured in single sentences across many
+files, not paragraphs in any one file.
+
 ## When to Skip
 
 - Typo fixes in a single file with no cross-references

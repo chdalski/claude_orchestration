@@ -351,6 +351,55 @@ within target."
 
 ---
 
+## Check 10 — Behavior-Preserving Cuts
+
+**Reference:** `/.claude/rules/behavior-preserving-cuts.md`
+
+The inverse of Check 3. Check 3 surfaces directives
+*missing* rationale. This check surfaces prose that
+*could be cut* without changing agent behavior.
+
+**Read:** All agent, skill, rule, and CLAUDE.md files in
+the blueprint.
+
+**Scan for:**
+
+- **Pure echoes** — sentences that paraphrase the prior
+  directive without adding actionable content.
+- **Closing summary sections** ("Remember", "Summary",
+  "Key Takeaways") whose bullets restate earlier bullets.
+- **Connective tissue** — "It is important to note
+  that...", "As described above..." preambles before
+  content the reader already encounters.
+- **Per-bullet rule-echo** — parenthetical "why" clauses
+  that paraphrase the bullet they annotate.
+
+For each candidate, apply the rule's behavior-preservation
+test: would removing this change which actions the agent
+takes, in what order, under what conditions, or with what
+error handling? Only flag candidates that pass *all four*
+sub-tests.
+
+**Do not flag** the four false-positive shapes the rule
+documents:
+
+- Restatements that address a different failure mode.
+- Section openings mistaken for restatements.
+- Operational prose disguised as rationale.
+- "No exceptions" clauses.
+
+Be conservative. Agent-instruction files are mostly
+load-bearing; cuts are rare and small. False positives
+in this check are more harmful than misses — a wrongly-cut
+line is a behavioral regression that ships, while a
+missed candidate just leaves marginal context.
+
+For each finding, report: file location, snippet, the
+four-question test result, and estimated savings. If no
+clean candidates exist, report "None found."
+
+---
+
 ## Output Format
 
 ```
@@ -423,6 +472,11 @@ within target."
 ## Rule File Length
 [List files over 250 as violations, 201-250 as warnings,
  or "All rule files within target"]
+
+## Behavior-Preserving Cuts
+[List each candidate with file location, snippet, the
+ four-question test result, and estimated savings,
+ or "None found"]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   OBSERVATIONS
