@@ -30,9 +30,13 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 Clarify-first: the lead clarifies the task, then presents
 workflow options. The user chooses: Direct-Review for simple
 tasks, Develop-Review (Supervised or Autonomous) for complex
-ones, or TDD User-in-the-Loop. 5 agents (Architect,
+ones, or TDD User-in-the-Loop. 5 team agents (Architect,
 Developer, Test Engineer, Security Engineer, Reviewer)
-plus the lead.
+plus the lead, with two on-demand subagents launched
+during planning and TDD entry: `plan-reviewer` (reviews
+draft plans before user presentation) and `test-list`
+(converts an example mapping into a minimum required
+test list).
 Workflows defined as separate files — adding one requires
 no changes to CLAUDE.md or agents.
 
@@ -42,9 +46,11 @@ Autonomous after clarification: the lead clarifies, writes
 a plan, manages a plan queue. For each task, the lead
 assesses risk and directs the developer to consult advisors
 when warranted. The developer implements, the reviewer
-approves and commits. 4 agents (Developer, Reviewer, Test
-Engineer, Security Engineer) plus the lead. The lead stays
-responsive to the user during execution.
+approves and commits. 4 team agents (Developer, Reviewer,
+Test Engineer, Security Engineer) plus the lead and the
+`plan-reviewer` subagent (launched before user plan
+presentation). The lead stays responsive to the user
+during execution.
 
 ### devcontainer_templates
 

@@ -55,11 +55,18 @@ When you receive a task:
    are needed beyond what CLI tools cover, ask the
    requester to share relevant references — you do not
    have web access tools.
-6. For non-code tasks (documentation, configuration with
-   no secrets), send "no security implications" so the
-   team can proceed. For code tasks — regardless of
-   perceived risk level — always provide both pre- and
-   post-implementation sign-offs.
+6. For non-code tasks, send "no security implications" so
+   the team can proceed. The non-code categories that
+   qualify are exactly the ones risk-assessment.md lists
+   as Direct-Review-eligible: pure documentation (comments,
+   README updates, plan files), and configuration that
+   touches no secrets, no permissions, no trust boundaries,
+   and no network-facing settings. Configuration that
+   touches any of those categories is a code task for
+   security purposes, even if the diff is one line. For
+   code tasks — regardless of perceived risk level —
+   always provide both pre- and post-implementation
+   sign-offs.
 
 ### During Implementation
 

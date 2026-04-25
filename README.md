@@ -72,6 +72,7 @@ the queue.
 | Reviewer | Opus | Quality gate — scope verification, code review |
 | Test Engineer | Sonnet | Advisory — test lists on demand |
 | Security Engineer | Sonnet | Advisory — security assessments on demand |
+| Plan Reviewer (subagent) | Sonnet | Reviews draft plans before user presentation |
 
 ```mermaid
 graph TD
@@ -111,6 +112,8 @@ changes to CLAUDE.md.
 | Test Engineer | Sonnet | Advisory — designs test specs, verifies coverage |
 | Security Engineer | Sonnet | Advisory — checks security gaps |
 | Reviewer | Opus | Quality gate — reviews and commits |
+| Plan Reviewer (subagent) | Sonnet | Reviews draft plans before user presentation |
+| Test List (subagent) | Sonnet | Converts an example mapping into a minimum required test list (used by `/test-list`) |
 
 **Workflows:**
 

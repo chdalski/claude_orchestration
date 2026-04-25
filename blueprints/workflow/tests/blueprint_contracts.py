@@ -70,7 +70,7 @@ AGENT_FILES: dict[str, str] = {
 # Agent tools — exact tool set for each agent
 AGENT_TOOLS: dict[str, set[str]] = {
     "plan-reviewer": {
-        "Read", "Glob", "Grep", "Bash",
+        "Read", "Glob", "Grep",
     },
     "architect": {
         "Read", "Glob", "Grep", "Write", "Edit",

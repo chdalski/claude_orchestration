@@ -95,7 +95,7 @@ AGENT_TOOLS: dict[str, set[str]] = {
         "Read", "Glob", "Grep", "Bash", "SendMessage",
     },
     "plan-reviewer": {
-        "Read", "Glob", "Grep", "Bash",
+        "Read", "Glob", "Grep",
     },
 }
 

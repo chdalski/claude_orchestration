@@ -98,6 +98,15 @@ homepages, npm/crates.io package pages).
 
 ## Steps
 
+**All steps below are mandatory once the user has opted in
+to regenerate (step 2).** Do not short-circuit on
+detection results — empty Conventions and References
+detections still require user confirmation in step 11, and
+language-specific application steps (5, 6) are conditional
+on language detection rather than on agent judgment. Skip
+only the steps explicitly conditional on missing manifests
+or absent target languages.
+
 1. **Read output format** — read
    `.claude/skills/project-init/project-context.md` for
    the output structure.
