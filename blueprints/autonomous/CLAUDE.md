@@ -39,7 +39,7 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 - Agent files define role only — no named teammates, no workflow coordination, no workflow conditionals
 - Use "the requester" / "the implementor" in agent files — never role-specific names
 - Agent `name:` fields use lowercase hyphenated form: `developer`, `test-engineer`
-- Unconditional rules (no `paths:` frontmatter): `acceptance-criteria.md`, `advisor-gate-independence.md`, `claim-verification.md`, `communication-hygiene.md`, `no-silent-target-weakening.md`, `procedural-fidelity.md`, `risk-assessment.md`, `safe-git.md`, `simplicity.md`
+- Unconditional rules (no `paths:` frontmatter): `acceptance-criteria.md`, `advisor-gate-independence.md`, `claim-verification.md`, `communication-hygiene.md`, `no-silent-target-weakening.md`, `procedural-fidelity.md`, `risk-assessment.md`, `root-cause-discipline.md`, `safe-git.md`, `simplicity.md`
 - Conditional rules load automatically when agents touch matching file extensions
 - Universal principles stated once in unconditional rules — language rules extend without restating
 - Adding a new language: create `lang-<language>.md` with `paths:` frontmatter, update `functional-style.md`/`code-mass.md`/`code-principles.md` paths — no changes to CLAUDE.md or agents
