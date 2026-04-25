@@ -112,6 +112,17 @@ Send the test list to the implementor as a single
 message. For non-code tasks (documentation, prose),
 send "no tests needed" instead.
 
+**If the plan contains a `## Minimum Required Tests`
+section** (produced upstream by the `/test-list` skill
+and embedded by the requester), every entry in that
+section must appear in your test list. You may add
+cases the user-facing mapping did not anticipate
+(edge cases, error paths, security probes), but you
+must not drop or weaken any entry without explicit
+user approval relayed by the requester. The user
+confirmed that list as binding; silent reduction is
+an unauthorized scope cut.
+
 ### Verifying the Implementor's Tests
 
 The workflow defines the verification cadence — batch

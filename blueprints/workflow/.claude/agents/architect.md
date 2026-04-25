@@ -60,6 +60,15 @@ resolving all ambiguities with the user.
    what needs to happen and why, the codebase context you
    discovered, and the steps needed.
 
+   **If the requester's clarified request includes a
+   Minimum Required Tests section** (produced by the
+   `/test-list` skill), embed that section verbatim under
+   a `## Minimum Required Tests` heading in the plan file.
+   Do not paraphrase, reorder, or trim entries — the user
+   confirmed the list as-is and the reviewer will check
+   every entry at task close. Treat it as an acceptance
+   criterion equal to the goal itself.
+
 3. **Decompose into task slices** — break the plan's steps
    into vertical task slices within the plan file. Each
    slice should:

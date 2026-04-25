@@ -144,6 +144,19 @@ because quality reviews naturally focus on what *is* there,
 not what *isn't* — missing features are invisible unless
 you check the spec.
 
+**Minimum Required Tests section.** If the plan contains
+a `## Minimum Required Tests` section (produced by the
+`/test-list` skill, embedded by the architect, and
+expanded by the test advisor), every entry must be
+implemented as a passing test. Read the plan, list every
+entry, and confirm each one is present in the test
+files and passing. A handoff that does not cite the
+list — or that cites it without confirming each entry —
+is grounds for rejection. The user approved that list
+as a binding acceptance criterion; partial coverage
+without explicit user sign-off is incomplete delivery
+even if every other check passes.
+
 ### 2. Correctness and Security
 
 These share top priority — a security vulnerability is a
