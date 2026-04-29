@@ -19,7 +19,7 @@ the team lead.
 | Blueprint | Approach | Agents |
 |-----------|----------|--------|
 | **autonomous** | Full autonomy after plan approval via a plan queue | Lead, Developer, Reviewer, Test Engineer, Security Engineer |
-| **workflow** | User chooses a workflow after clarification | Lead, Architect, Developer, Test Engineer, Security Engineer, Reviewer |
+| **workflow** | User chooses a workflow after plan approval | Lead, Developer, Test Engineer, Security Engineer, Reviewer |
 
 ### When to Use Which
 
@@ -97,17 +97,17 @@ The Developer-Reviewer rejection loop is opaque to the lead.
 
 ### workflow — Clarify-First
 
-The lead clarifies the task, then presents workflow options.
-The user chooses how work gets done. Workflows are separate
-files in `.claude/workflows/` — adding one requires no
-changes to CLAUDE.md.
+The lead clarifies the task, writes a plan (reviewed by the
+plan-reviewer subagent and approved by the user), then
+presents workflow options. The user chooses how work gets
+done. Workflows are separate files in `.claude/workflows/` —
+adding one requires no changes to CLAUDE.md.
 
 **Agents:**
 
 | Agent | Model | Role |
 |-------|-------|------|
-| Lead | Opus | Clarifies task, presents workflow options, coordinates |
-| Architect | Opus | Reads codebase, writes plans, feeds tasks |
+| Lead | Opus | Clarifies task, writes plan, presents workflow options, coordinates |
 | Developer | Sonnet | Implements all code (source + tests) |
 | Test Engineer | Sonnet | Advisory — designs test specs, verifies coverage |
 | Security Engineer | Sonnet | Advisory — checks security gaps |
@@ -117,11 +117,11 @@ changes to CLAUDE.md.
 
 **Workflows:**
 
-- **Direct-Review** — lead handles work directly, Reviewer
-  checks quality. For well-scoped tasks.
+- **Direct-Review** — lead implements the approved plan
+  directly, Reviewer checks quality. For well-scoped tasks.
 - **Develop-Review (Supervised)** — full dev cycle with
-  Architect planning, test-list development, and user
-  approval per commit.
+  test-list-driven development and user approval per
+  commit.
 - **Develop-Review (Autonomous)** — same as Supervised but
   commits automatically after Reviewer approval.
 - **TDD User-in-the-Loop** — strict Red-Green-Refactor with

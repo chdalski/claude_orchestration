@@ -2,8 +2,8 @@
 
 ## When to Use
 
-Use this workflow for tasks where the user prefers
-directness over process, and the change meets both criteria:
+Use this workflow when the user prefers directness over
+process and the plan meets both criteria:
 
 1. **No security ramifications** — the change does not
    touch auth, input validation, cryptography, access
@@ -25,8 +25,8 @@ miss.
 ## Agents
 
 - **Reviewer** — independent quality gate, including
-  CLAUDE.md drift detection. Created via `TeamCreate` as a
-  one-agent team so it can receive the commit signal
+  CLAUDE.md drift detection. Created via `TeamCreate` as
+  a one-agent team so it can receive the commit signal
   after the user checkpoint. The Reviewer composes the
   commit message and commits approved work.
 
@@ -37,29 +37,32 @@ approval rather than re-spawning a new agent.
 
 ## Flow
 
-1. Lead reads relevant files to understand current state
-2. Lead implements the change directly
-3. Lead runs tests and linters if applicable — catching
+1. Lead implements the plan directly — read the relevant
+   files first to ground the changes in current code.
+2. Lead runs tests and linters if applicable — catching
    regressions before presenting to the Reviewer avoids
-   wasted review cycles
-4. Lead creates a one-agent team via TeamCreate with the
-   Reviewer — Reviewer performs full review including
-   CLAUDE.md drift detection. Even small changes can
-   introduce drift
-   (e.g., renaming a directory that CLAUDE.md references),
-   and Direct-Review has the least process, making
-   undetected drift most likely here.
-5. If rejected: lead fixes issues and re-sends to Reviewer
+   wasted review cycles.
+3. Lead creates a one-agent team via TeamCreate with the
+   Reviewer.
+4. Lead sends the work to the Reviewer with the plan's
+   goal, context, and acceptance criteria so the Reviewer
+   can verify scope completeness — Reviewer performs full
+   review including CLAUDE.md drift detection. Even small
+   changes can introduce drift (e.g., renaming a directory
+   that CLAUDE.md references), and Direct-Review has the
+   least process, making undetected drift most likely
+   here.
+5. If rejected: lead fixes issues and re-sends to Reviewer.
 6. **User checkpoint** — lead presents the completed work,
    Reviewer's summary, and proposed commit message for
-   user approval
-7. If approved, lead tells Reviewer to commit
+   user approval.
+7. If approved, lead tells Reviewer to commit.
 8. If changes are needed, lead adjusts and returns to
-   step 3
+   step 2.
 
 ## Completion Criteria
 
-- Change implemented as requested
+- Plan implemented as approved
 - Tests pass (if applicable)
 - Reviewer has approved the result (including drift check)
 - User has approved the result

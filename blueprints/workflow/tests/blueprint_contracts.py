@@ -58,7 +58,6 @@ DYNAMIC_CONTENT_PATTERNS: list[str] = [
 # Allowlist for date-like patterns that are actually static content
 # Agent definitions — filename must match exactly
 AGENT_FILES: dict[str, str] = {
-    "architect": "architect.md",
     "developer": "developer.md",
     "plan-reviewer": "plan-reviewer.md",
     "reviewer": "reviewer.md",
@@ -72,26 +71,18 @@ AGENT_TOOLS: dict[str, set[str]] = {
     "plan-reviewer": {
         "Read", "Glob", "Grep",
     },
-    "architect": {
-        "Read", "Glob", "Grep", "Write", "Edit",
-        "SendMessage", "TaskCreate", "TaskUpdate",
-        "TaskList", "TaskGet",
-    },
     "developer": {
         "Read", "Write", "Edit", "Bash", "Glob", "Grep",
         "WebSearch", "WebFetch", "SendMessage",
-        "TaskList", "TaskGet",
     },
     "reviewer": {
         "Read", "Glob", "Grep", "Bash", "SendMessage",
     },
     "test-engineer": {
         "Read", "Glob", "Grep", "Bash", "SendMessage",
-        "TaskList", "TaskGet",
     },
     "security-engineer": {
         "Read", "Glob", "Grep", "Bash", "SendMessage",
-        "TaskList", "TaskGet",
     },
     "test-list": {
         "Read",
@@ -101,7 +92,6 @@ AGENT_TOOLS: dict[str, set[str]] = {
 # Agent models — required model for each agent
 AGENT_MODELS: dict[str, str] = {
     "plan-reviewer": "sonnet",
-    "architect": "opus",
     "developer": "sonnet",
     "reviewer": "opus",
     "test-engineer": "sonnet",

@@ -10,8 +10,6 @@ tools:
   - Grep
   - Bash
   - SendMessage
-  - TaskList
-  - TaskGet
 ---
 
 # Security Engineer

@@ -1,13 +1,13 @@
 # Develop-Review (Autonomous)
 
-<!-- SYNC NOTE: The Flow section (steps 1–14) is identical to
+<!-- SYNC NOTE: The Flow section (steps 1–13) is identical to
      develop-review-supervised.md. When editing the dev-team
      flow, apply the same change to the other file. Only the
-     Commit section (step 15) differs between the two.
+     Commit section (step 14) differs between the two.
 
      Additionally, the Handoff Protocol section (Team Roster,
      Acknowledgment Rule, Lead-Monitored Transitions) and
-     Flow steps 1–2 ("Architect sends task" and "Dev-team
+     Flow steps 1–2 ("Lead sends task" and "Dev-team
      discusses the task") are shared verbatim with
      tdd-user-in-the-loop.md. When editing those sections,
      update tdd-user-in-the-loop.md as well. -->
@@ -38,7 +38,6 @@ for documentation or configuration changes.
 
 | Agent | Role |
 |-------|------|
-| **Architect** | Reads the codebase, writes plans, decomposes into task slices, and feeds tasks to the dev-team sequentially. Collects completion signals and sequences the next task. |
 | **Developer** | Implements all code (source + tests). Owns every code file. Uses WebSearch/WebFetch for API docs and library examples. |
 | **Test Engineer** | Advisory — designs test specifications (the test list), verifies Developer's tests match the spec before and after implementation. Does not write code. |
 | **Security Engineer** | Advisory — assesses security implications, flags vulnerabilities, provides pre- and post-implementation sign-offs. Does not write code. |
@@ -63,8 +62,9 @@ require lead intervention.
 
 ### Team Roster
 
-The Architect includes the exact registered agent names in
-every task message so agents know how to address each other:
+The lead includes the exact registered agent names in
+every task message so agents know how to address each
+other:
 
 ```
 Team roster (use these exact names in SendMessage):
@@ -101,7 +101,7 @@ for acknowledgment at these transitions:
   Engineer for verification
 - **Step 7** — Developer reports implementation complete to
   Test Engineer and Security Engineer
-- **Step 13** — Reviewer sends rejection findings to
+- **Step 12** — Reviewer sends rejection findings to
   Developer, Test Engineer, and Security Engineer
 
 If no acknowledgment arrives within 2 minutes of a
@@ -113,12 +113,14 @@ multi-minute stalls from undetected message loss.
 
 ### Per Task Slice
 
-1. **Architect sends task** to Developer, Test Engineer,
-   and Security Engineer simultaneously — all three need
-   the full task context to discuss the approach. Task
+1. **Lead sends task** to Developer, Test Engineer, and
+   Security Engineer simultaneously — all three need the
+   full task context to discuss the approach. Task
    descriptions must present the problem and context, not
    prescribed security mitigations — the Security Engineer
-   performs independent threat modeling in step 2.
+   performs independent threat modeling in step 2. Include
+   the team roster (see Handoff Protocol above) so agents
+   know how to address each other.
 
 2. **Dev-team discusses the task.** Security Engineer
    broadcasts a pre-implementation security assessment to
@@ -133,11 +135,11 @@ multi-minute stalls from undetected message loss.
    Developer. This is the contract for what gets tested.
 
 4. **Developer writes all tests** from the test list in a
-   single batch — unit tests and integration tests together.
-   If integration tests are included, the Developer spikes
-   one integration test first to validate the test harness
-   (server setup, database fixtures, framework test
-   utilities) before writing the rest.
+   single batch — unit tests and integration tests
+   together. If integration tests are included, the
+   Developer spikes one integration test first to validate
+   the test harness (server setup, database fixtures,
+   framework test utilities) before writing the rest.
    Sends completed tests to the Test Engineer.
 
 5. **Test Engineer verifies tests** — reads all test files,
@@ -168,16 +170,13 @@ multi-minute stalls from undetected message loss.
    checks for vulnerabilities, missing input validation,
    auth gaps. Sends **security sign-off** to Developer.
 
-10. **Developer reports implementation complete** to
-    Architect — having received both sign-offs, sends a
-    summary via SendMessage.
-
-11. **Architect messages lead** that the task is ready for
-    review.
+10. **Developer reports implementation complete** to the
+    lead — having received both sign-offs, sends a summary
+    via `SendMessage`.
 
 ### Review
 
-12. **Lead sends to Reviewer** — include the task
+11. **Lead sends to Reviewer** — include the task
     description and acceptance criteria from the plan so
     the Reviewer can verify scope completeness. Without
     the task context, the Reviewer can only evaluate code
@@ -186,32 +185,32 @@ multi-minute stalls from undetected message loss.
     correctness, security, test coverage, design, and
     language idioms.
 
-13. **If rejected:** Reviewer sends specific findings to
+12. **If rejected:** Reviewer sends specific findings to
     Developer, Test Engineer, and Security Engineer. All
     three receive findings so they can coordinate the fix.
     Developer fixes. Return to step 7 — both sign-offs
     are required again after fixes, because changes during
     a fix can introduce new issues.
 
-14. **If approved:** Reviewer reports approval to lead
+13. **If approved:** Reviewer reports approval to lead
     with review summary, proposed commit message, and
     file list.
 
 ### Commit
 
-15. **Lead immediately tells Reviewer to commit.**
-    Reviewer stages the files and commits with the
-    prepared message, reports the short SHA to the lead.
-    Lead tells Architect the task is committed. Architect
-    marks the task completed via TaskUpdate, updates the
-    plan file, and feeds the next task slice (loop to
-    step 1).
+14. **Lead immediately tells Reviewer to commit.** Reviewer
+    stages the files and commits with the prepared message,
+    reports the short SHA to the lead. Lead updates the
+    plan file (marks the task's checkboxes complete,
+    records the commit SHA), then sends the next task
+    slice (loop to step 1) or proceeds to plan completion
+    if all slices are done.
 
 ## Completion Criteria
 
 The workflow is complete when:
 
-- All task slices from the Architect's plan are committed
+- All task slices from the approved plan are committed
 - Each slice received both Test Engineer and Security
   Engineer sign-offs before review
 - Each slice passed Reviewer approval before commit

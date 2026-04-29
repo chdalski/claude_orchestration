@@ -4,9 +4,10 @@ description: >
   TDD entry path. Convert a user-supplied example mapping
   into a minimum-required test list via the test-list
   subagent. Hands back a user-confirmed list; the lead
-  then proceeds with TDD-filtered workflow selection and
-  planning per the "When the User Invokes /test-list"
-  section in the lead's CLAUDE.md.
+  then writes the plan with the test list embedded and
+  proceeds with TDD-filtered workflow selection per the
+  "When the User Invokes /test-list" section in the
+  lead's CLAUDE.md.
 ---
 
 # /test-list
@@ -15,13 +16,12 @@ The `/test-list` skill is the TDD entry path. The user
 invokes it with an example mapping; the skill produces a
 user-confirmed minimum required test list and commits the
 task to the TDD track. The skill's scope stops at
-"user-confirmed test list" — workflow selection, team
-setup, planning, plan approval, and execution are the
-lead's normal flow for the selected workflow, described
-in **When the User Invokes /test-list** in the lead's
-CLAUDE.md. Keeping the skill workflow-neutral means it
-stays usable across any workflow the `tdd-*` filter
-surfaces.
+"user-confirmed test list" — plan writing, plan-reviewer
+cycle, plan approval, workflow selection, team setup, and
+execution are the lead's normal flow described in **When
+the User Invokes /test-list** in the lead's CLAUDE.md.
+Keeping the skill workflow-neutral means it stays usable
+across any workflow the `tdd-*` filter surfaces.
 
 ## When to Invoke
 
@@ -104,7 +104,8 @@ acceptance criterion.
 5. **Hand off.** Continue with the post-skill flow in
    the lead's CLAUDE.md under **When the User Invokes
    /test-list** — fill remaining clarification gaps,
-   filter workflow options to TDD only, and carry the
-   confirmed test list into the clarified request so it
-   lands in the plan under a **Minimum Required Tests**
-   heading.
+   write the plan with the confirmed test list embedded
+   under a **Minimum Required Tests** heading, run the
+   plan-reviewer cycle and present the plan to the user
+   for approval, then filter workflow options to TDD only
+   when proposing the approach.

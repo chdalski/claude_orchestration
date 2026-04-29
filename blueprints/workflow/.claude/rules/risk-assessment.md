@@ -67,13 +67,13 @@ characteristics:
 
 ## Do Not Prescribe Security Mitigations
 
-When sending a clarified request to the Architect, or when
-implementing directly in Direct-Review, do not include
-security mitigations in the task description (e.g., "use
-bcrypt for hashing," "limit input length to 1024 chars as
-ReDoS guard"). If you identify a security concern, that is
-a signal to route the task through Develop-Review where the
-Security Engineer handles it — not a signal that you have
+When writing the plan, or when implementing directly in
+Direct-Review, do not include security mitigations in the
+task description (e.g., "use bcrypt for hashing," "limit
+input length to 1024 chars as ReDoS guard"). If you
+identify a security concern, that is a signal to route
+the task through Develop-Review where the Security
+Engineer handles it — not a signal that you have
 sufficient expertise to specify the controls.
 
 Prescribed mitigations anchor downstream agents: the

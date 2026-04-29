@@ -1,12 +1,13 @@
 # Blueprint v2 — Workflow
 
 Multi-agent orchestration blueprint for Claude Code.
-Clarify-first: the lead clarifies the task, then presents
-workflow options. The user chooses: Direct-Review for
-simple tasks, Develop-Review (Supervised or Autonomous) for
-complex ones, or TDD User-in-the-Loop. 5 agents
-(architect, developer, reviewer, test-engineer,
-security-engineer) plus the lead.
+Clarify-first: the lead clarifies the task, writes a plan
+(reviewed by the plan-reviewer subagent and approved by
+the user), then presents workflow options. The user
+chooses: Direct-Review for simple tasks, Develop-Review
+(Supervised or Autonomous) for complex ones, or TDD
+User-in-the-Loop. 4 agents (developer, reviewer,
+test-engineer, security-engineer) plus the lead.
 
 ## Build and Test
 
@@ -18,9 +19,8 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 
 | Path | Purpose |
 |---|---|
-| `.claude/CLAUDE.md` | Lead instructions — clarification, workflow proposal, agent coordination |
+| `.claude/CLAUDE.md` | Lead instructions — clarification, planning, workflow proposal, agent coordination |
 | `.claude/settings.json` | Agent teams config, plans and memory directory paths |
-| `.claude/agents/architect.md` | Reads codebase, writes plans, decomposes into task slices (Opus) |
 | `.claude/agents/developer.md` | Implements all code — source and tests (Sonnet) |
 | `.claude/agents/reviewer.md` | Quality gate — scope verification, commits approved work (Opus) |
 | `.claude/agents/test-engineer.md` | Advisory — test design and verification (Sonnet) |

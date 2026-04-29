@@ -14,8 +14,6 @@ tools:
   - WebSearch
   - WebFetch
   - SendMessage
-  - TaskList
-  - TaskGet
 ---
 
 # Developer

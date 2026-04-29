@@ -27,18 +27,19 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 
 ### workflow
 
-Clarify-first: the lead clarifies the task, then presents
-workflow options. The user chooses: Direct-Review for simple
-tasks, Develop-Review (Supervised or Autonomous) for complex
-ones, or TDD User-in-the-Loop. 5 team agents (Architect,
-Developer, Test Engineer, Security Engineer, Reviewer)
-plus the lead, with two on-demand subagents launched
-during planning and TDD entry: `plan-reviewer` (reviews
-draft plans before user presentation) and `test-list`
-(converts an example mapping into a minimum required
-test list).
-Workflows defined as separate files — adding one requires
-no changes to CLAUDE.md or agents.
+Clarify-first: the lead clarifies the task, writes a plan
+(reviewed by the plan-reviewer subagent and approved by
+the user), then presents workflow options. The user
+chooses: Direct-Review for simple tasks, Develop-Review
+(Supervised or Autonomous) for complex ones, or TDD
+User-in-the-Loop. 4 team agents (Developer, Test Engineer,
+Security Engineer, Reviewer) plus the lead, with two
+on-demand subagents launched during planning and TDD
+entry: `plan-reviewer` (reviews draft plans before user
+presentation) and `test-list` (converts an example
+mapping into a minimum required test list). Workflows
+defined as separate files — adding one requires no
+changes to CLAUDE.md or agents.
 
 ### autonomous
 

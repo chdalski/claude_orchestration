@@ -146,8 +146,8 @@ you check the spec.
 
 **Minimum Required Tests section.** If the plan contains
 a `## Minimum Required Tests` section (produced by the
-`/test-list` skill, embedded by the architect, and
-expanded by the test advisor), every entry must be
+`/test-list` skill, embedded by the lead, and expanded by
+the test advisor), every entry must be
 implemented as a passing test. Read the plan, list every
 entry, and confirm each one is present in the test
 files and passing. A handoff that does not cite the

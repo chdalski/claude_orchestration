@@ -4,7 +4,7 @@ description: >
   Ensure the configured plans and memory directories exist,
   sync the plan format guide and review checklist, and
   archive completed plans older than 14 days. Run once
-  before Phase 1 planning.
+  before writing any plan files.
 ---
 
 # /ensure-ai-dirs

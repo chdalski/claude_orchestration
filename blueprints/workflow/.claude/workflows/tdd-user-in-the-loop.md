@@ -2,7 +2,7 @@
 
 <!-- SYNC NOTE: The Handoff Protocol section (Team Roster,
      Acknowledgment Rule, Lead-Monitored Transitions) and
-     Flow steps 1–2 ("Architect sends task" and "Dev-team
+     Flow steps 1–2 ("Lead sends task" and "Dev-team
      discusses the task") are shared verbatim with
      develop-review-supervised.md and
      develop-review-autonomous.md. When editing those
@@ -41,7 +41,6 @@ the same quality with fewer interruptions.
 
 | Agent | Role |
 |-------|------|
-| **Architect** | Reads the codebase, writes plans, decomposes into task slices, and feeds tasks to the dev-team sequentially. Collects completion signals and sequences the next task. |
 | **Developer** | Implements all code (source + tests). Receives one phase instruction at a time from the lead (Red, Green, or Refactor) and executes only that phase. Does not advance to the next phase autonomously. |
 | **Test Engineer** | Advisory — designs the full test list upfront, verifies each test as the Developer writes it, and provides post-implementation sign-off after all cycles complete. Does not write code. |
 | **Security Engineer** | Advisory — provides pre-implementation security assessment and post-implementation sign-off. Does not write code. |
@@ -66,8 +65,9 @@ require lead intervention.
 
 ### Team Roster
 
-The Architect includes the exact registered agent names in
-every task message so agents know how to address each other:
+The lead includes the exact registered agent names in
+every task message so agents know how to address each
+other:
 
 ```
 Team roster (use these exact names in SendMessage):
@@ -104,7 +104,7 @@ for acknowledgment at these transitions:
   post-implementation sign-offs to Developer. The Developer
   is blocked until both arrive; a dropped sign-off stalls
   the entire task.
-- **Step 17** — Reviewer sends rejection findings to
+- **Step 16** — Reviewer sends rejection findings to
   Developer, Test Engineer, and Security Engineer
 
 If no acknowledgment arrives within 2 minutes of a
@@ -118,12 +118,14 @@ multi-minute stalls from undetected message loss.
 
 #### Setup
 
-1. **Architect sends task** to Developer, Test Engineer,
-   and Security Engineer simultaneously — all three need
-   the full task context to discuss the approach. Task
+1. **Lead sends task** to Developer, Test Engineer, and
+   Security Engineer simultaneously — all three need the
+   full task context to discuss the approach. Task
    descriptions must present the problem and context, not
    prescribed security mitigations — the Security Engineer
-   performs independent threat modeling in step 2.
+   performs independent threat modeling in step 2. Include
+   the team roster (see Handoff Protocol above) so agents
+   know how to address each other.
 
 2. **Dev-team discusses the task.** Security Engineer
    broadcasts a pre-implementation security assessment to
@@ -280,16 +282,13 @@ one phase at a time.
     missing input validation, auth gaps. Sends sign-off
     to Developer.
 
-14. **Developer reports implementation complete** to
-    Architect — having received both sign-offs, sends a
-    summary via SendMessage.
-
-15. **Architect messages lead** that the task is ready
-    for review.
+14. **Developer reports implementation complete** to the
+    lead — having received both sign-offs, sends a
+    summary via `SendMessage`.
 
 ### Review
 
-16. **Lead sends to Reviewer** — include the task
+15. **Lead sends to Reviewer** — include the task
     description and acceptance criteria from the plan so
     the Reviewer can verify scope completeness. Without
     the task context, the Reviewer can only evaluate code
@@ -298,38 +297,39 @@ one phase at a time.
     correctness, security, test coverage, design, and
     language idioms.
 
-17. **If rejected:** Reviewer sends specific findings to
+16. **If rejected:** Reviewer sends specific findings to
     Developer, Test Engineer, and Security Engineer. All
     three receive findings so they can coordinate the
     fix. Developer fixes. Return to step 12 — both
     sign-offs are required again after fixes, because
     changes during a fix can introduce new issues.
 
-18. **If approved:** Reviewer reports approval to lead
+17. **If approved:** Reviewer reports approval to lead
     with review summary, proposed commit message, and
     file list.
 
 ### Commit
 
-19. **User checkpoint — commit approval.** The lead
+18. **User checkpoint — commit approval.** The lead
     presents the completed work, Reviewer's summary, and
     proposed commit message to the user. Even though the
     user approved each phase individually, this final
     checkpoint covers the aggregate — the user sees the
     full changeset before it enters git history.
 
-20. **Lead tells Reviewer to commit.** Reviewer stages
+19. **Lead tells Reviewer to commit.** Reviewer stages
     the files and commits with the prepared message,
-    reports the short SHA to the lead. Lead tells Architect
-    the task is committed. Architect marks the task
-    completed via TaskUpdate, updates the plan file, and
-    feeds the next task slice (loop to step 1).
+    reports the short SHA to the lead. Lead updates the
+    plan file (marks the task's checkboxes complete,
+    records the commit SHA), then sends the next task
+    slice (loop to step 1) or proceeds to plan completion
+    if all slices are done.
 
 ## Completion Criteria
 
 The workflow is complete when:
 
-- All task slices from the Architect's plan are committed
+- All task slices from the approved plan are committed
 - Each test in every test list went through a complete
   Red-Green-Refactor cycle with user approval at each
   phase transition

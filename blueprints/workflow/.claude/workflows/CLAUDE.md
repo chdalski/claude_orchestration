@@ -78,14 +78,14 @@ unnecessary iterations.
 
 ## Shared Agents
 
-All agents (Architect, Developer, Test Engineer, Security
-Engineer, Reviewer) are general-purpose building blocks —
-no agent runs automatically. Each workflow declares which
-agents it needs in its own Agents table. The Reviewer
-appears in every workflow as an independent quality gate
-(including CLAUDE.md drift detection) and is responsible
-for committing approved work — it has full context from
-the review to write an accurate commit message. The lead
+All agents (Developer, Test Engineer, Security Engineer,
+Reviewer) are general-purpose building blocks — no agent
+runs automatically. Each workflow declares which agents it
+needs in its own Agents table. The Reviewer appears in
+every workflow as an independent quality gate (including
+CLAUDE.md drift detection) and is responsible for
+committing approved work — it has full context from the
+review to write an accurate commit message. The lead
 creates one team via `TeamCreate` with all listed agents
 so they can communicate via `SendMessage`. This applies
 to all workflows including Direct-Review, where a one-agent
