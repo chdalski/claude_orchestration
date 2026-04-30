@@ -26,14 +26,10 @@ miss.
 
 - **Reviewer** — independent quality gate, including
   CLAUDE.md drift detection. Created via `TeamCreate` as
-  a one-agent team so it can receive the commit signal
-  after the user checkpoint. The Reviewer composes the
-  commit message and commits approved work.
-
-Keeping the Reviewer alive across the user checkpoint is
-why TeamCreate is used even for this single-agent case —
-it allows the lead to send a "commit" message after user
-approval rather than re-spawning a new agent.
+  a one-agent team. The Reviewer composes the proposed
+  commit message and returns it with the file list; the
+  lead commits after user approval per CLAUDE.md's
+  Committing Approved Work section.
 
 ## Flow
 
@@ -51,12 +47,16 @@ approval rather than re-spawning a new agent.
    changes can introduce drift (e.g., renaming a directory
    that CLAUDE.md references), and Direct-Review has the
    least process, making undetected drift most likely
-   here.
+   here. The handoff message must include an
+   `advisor consultation status: none — Direct-Review
+   workflow` line — the Reviewer rejects handoffs that
+   omit this field.
 5. If rejected: lead fixes issues and re-sends to Reviewer.
 6. **User checkpoint** — lead presents the completed work,
    Reviewer's summary, and proposed commit message for
    user approval.
-7. If approved, lead tells Reviewer to commit.
+7. If approved, lead commits per CLAUDE.md's Committing
+   Approved Work section.
 8. If changes are needed, lead adjusts and returns to
    step 2.
 
@@ -66,4 +66,4 @@ approval rather than re-spawning a new agent.
 - Tests pass (if applicable)
 - Reviewer has approved the result (including drift check)
 - User has approved the result
-- Work committed by Reviewer
+- Work committed by the lead

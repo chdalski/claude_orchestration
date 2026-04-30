@@ -125,6 +125,47 @@ updated and the others are not. Flag instances where the
 same paragraph or directive appears in more than one file.
 State-once-reference-elsewhere is the correct pattern.
 
+### 2e — Procedural redundancy across agents
+
+Distinct from 2d (duplicated prose), this check looks for
+duplicated *procedure* — two agents in the same workflow
+performing the same setup step. The cost is unclear
+ownership: if two agents both "ensure" a precondition,
+neither truly owns it, and future changes to the setup
+logic must be made in multiple places.
+
+**How to check:**
+
+1. For each workflow file in `.claude/workflows/` (or for
+   the single pipeline if the blueprint has no workflows
+   directory), trace the sequence of agents in the Flow
+   section.
+2. For each agent's preparation/setup steps in
+   `.claude/agents/<agent>.md`, ask: is this step already
+   guaranteed to be done by a preceding agent in the same
+   workflow, or by Claude Code automatically (via
+   `settings.json`, auto-loaded `CLAUDE.md` files, or
+   file-naming conventions)?
+3. If yes, flag the step.
+
+**Common patterns to catch:**
+
+- An agent runs a skill that an earlier agent already ran
+  in the same workflow.
+- An agent verifies a precondition (directory exists,
+  format guide loaded, plan file present) that Claude
+  Code handles automatically based on `settings.json` or
+  file-naming conventions (e.g., files named `CLAUDE.md`
+  are loaded into context automatically).
+- An agent re-reads or re-checks state that was already
+  established by a preceding agent and hasn't changed
+  since.
+
+Report each violation with the agent file, the redundant
+step, and where the precondition is already established
+(which preceding agent, which Claude Code mechanism, or
+which `settings.json` key).
+
 ---
 
 ## Check 3 — Rationale Completeness
@@ -400,6 +441,90 @@ clean candidates exist, report "None found."
 
 ---
 
+## Check 11 — Handoff Coverage
+
+**Reference:** `/.claude/rules/handoff-coverage.md`
+
+Multi-agent pipelines distribute verification across
+agents. Gaps in this coverage are invisible during normal
+operation — each agent does its job correctly, but the
+pipeline silently drops a guarantee because no agent owns
+it. This check is distinct from Check 6: Check 6 verifies
+structural alignment (every named agent has a file);
+Check 11 verifies responsibility coverage (every property
+the pipeline must guarantee has an owner with sufficient
+input).
+
+**Read:** Lead instructions, all workflow files (if
+present), all agent files, and the handoff-message
+descriptions in flow steps.
+
+### Step 1 — List the guarantees
+
+For each pipeline (a workflow file in workflow blueprints,
+or the single pipeline in autonomous-style blueprints),
+list the properties that should hold when work completes.
+Start from this baseline set and add blueprint-specific
+properties:
+
+- Code correctness (logic, no regressions)
+- Test coverage (new behavior has tests)
+- Scope completeness (all requested work was delivered)
+- Security (no new vulnerabilities introduced)
+- Commit hygiene (correct files staged, accurate message)
+- Documentation accuracy (docs reflect the change)
+- Plan fidelity (plan status reflects reality)
+- Handoff field integrity (every field a downstream agent
+  reads is populated by an upstream agent — e.g.,
+  `advisor consultation status`, `baseline SHA`)
+
+### Step 2 — For each guarantee, answer two questions
+
+For each guarantee in the list:
+
+- **Who verifies this?** Identify the specific agent and
+  the specific step in its instructions. "Implicitly the
+  lead" is a gap — implicit ownership means no agent will
+  reliably perform the check.
+- **Does that agent receive the necessary input?** Trace
+  the information back to its source. If the information
+  originates with a different agent, verify the handoff
+  message carries it. An agent cannot verify what it
+  cannot see.
+
+### Step 3 — Report gaps
+
+For each guarantee with no explicit verifier, or whose
+verifier lacks the necessary input, emit a finding:
+
+```
+guarantee: <property>
+  verifier:    <agent + step, or "none — gap">
+  input gap:   <what the verifier is missing, or "n/a">
+  fix:         <where to assign the check, or what
+                handoff field to add>
+```
+
+Do not flag guarantees that are explicitly owned and
+fully informed — only the gaps. If the pipeline has no
+gaps, report "All guarantees covered."
+
+**Common gap patterns:**
+
+- **Scope vs. quality split:** code-quality reviewer
+  doesn't receive the task plan; can't verify
+  scope completeness.
+- **Advisory gaps:** advisor trigger criteria too narrow,
+  so risk-relevant tasks slip past consultation.
+- **Post-approval drift:** an agent modifies state
+  (reformats, updates docs) after the approving agent
+  signed off, so the approval covers a different state
+  than what was committed.
+- **Handoff-field omission:** a downstream agent's check
+  depends on a field that no upstream step writes.
+
+---
+
 ## Output Format
 
 Output in three blocks: scorecard, findings, top fixes. The
@@ -420,7 +545,7 @@ or `[clean]`.
   BLUEPRINT AUDIT: <blueprint_name>
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Score: X/10 clean
+Score: X/11 clean
 
  1. Static tests              [N passed / N failed]
  2. Cross-file consistency    [N findings]
@@ -432,6 +557,7 @@ Score: X/10 clean
  8. Configuration coupling    [N violations]
  9. Rule file length          [N over target]
 10. Behavior-preserving cuts  [N candidates]
+11. Handoff coverage          [N gaps]
 ```
 
 ### 2. Findings
@@ -463,3 +589,14 @@ N. <path:line> — <what to change>
 If the audit is fully clean, skip findings and top fixes
 sections entirely — output the scorecard followed by a
 single line confirming the result.
+
+---
+
+## Related Skills
+
+- **`/cache-audit`** — prompt-caching compliance is not
+  audited here (Check 1's static tests catch structural
+  cache-related issues like dynamic content in cached
+  files, but not the full set of caching rules). For a
+  full caching audit, run `/cache-audit` separately. Both
+  skills together cover the full surface.

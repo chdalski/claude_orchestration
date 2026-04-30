@@ -47,10 +47,10 @@ Autonomous after clarification: the lead clarifies, writes
 a plan, manages a plan queue. For each task, the lead
 assesses risk and directs the developer to consult advisors
 when warranted. The developer implements, the reviewer
-approves and commits. 4 team agents (Developer, Reviewer,
-Test Engineer, Security Engineer) plus the lead and the
-`plan-reviewer` subagent (launched before user plan
-presentation). The lead stays responsive to the user
+approves, and the lead commits. 4 team agents (Developer,
+Reviewer, Test Engineer, Security Engineer) plus the lead
+and the `plan-reviewer` subagent (launched before user
+plan presentation). The lead stays responsive to the user
 during execution.
 
 ### devcontainer_templates

@@ -22,7 +22,7 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 | `.claude/CLAUDE.md` | Lead instructions — clarification, planning, workflow proposal, agent coordination |
 | `.claude/settings.json` | Agent teams config, plans and memory directory paths |
 | `.claude/agents/developer.md` | Implements all code — source and tests (Sonnet) |
-| `.claude/agents/reviewer.md` | Quality gate — scope verification, commits approved work (Opus) |
+| `.claude/agents/reviewer.md` | Quality gate — scope verification, composes the proposed commit message; lead commits (Opus) |
 | `.claude/agents/test-engineer.md` | Advisory — test design and verification (Sonnet) |
 | `.claude/agents/plan-reviewer.md` | Plan quality gate — launched as subagent before user presentation (Sonnet) |
 | `.claude/agents/security-engineer.md` | Advisory — security assessment (Sonnet) |

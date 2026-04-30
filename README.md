@@ -111,7 +111,7 @@ adding one requires no changes to CLAUDE.md.
 | Developer | Sonnet | Implements all code (source + tests) |
 | Test Engineer | Sonnet | Advisory — designs test specs, verifies coverage |
 | Security Engineer | Sonnet | Advisory — checks security gaps |
-| Reviewer | Opus | Quality gate — reviews and commits |
+| Reviewer | Opus | Quality gate — reviews and proposes commit message; lead commits |
 | Plan Reviewer (subagent) | Sonnet | Reviews draft plans before user presentation |
 | Test List (subagent) | Sonnet | Converts an example mapping into a minimum required test list (used by `/test-list`) |
 
@@ -123,7 +123,8 @@ adding one requires no changes to CLAUDE.md.
   test-list-driven development and user approval per
   commit.
 - **Develop-Review (Autonomous)** — same as Supervised but
-  commits automatically after Reviewer approval.
+  the lead commits automatically after Reviewer approval,
+  with no per-commit user checkpoint.
 - **TDD User-in-the-Loop** — strict Red-Green-Refactor with
   user approval at every phase transition.
 
@@ -141,7 +142,7 @@ graph TD
     DR --> Rev[Reviewer]
     DReview --> Rev
     TDD --> Rev
-    Rev -->|approved| Commit[Reviewer commits]
+    Rev -->|approved| Commit[Lead commits]
     Commit --> Lead
 ```
 

@@ -23,10 +23,13 @@ pytestmark = pytest.mark.behavioral
 ENSURE_AI_DIRS_PROMPT = (
     "Run /ensure-ai-dirs now. Follow the skill instructions exactly:\n"
     "1. Read .claude/settings.json for plansDirectory and autoMemoryDirectory.\n"
-    "2. Sync two files to the plans directory:\n"
-    "   a. Read .claude/skills/ensure-ai-dirs/plan-format.md and write to .ai/plans/plan-format.md\n"
-    "   b. Read .claude/skills/ensure-ai-dirs/claude-md-template.md and write to .ai/plans/CLAUDE.md\n"
-    "3. Ensure .ai/memory/ directory exists.\n"
+    "2. Sync two template files to the plans directory using `cp` via\n"
+    "   Bash so the copy is byte-exact (do NOT use Read+Write — that\n"
+    "   risks paraphrasing). Create parent dirs first:\n"
+    "   `mkdir -p .ai/plans .ai/memory`\n"
+    "   `cp .claude/skills/ensure-ai-dirs/plan-format.md .ai/plans/plan-format.md`\n"
+    "   `cp .claude/skills/ensure-ai-dirs/claude-md-template.md .ai/plans/CLAUDE.md`\n"
+    "3. Confirm .ai/memory/ exists.\n"
     "4. Report what you did.\n"
     "Do this now."
 )
@@ -40,8 +43,8 @@ async def test_ensure_ai_dirs_creates_directories_and_syncs_templates(fixture_pr
     memory_dir = fixture_project / ".ai" / "memory"
     format_guide = plans_dir / "plan-format.md"
     plans_claude_md = plans_dir / "CLAUDE.md"
-    format_template = fixture_project / ".claude" / "templates" / "plan-format.md"
-    claude_md_template = fixture_project / ".claude" / "templates" / "claude-md-template.md"
+    format_template = fixture_project / ".claude" / "skills" / "ensure-ai-dirs" / "plan-format.md"
+    claude_md_template = fixture_project / ".claude" / "skills" / "ensure-ai-dirs" / "claude-md-template.md"
 
     # Preconditions: .ai/ does not exist, templates do
     assert not plans_dir.exists(), "Test precondition: .ai/plans/ should not exist yet"
@@ -83,7 +86,7 @@ async def test_ensure_ai_dirs_overwrites_outdated_format_guide(fixture_project):
     """The skill should overwrite .ai/plans/plan-format.md when it differs from the template."""
     plans_dir = fixture_project / ".ai" / "plans"
     format_guide = plans_dir / "plan-format.md"
-    format_template = fixture_project / ".claude" / "templates" / "plan-format.md"
+    format_template = fixture_project / ".claude" / "skills" / "ensure-ai-dirs" / "plan-format.md"
 
     # Precondition: create an outdated format guide
     plans_dir.mkdir(parents=True, exist_ok=True)
@@ -112,7 +115,7 @@ async def test_ensure_ai_dirs_leaves_current_format_guide_unchanged(fixture_proj
     """The skill should not rewrite .ai/plans/plan-format.md when it already matches the template."""
     plans_dir = fixture_project / ".ai" / "plans"
     format_guide = plans_dir / "plan-format.md"
-    format_template = fixture_project / ".claude" / "templates" / "plan-format.md"
+    format_template = fixture_project / ".claude" / "skills" / "ensure-ai-dirs" / "plan-format.md"
 
     # Precondition: format guide already matches template
     plans_dir.mkdir(parents=True, exist_ok=True)

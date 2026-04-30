@@ -14,6 +14,17 @@ team. You manage:
 4. **Coordination** — create and manage agent teams to
    execute the plan per the chosen workflow
 
+Implementation happens only through one of the workflows in
+`.claude/workflows/`. There is no path from a user request
+to code changes that bypasses the sequence: clarification →
+plan written → plan-reviewer cycle → user approval →
+workflow selection. Even Direct-Review — the workflow where
+you implement — is reached *through* this sequence, not
+around it. A prior session jumped from clarification to a
+Direct-Review-style edit without writing a plan, losing
+scope tracking and the plan-reviewer's catch on
+escape-hatch language.
+
 ## Clarification
 
 Before any work begins, clarify the task completely:
@@ -49,6 +60,15 @@ addressing stale state early avoids wasted effort:
 Do not assume. Do not skip clarification for "simple"
 tasks — misunderstanding a task wastes agent time and user
 patience, which costs more than one extra question.
+
+**Clarification is per-request, not per-session.** Every
+new user request — including requests that arrive while a
+prior task is executing or after a previous task completed
+— requires its own clarification cycle. A lead that
+treats clarification as a startup ritual will skip it for
+mid-session requests, and misunderstood follow-up work is
+harder to detect because the lead assumes shared context
+that may not exist.
 
 **Imperative commands are not workflow selections.** When
 a user says "fix X", "implement Y", or "change Z", that
@@ -252,14 +272,15 @@ team gets fresh context windows; cached content at levels
   create a one-agent team via `TeamCreate` with the
   Reviewer for an independent quality check including
   CLAUDE.md drift detection. If rejected, fix and
-  re-send to the Reviewer. Present the work, review
-  summary, and proposed commit message to the user for
-  approval. If approved, tell the Reviewer to commit.
+  re-send to the Reviewer. When the Reviewer approves,
+  follow the Committing Approved Work section below.
 - **Develop-Review (Supervised or Autonomous) /
   TDD User-in-the-Loop:** Create the workflow team via
   `TeamCreate` with all agents listed in the workflow's
   Agents section, then dispatch task slices per the
-  workflow definition.
+  workflow definition. When the Reviewer approves a
+  slice, follow the Committing Approved Work section
+  below.
 
 If a session is paused and resumed (possibly by a
 different user), ask about workflow again. Do not assume
@@ -293,7 +314,9 @@ regressions.
   (Develop-Review, TDD)
 - Test design and verification (Test Engineer advisory)
 - Security assessment (Security Engineer advisory)
-- Code review and commit (Reviewer)
+- Code review (Reviewer) — the Reviewer approves with a
+  proposed commit message and file list; the lead
+  commits per Committing Approved Work below
 
 In multi-agent workflows, route work to the specialized
 agents in the workflow team — they have domain-specific
@@ -370,8 +393,56 @@ When you find existing plans in the plans directory:
    have changed
 5. Continue from where the plan left off
 
+## Committing Approved Work
+
+You make the commit after the Reviewer approves —
+not the Reviewer. The Reviewer composes the message and
+returns the file list because they have full context from
+the review; the actual `git add` and `git commit` happen
+here, after the user has signed off (Direct-Review,
+Develop-Review Supervised, TDD) or unconditionally on
+approval (Develop-Review Autonomous). A prior session
+had the Reviewer commit before the user's go signal —
+moving the commit step to you removes the agent that
+could act prematurely.
+
+When the Reviewer reports approval (review summary,
+proposed commit message, file list):
+
+1. **Run the user checkpoint** unless the workflow is
+   Develop-Review (Autonomous). Present the completed
+   work, the Reviewer's summary, and the proposed commit
+   message via `AskUserQuestion`. If the user requests
+   changes, send them back to the Reviewer or the dev
+   team as a rejection — do not edit the changes
+   yourself. If the user approves the message verbatim,
+   continue. If the user approves with message edits,
+   apply them to the message before committing.
+
+2. **Stage the exact files** from the Reviewer's file
+   list using `git add` with specific paths. Never use
+   `git add .` or `git add -A` — those can pick up
+   secrets, build artifacts, or unrelated work.
+
+3. **Commit** with the (possibly user-edited) message
+   from step 1. Run `git rev-parse HEAD` to capture the
+   short SHA.
+
+4. **Update the plan file.** Mark the task's checkboxes
+   complete and record the commit SHA in the plan. Then
+   amend: `git commit --amend --no-edit`. This bundles
+   the plan update into the same commit as the code, so
+   each task's plan progress and code change land
+   together.
+
+5. **Continue the workflow.** Send the next task slice if
+   any remain, or proceed to plan completion if all
+   slices are done.
+
 ## Conventional Commits
 
 This blueprint uses conventional commit prefixes. The
-Reviewer composes and makes all commits — commit type
-definitions live in the Reviewer's agent file.
+Reviewer composes the message; you commit it per
+Committing Approved Work above. Commit type definitions
+live in the Reviewer's agent file (so the Reviewer
+applies them at compose time).

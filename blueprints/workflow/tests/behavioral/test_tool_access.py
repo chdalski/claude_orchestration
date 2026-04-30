@@ -2,8 +2,8 @@
 
 These tests spawn real Claude Code sessions and track tool usage
 via the message stream (ToolUseBlock in AssistantMessages).
-V2 has no hooks in settings.json, so all tests use fixture_project
-directly (no hook-stripping needed).
+The blueprint has no hooks in settings.json, so all tests use
+fixture_project directly (no hook-stripping needed).
 """
 
 from pathlib import Path
@@ -17,9 +17,9 @@ from behavioral.conftest import NESTED_SESSION_ENV, ToolCallLog
 
 pytestmark = pytest.mark.behavioral
 
-# Override the lead's CLAUDE.md "delegate to specialized agents" instruction
+# Override the lead's CLAUDE.md "route work to specialized agents" posture
 DIRECT_MODE = (
-    "Ignore any instructions about delegating to a team. "
+    "Ignore any instructions about routing work to a team. "
     "You are being tested directly. Execute the request yourself."
 )
 
@@ -71,8 +71,9 @@ async def test_developer_can_write(fixture_project, tool_log):
 async def test_reviewer_does_not_commit(fixture_project, tool_log):
     """Reviewer reads and assesses code but never runs git commit.
 
-    This is the key v2 behavioral difference from testlist — in v2
-    the Committer handles all commits, not the Reviewer.
+    The reviewer composes the proposed commit message and returns
+    the file list; the lead executes the commit after the user
+    checkpoint (or immediately, in Develop-Review Autonomous).
     """
     options = ClaudeAgentOptions(
         cwd=str(fixture_project),

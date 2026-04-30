@@ -83,14 +83,14 @@ Reviewer) are general-purpose building blocks — no agent
 runs automatically. Each workflow declares which agents it
 needs in its own Agents table. The Reviewer appears in
 every workflow as an independent quality gate (including
-CLAUDE.md drift detection) and is responsible for
-committing approved work — it has full context from the
-review to write an accurate commit message. The lead
+CLAUDE.md drift detection) and composes the proposed
+commit message — it has full context from the review to
+write an accurate one. The lead executes the commit per
+the Committing Approved Work section of the lead's
+CLAUDE.md, after the workflow's user checkpoint (or
+immediately, in Develop-Review Autonomous). The lead
 creates one team via `TeamCreate` with all listed agents
-so they can communicate via `SendMessage`. This applies
-to all workflows including Direct-Review, where a one-agent
-team allows the Reviewer to receive the commit signal after
-the user checkpoint.
+so they can communicate via `SendMessage`.
 
 ## Conventions
 

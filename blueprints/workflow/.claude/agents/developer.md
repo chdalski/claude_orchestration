@@ -171,6 +171,17 @@ of cadence:
   or deprioritize targets because they are hard. Do not
   submit for review until all assigned targets are
   addressed — the review agent rejects incomplete scope.
+- **Be specific when reporting infeasibility.** If after
+  research you conclude that a target genuinely cannot be
+  done, describe the concrete barrier — not a category
+  label. State which file and function would need to
+  change, whether it is in the project's codebase or an
+  external dependency, and the estimated scope. "Needs
+  parser enhancements" is not actionable — "needs
+  `loader.rs:build_mapping()` to set `span.end` from
+  `MappingEnd` events — ~10 lines, in our crate" lets
+  the requester and reviewer evaluate the actual effort.
+  The `claim-verification` rule explains why this matters.
 - Do not skip, weaken, or remove tests during
   implementation. If a test seems wrong, discuss with
   the test advisor rather than changing it —
@@ -189,12 +200,17 @@ of cadence:
   are required.
 - After all required sign-offs are received, report
   implementation complete to the requester via SendMessage.
-  Do not mark the task completed — the requester does that
-  after the downstream review and commit confirm the work
-  is accepted.
-- Do NOT commit. A downstream quality review handles
-  staging and committing — committing before review
-  bypasses the quality gate.
+  **Include explicit sign-off statuses** in your report
+  (e.g., `advisor consultation status: test-engineer
+  signed off; security-engineer signed off`) so the
+  requester can pass them through to the downstream
+  reviewer — the reviewer rejects handoffs that omit this
+  field. Do not mark the task completed — the requester
+  does that after the downstream review and commit
+  confirm the work is accepted.
+- Do NOT commit. Downstream agents handle staging and
+  committing after review approval — committing before
+  review bypasses the quality gate.
 
 ## Before Reporting Done
 

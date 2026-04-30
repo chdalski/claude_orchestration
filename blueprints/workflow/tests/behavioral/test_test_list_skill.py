@@ -36,7 +36,7 @@ from behavioral.conftest import NESTED_SESSION_ENV
 
 pytestmark = pytest.mark.behavioral
 
-# Override the lead's CLAUDE.md "clarify first / delegate to team" posture —
+# Override the lead's CLAUDE.md "clarify first / route to team" posture —
 # this is an automated test; just execute the request.
 DIRECT_MODE = (
     "This is an automated behavioral test. Do not clarify, do not "

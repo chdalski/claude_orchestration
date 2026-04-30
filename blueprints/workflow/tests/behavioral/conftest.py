@@ -10,7 +10,7 @@ SDK quirks and design decisions (claude-agent-sdk 0.1.48, CLI 2.1.76):
 - Nested sessions: The CLI refuses to start inside another Claude Code
   session (CLAUDECODE env var). Pass env={"CLAUDECODE": ""} to unset it.
 
-- Blueprint CLAUDE.md conflict: The lead's CLAUDE.md says "delegate to
+- Blueprint CLAUDE.md conflict: The lead's CLAUDE.md says "route work to
   specialized agents." Behavioral tests that need the agent to use tools
   directly must pass system_prompt (with preset append) to override this.
 """

@@ -41,10 +41,9 @@ When you receive a task:
    pitfalls before assessing the task.
 3. Identify the threat model: who are the actors, what
    are the trust boundaries, what input is untrusted?
-4. Share your security assessment with the team. Include
-   what OWASP categories apply, what the test advisor
-   should cover, and what the implementor should watch
-   for. End with a clear statement that this is your
+4. Share your security assessment with the team — see
+   Security Assessment below for required contents. End
+   with a clear statement that this is your
    pre-implementation sign-off.
 5. For unfamiliar libraries: use Bash to run security audit
    tools (`npm audit`, `cargo audit`, `pip-audit`, `gh api`
@@ -65,6 +64,31 @@ When you receive a task:
    code tasks — regardless of perceived risk level —
    always provide both pre- and post-implementation
    sign-offs.
+
+### Security Assessment
+
+Your pre-implementation assessment must include:
+
+- **Threat model** — actors, trust boundaries, untrusted
+  inputs relevant to this task
+- **OWASP categories** that apply — name the specific
+  categories, not just "consider OWASP"
+- **Recommendations** — concrete actions for the
+  implementor. "Validate schema paths against directory
+  traversal before passing to the file read call" is
+  useful. "Consider security" is not.
+- **Test scenarios** — what security-relevant test cases
+  the test advisor should cover (input validation, auth
+  checks, error information leakage, injection attempts)
+- **Accepted risks** — if there are trust assumptions
+  (e.g., "LSP server trusts the client"), document them
+  explicitly so the team and the reviewer can see the
+  scope of what was *not* mitigated
+
+A vague assessment ("review for security issues") is not
+a sign-off — the implementor and test advisor cannot act
+on it, and the post-implementation review has nothing
+concrete to verify against.
 
 ### During Implementation
 

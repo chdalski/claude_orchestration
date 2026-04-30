@@ -44,7 +44,7 @@ the same quality with fewer interruptions.
 | **Developer** | Implements all code (source + tests). Receives one phase instruction at a time from the lead (Red, Green, or Refactor) and executes only that phase. Does not advance to the next phase autonomously. |
 | **Test Engineer** | Advisory — designs the full test list upfront, verifies each test as the Developer writes it, and provides post-implementation sign-off after all cycles complete. Does not write code. |
 | **Security Engineer** | Advisory — provides pre-implementation security assessment and post-implementation sign-off. Does not write code. |
-| **Reviewer** | Independent quality gate — evaluates the completed task for correctness, security, test coverage, design, and idioms. Composes the commit message and commits approved work after the user checkpoint. |
+| **Reviewer** | Independent quality gate — evaluates the completed task for correctness, security, test coverage, design, and idioms. Composes the proposed commit message and returns the file list. The lead commits after the user checkpoint. |
 
 ## Team Lifecycle
 
@@ -325,9 +325,14 @@ one phase at a time.
     the Reviewer can verify scope completeness. Without
     the task context, the Reviewer can only evaluate code
     quality, not whether every requested feature was
-    delivered. Reviewer evaluates scope completeness,
-    correctness, security, test coverage, design, and
-    language idioms.
+    delivered. Pass through the advisor sign-off statuses
+    from the Developer's step-14 summary as an
+    `advisor consultation status:` line (e.g.,
+    `test-engineer: signed off; security-engineer:
+    signed off`) — the Reviewer rejects handoffs that
+    omit this field. Reviewer evaluates scope
+    completeness, correctness, security, test coverage,
+    design, and language idioms.
 
 16. **If rejected:** Reviewer sends specific findings to
     Developer, Test Engineer, and Security Engineer. All
@@ -349,13 +354,13 @@ one phase at a time.
     checkpoint covers the aggregate — the user sees the
     full changeset before it enters git history.
 
-19. **Lead tells Reviewer to commit.** Reviewer stages
-    the files and commits with the prepared message,
-    reports the short SHA to the lead. Lead updates the
-    plan file (marks the task's checkboxes complete,
-    records the commit SHA), then sends the next task
-    slice (loop to step 1) or proceeds to plan completion
-    if all slices are done.
+19. **Lead commits.** Per CLAUDE.md's Committing Approved
+    Work section: the lead stages the Reviewer's file
+    list with specific paths, commits with the prepared
+    message, then amends to bundle the plan update
+    (checkboxes + commit SHA). The lead then sends the
+    next task slice (loop to step 1) or proceeds to plan
+    completion if all slices are done.
 
 ## Completion Criteria
 
