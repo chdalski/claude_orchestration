@@ -402,91 +402,64 @@ clean candidates exist, report "None found."
 
 ## Output Format
 
+Output in three blocks: scorecard, findings, top fixes. The
+scorecard is the at-a-glance summary; findings list only
+checks that surfaced something (skip empty checks — "None
+found" lines for every section bury the real issues);
+top fixes ranks the most impactful changes.
+
+### 1. Scorecard
+
+One line per check. Status emoji + check name + counts.
+Use ✅ for clean, ⚠️ for warnings, ❌ for failures.
+Counts go in brackets — e.g. `[3 stale, 1 contradiction]`
+or `[clean]`.
+
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   BLUEPRINT AUDIT: <blueprint_name>
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-## Static Tests
-[X passed, Y failed, Z skipped]
-[List failures if any]
+Score: X/10 clean
 
-## Cross-File Consistency
-
-### Contradictions
-[List each with the two files and what they disagree on,
- or "None found"]
-
-### Stale References
-[List each with the file, the reference, and what's
- actually there, or "None found"]
-
-### Terminology Drift
-[List each non-canonical term with the file, line, the term
- used, and the correct term from the glossary,
- or "None found"]
-
-### Redundancy
-[List duplicated content with file locations,
- or "None found"]
-
-## Rationale Completeness
-[List directives that need rationale but lack it, grouped
- by file, or "No gaps found"]
-
-## Documentation Alignment
-[List mismatches between the three doc layers,
- or "All documentation layers agree"]
-
-## Agent Tool Coherence
-[List mismatches between tool lists and instructions,
- or "All agent tools align with instructions"]
-
-## Workflow-Agent Alignment
-[List mismatches between workflow tables and agent files,
- or "All workflows align with agent definitions"]
-
-## Instruction Gap Audit
-
-### Judgment-Call Language
-[List each flagged term with file location and whether a
- bright-line definition exists nearby, or "None found"]
-
-### Gate Scope
-[List each gate that is only described at startup without
- a per-task statement, or "All gates are per-task"]
-
-### Exception Language
-[List each exception clause with file location and whether
- it is narrowly scoped, or "None found"]
-
-### Procedural Short-Circuit Risk
-[List each vulnerable procedure with file, step numbers,
- and what an agent could skip, or "None found"]
-
-## Configuration Coupling
-[List each hardcoded value that settings.json owns, with
- file location and the key it should read instead,
- or "None found"]
-
-## Rule File Length
-[List files over 250 as violations, 201-250 as warnings,
- or "All rule files within target"]
-
-## Behavior-Preserving Cuts
-[List each candidate with file location, snippet, the
- four-question test result, and estimated savings,
- or "None found"]
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  OBSERVATIONS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[Items that aren't wrong but are worth noting — unused
- tools, asymmetric patterns, potential simplifications]
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  TOP FIXES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[Ranked list of the most impactful changes, with specific
- file paths and what to change]
+ 1. Static tests              [N passed / N failed]
+ 2. Cross-file consistency    [N findings]
+ 3. Rationale completeness    [N gaps]
+ 4. Documentation alignment   [N mismatches]
+ 5. Agent tool coherence      [N mismatches]
+ 6. Workflow-agent alignment  [N mismatches]
+ 7. Instruction gap audit     [N gaps]
+ 8. Configuration coupling    [N violations]
+ 9. Rule file length          [N over target]
+10. Behavior-preserving cuts  [N candidates]
 ```
+
+### 2. Findings
+
+For each check that surfaced findings, emit a section.
+Skip checks that are clean. Within a section, one entry
+per finding using this shape:
+
+```
+<path/to/file.md:LINE>  <severity>
+  issue: <one-line description>
+  fix:   <specific change to make>
+```
+
+Severity: `fail` (rule violation), `warn` (smells / borderline),
+`info` (worth noting, not wrong). Group sub-checks under
+their parent check heading where it helps (e.g. group 7a–7d
+under "Instruction gap audit").
+
+### 3. Top fixes
+
+Ranked list, capped at 5. Each entry:
+
+```
+N. <path:line> — <what to change>
+   why: <impact in one sentence>
+```
+
+If the audit is fully clean, skip findings and top fixes
+sections entirely — output the scorecard followed by a
+single line confirming the result.
