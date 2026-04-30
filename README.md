@@ -127,9 +127,52 @@ adding one requires no changes to CLAUDE.md.
 - **TDD User-in-the-Loop** — strict Red-Green-Refactor with
   user approval at every phase transition.
 
+```mermaid
+graph TD
+    User --> Lead
+    Lead -->|write plan| PR[plan-reviewer<br/>subagent]
+    PR -->|cycle until clean| Lead
+    Lead -->|present plan| UPlan{User approves<br/>plan?}
+    UPlan -->|revisions| Lead
+    UPlan -->|approved| WS{User picks<br/>workflow}
+    WS --> DR[Direct-Review:<br/>Lead implements]
+    WS --> DReview[Develop-Review:<br/>Developer + TE/SE team]
+    WS --> TDD[TDD User-in-the-Loop:<br/>Red/Green/Refactor<br/>per-phase user checkpoints]
+    DR --> Rev[Reviewer]
+    DReview --> Rev
+    TDD --> Rev
+    Rev -->|approved| Commit[Reviewer commits]
+    Commit --> Lead
+```
+
+Planning is shared across all workflow variants — the
+plan-reviewer cycle and user plan approval happen *before*
+workflow selection, so workflow choice is orthogonal to
+plan content. Per-commit user approval applies to
+Direct-Review, Develop-Review (Supervised), and TDD;
+Develop-Review (Autonomous) commits as soon as the
+Reviewer approves.
+
+**Skills:**
+
+- **`/project-init`** — scans the project, generates
+  `CLAUDE.md` context (overview, build commands,
+  conventions, references). Run on first session.
+- **`/project-sanity`** — audits the repository for
+  common issues across detected technologies
+  (report-only).
+- **`/example-mapping`** — facilitates an interactive
+  Example Mapping session and writes a structured
+  mapping file. Use as the upstream input for
+  `/test-list`, or as clarification context for any
+  workflow.
+- **`/test-list`** — TDD entry path; converts an example
+  mapping into a minimum-required test list embedded in
+  the plan. Filters subsequent workflow selection to the
+  TDD variants.
+
 Language-specific guidance loads automatically via
 conditional rules when agents touch matching files.
-`/project-init` generates project context on first session.
 
 ## Devcontainer Templates
 

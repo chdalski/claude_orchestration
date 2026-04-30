@@ -167,26 +167,48 @@ For each test case in the approved test list:
 5. **Lead sends Red phase instruction** to the Developer
    via `SendMessage`. The message must be explicit:
 
-   > **Phase: RED** — Write one failing test for: [test
-   > case description from the approved list]. Write
-   > only the test — no implementation code. Run the
-   > test, confirm it fails, and report back with:
-   > (1) the test code, (2) the failure output. Do not
-   > proceed to Green.
+   > **Phase: RED** — For test case: [description from
+   > the approved list]. Activate one pending placeholder
+   > from the Minimum Required Tests and run two stages,
+   > each gated by an explicit prediction:
+   >
+   > **Stage 1 — missing-symbol failure.** Write the test
+   > calling the production symbol. Before running,
+   > predict which symbol the runner cannot resolve and
+   > what error it will produce (compile error,
+   > ImportError, undefined identifier). Run the test;
+   > confirm the actual failure matches the prediction.
+   >
+   > **Stage 2 — assertion failure.** Add the minimum
+   > production-side stub to clear stage 1 (empty
+   > function with the correct signature, returning a
+   > default value — no logic). Before running, predict
+   > the assertion failure: expected value vs. actual
+   > value the stub returns. Run the test; confirm the
+   > assertion failure matches the prediction.
+   >
+   > Report back: (1) test code, (2) both predictions,
+   > (3) both failure outputs, (4) the stage-2 stub. Do
+   > not write any logic in the stub. Do not proceed to
+   > Green.
 
-   The Developer writes the test, runs it, confirms
-   failure, and sends the test code and failure output
-   back to the lead. The Developer does nothing else —
-   no implementation, no other tests.
+   The two-stage prediction discipline forces the
+   developer to model both how the test fails to start
+   and what it asserts before any logic is written —
+   without it, "seeing red" carries no understanding of
+   what red means.
 
-   **Failed prediction:** If the test passes unexpectedly
-   (the behavior already exists), the Developer stops
-   and messages the lead immediately. The lead consults
-   the user — this may indicate the test list needs
-   updating, the behavior was already implemented in a
-   prior cycle, or the test is not asserting what was
-   intended. Do not proceed until the user decides how
-   to handle it.
+   **Failed prediction.** If either prediction does not
+   match the actual failure — wrong error type, wrong
+   values, or the test unexpectedly passes — the
+   Developer stops and messages the lead immediately.
+   The lead consults the user. Wrong predictions are
+   signals, not setbacks: they reveal that the
+   developer's mental model does not match reality, the
+   test list needs updating, the behavior is already
+   implemented from a prior cycle, or the test is not
+   asserting what was intended. Do not proceed until
+   the user decides how to handle it.
 
 6. **User checkpoint — Red phase.** The lead presents the
    failing test and its output to the user. The user
@@ -229,11 +251,21 @@ For each test case in the approved test list:
    > refactoring. Evaluate naming first, then look for
    > duplication, structural improvements, and
    > simplification opportunities. Run all tests after
-   > each change to confirm they still pass. Report back
-   > with: (1) what was changed and why, or why a
-   > refactoring was attempted and rejected, (2) the
-   > refactored code, (3) the test output. Do not
-   > proceed to the next test.
+   > each change to confirm they still pass. Compute APP
+   > mass (per `code-mass.md`) before and after the
+   > change — or state "mass unchanged" when the change
+   > is purely naming. Report back: (1) what was changed
+   > and why, or why a refactoring was attempted and
+   > rejected, (2) the refactored code, (3) the test
+   > output, (4) APP mass before / after. Do not proceed
+   > to the next test.
+
+   Mass before/after makes the trade-off observable to
+   the reviewer: a refactoring that increases mass
+   without a clarity gain is a regression dressed as
+   improvement, and an unobserved mass change can
+   silently push code past the rule's recommended
+   thresholds.
 
    Mandatory refactoring after every Green phase is core
    TDD discipline — skipping it lets design debt

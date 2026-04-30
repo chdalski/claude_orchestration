@@ -29,6 +29,7 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 | `.claude/agents/test-list.md` | Subagent — converts an example mapping into a minimum-required test list (Sonnet) |
 | `.claude/rules/` | Unconditional + conditional rules injected by Claude Code |
 | `.claude/skills/ensure-ai-dirs/` | Skill: creates `.ai/plans/` and `.ai/memory/` directories, syncs plan format guide and review checklist, archives plans older than 14 days |
+| `.claude/skills/example-mapping/` | Skill: facilitates an Example Mapping session and writes a structured mapping file for `/test-list` or clarification |
 | `.claude/skills/project-init/` | Skill: scans project, generates `CLAUDE.md` per `project-context.md` |
 | `.claude/skills/project-sanity/` | Skill: audits repo for common issues (report-only) |
 | `.claude/skills/test-list/` | Skill: TDD entry path — invokes the test-list subagent and embeds the confirmed list in the plan |
