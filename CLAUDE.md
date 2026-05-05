@@ -1,9 +1,11 @@
 # Claude Orchestration Kit
 
-Blueprints for Claude Code multi-agent orchestration. Not a
-runnable application — each blueprint directory contains a
-`.claude/` setup that gets copied into target projects to
-enable coordinated multi-agent workflows.
+A toolkit for building Claude Code multi-agent orchestration
+setups. Provides design rules, audit skills, a test harness,
+and conventions for creating blueprints — `.claude/`
+configurations that turn a Claude Code session into a
+coordinated multi-agent team. The two included blueprints
+are products of this framework, not the whole project.
 
 ## Build and Test
 
@@ -20,6 +22,8 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 
 | Path | Purpose |
 |---|---|
+| `/.claude/rules/` | Design rules for blueprint development (never copied) |
+| `/.claude/skills/` | Audit skills: `/blueprint-audit`, `/cache-audit` (never copied) |
 | `blueprints/workflow/` | Clarify-first blueprint — user chooses workflow |
 | `blueprints/autonomous/` | Autonomous blueprint — plan queue + developer |
 | `devcontainer_templates/` | Devcontainer setup for sandboxed agent execution |

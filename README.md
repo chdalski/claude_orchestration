@@ -1,20 +1,95 @@
 # Claude Orchestration Kit
 
-Drop-in multi-agent orchestration for Claude Code. This
-repository contains two things:
+A toolkit for building Claude Code multi-agent setups.
+This repository provides design rules, audit skills, a
+test harness, and conventions for creating `.claude/`
+configurations — called **blueprints** — that turn a Claude
+Code session into a coordinated multi-agent team. Two
+production-ready blueprints are included.
 
-- **Blueprints** — `.claude/` setups that you copy into a
-  project to get a team of specialized agents coordinated
-  by your Claude Code session
-- **Devcontainer templates** — Docker-based sandboxes for
-  running agents in isolation
+## How It Works
 
-## Blueprints
+The project has two layers:
 
-A blueprint is a `.claude/` directory containing agent
-definitions, workflows, rules, and skills. Copy one into
-your project, start Claude Code, and your session becomes
-the team lead.
+```text
+/.claude/                          ← The toolkit (this repo's tooling)
+│   rules/                         ← Design rules for blueprint development
+│   skills/                        ← Audit skills (/blueprint-audit, /cache-audit)
+│
+blueprints/*/                      ← Products of the toolkit
+│   .claude/                       ← What gets copied into target projects
+│       CLAUDE.md, agents/, rules/, skills/, workflows/
+│
+devcontainer_templates/            ← Docker sandboxes for agent execution
+```
+
+**Toolkit** (`/.claude/`) — rules, skills, and conventions
+used when building or extending blueprints. Never copied
+into target projects.
+
+**Blueprints** (`blueprints/*/.claude/`) — complete agent
+setups: lead instructions, agent definitions, rules, skills,
+and workflows. Copy one into your project, start Claude Code,
+and your session becomes the team lead.
+
+## The Toolkit
+
+The toolkit encodes what makes a blueprint work well —
+agent design principles, prompt caching constraints,
+terminology standards, and structural tests. It is what
+you use when creating a new blueprint or extending an
+existing one.
+
+### Design Rules
+
+Rules in `/.claude/rules/` guide blueprint development:
+
+| Rule | Purpose |
+|------|---------|
+| `agent-design.md` | Agents define role only — no named teammates, no workflow coupling |
+| `reasoned-instructions.md` | Include rationale when it changes how an agent applies an instruction |
+| `prompt-caching.md` | All static content must respect the cache prefix order |
+| `terminology.md` | Official terms: launch subagents, create teams, spawn teammates |
+| `handoff-coverage.md` | Every pipeline guarantee needs an owner with sufficient input |
+| `simplicity.md` | KISS, YAGNI, fewest elements |
+| `behavior-preserving-cuts.md` | Only cut prose that doesn't change agent behavior |
+| `self-check.md` | Post-change verification checklist |
+| `hooks-guide.md` | When and how to use Claude Code hooks |
+
+Plus language-specific rules (Python, Go, Rust, TypeScript)
+and code quality rules (`code-principles.md`,
+`functional-style.md`, `documentation.md`).
+
+### Audit Skills
+
+- **`/blueprint-audit`** — audits a blueprint for
+  cross-file consistency, stale references, contradictions,
+  rationale completeness, and documentation alignment
+- **`/cache-audit`** — checks setup against prompt caching
+  best practices (ordering, tool stability, dynamic content)
+
+### Test Harness
+
+Every blueprint has a test suite (`blueprints/*/tests/`)
+using pytest with `-m static` markers. Tests verify file
+structure, agent frontmatter, caching compliance, settings,
+and rule file length. `blueprint_contracts.py` is the
+single source of truth for each blueprint's expected
+structure.
+
+```bash
+which uv || curl -LsSf https://astral.sh/uv/install.sh | sh
+uv run pytest blueprints/workflow/tests/ -m static -v
+uv run pytest blueprints/autonomous/tests/ -m static -v
+```
+
+### Extending Blueprints
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for step-by-step
+recipes: adding languages, workflows, agents, skills,
+sanity checks, and language-specific init procedures.
+
+## Included Blueprints
 
 | Blueprint | Approach | Agents |
 |-----------|----------|--------|
