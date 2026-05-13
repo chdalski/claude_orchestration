@@ -316,7 +316,11 @@ one phase at a time.
 
 14. **Developer reports implementation complete** to the
     lead — having received both sign-offs, sends a
-    summary via `SendMessage`.
+    summary via `SendMessage`. The summary cites the
+    quality-pipeline results (build, format, linter,
+    tests) per developer.md's Before Reporting Done
+    procedure — the Reviewer rejects handoffs that omit
+    them.
 
 ### Review
 

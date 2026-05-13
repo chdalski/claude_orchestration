@@ -147,6 +147,14 @@ changed files:
   producing inconsistent behaviour between development
   and production environments.
 - All tests pass and the build is clean.
+- The implementor's handoff cites a clean linter result
+  for every step in their Before Reporting Done procedure
+  (e.g., `cargo clippy: 0 warnings`). If the linter
+  citation is missing or shows warnings, reject — the
+  linter step is the most-frequently skipped, and a prior
+  session shipped seven warnings to `main` because both
+  the developer and the reviewer relied on implicit "lint
+  the project" wording without an explicit citation gate.
 - Run the formatter (`cargo fmt`, `prettier --write`, or
   equivalent) unconditionally before approving. Do not use
   `--check` — just run the formatter and let it fix any

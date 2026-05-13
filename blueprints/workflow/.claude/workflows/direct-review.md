@@ -49,8 +49,11 @@ miss.
    least process, making undetected drift most likely
    here. The handoff message must include an
    `advisor consultation status: none — Direct-Review
-   workflow` line — the Reviewer rejects handoffs that
-   omit this field.
+   workflow` line and a `quality pipeline:` line citing
+   the build, format, linter, and test results from step
+   2 (use `n/a` for any step that does not apply, e.g.,
+   linter `n/a` for docs-only changes) — the Reviewer
+   rejects handoffs that omit either field.
 5. If rejected: lead fixes issues and re-sends to Reviewer.
 6. **User checkpoint** — lead presents the completed work,
    Reviewer's summary, and proposed commit message for

@@ -156,7 +156,11 @@ multi-minute stalls from undetected message loss.
 6. **Developer implements source code** to make all tests
    pass. Follows the rule system's guidance (language
    idioms, code principles, simplicity) that loads
-   automatically based on files touched.
+   automatically based on files touched. Runs the project
+   linter and fixes all warnings before reporting done —
+   per developer.md's Before Reporting Done procedure,
+   which also requires citing each quality-pipeline result
+   in the eventual handoff.
 
 7. **Developer reports implementation complete** to Test
    Engineer and Security Engineer. Both must provide their
