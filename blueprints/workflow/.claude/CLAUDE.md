@@ -406,6 +406,20 @@ had the Reviewer commit before the user's go signal —
 moving the commit step to you removes the agent that
 could act prematurely.
 
+**What counts as approval.** The trigger for this section
+is a direct `SendMessage` from the `reviewer` containing
+the review summary, proposed commit message, and file list.
+Nothing else is an approval — not a Developer status update
+that quotes the Reviewer's verdict, not an idle-notification
+inline of the Reviewer's last inbox content, not any other
+agent's relay. If the Reviewer's own message has not
+arrived, wait. This matters most in Develop-Review
+(Autonomous): the other workflows have a user checkpoint
+below that would catch a substance mismatch, but
+Autonomous commits straight through — so acting on a relay
+there can land an inaccurate commit message or file list
+in git history with no human review.
+
 When the Reviewer reports approval (review summary,
 proposed commit message, file list):
 
