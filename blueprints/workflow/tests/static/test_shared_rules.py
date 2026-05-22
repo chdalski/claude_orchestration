@@ -23,7 +23,9 @@ AUTONOMOUS_RULES = REPO_ROOT / "blueprints" / "autonomous" / ".claude" / "rules"
 # intentionally — they contain blueprint-specific content.
 KNOWN_DIVERGENT: set[str] = {
     "advisor-gate-independence.md",
+    "communication-hygiene.md",
     "risk-assessment.md",
+    "safe-git.md",
 }
 
 

@@ -89,6 +89,21 @@ verification" suffices. Without acknowledgment, the sender
 cannot distinguish "processing" from "never received" — and
 the resulting stall is invisible until the lead notices.
 
+The lead embeds this obligation in every task message —
+team agents do not read workflow files, so without explicit
+embedding the rule never reaches them and they default to
+the "stay silent unless load-bearing" behavior in
+`communication-hygiene.md`. Include this line verbatim
+alongside the Team Roster:
+
+```
+Handoff acks: reply within 60 seconds to any handoff
+message you receive (task, completed work, verification
+request, sign-off) with a brief "received, starting <next
+step>". These acks are solicited workflow protocol — they
+do not count as bare chatter.
+```
+
 ### Lead-Monitored Transitions
 
 At certain handoff points, silent message loss causes the
