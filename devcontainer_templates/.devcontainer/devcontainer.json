@@ -10,7 +10,12 @@
       "pnpmVersion": "latest"
     },
     "ghcr.io/devcontainers-extra/features/uv:1": {},
-    "ghcr.io/devcontainers/features/go:1": {}
+    "ghcr.io/devcontainers/features/go:1": {
+      // Pin golangci-lint below 2.12.1: the Go feature's install script
+      // fails checksum verification on golangci-lint >= 2.12.1.
+      // See https://github.com/devcontainers/features/issues/1635
+      "golangciLintVersion": "2.11.4"
+    }
   },
   "remoteUser": "vscode",
   // Cross-platform init: runs on the HOST before the container starts.
