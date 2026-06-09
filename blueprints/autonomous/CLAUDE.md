@@ -46,7 +46,7 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 - Lead-directed advisor consultation — lead assesses risk at dispatch time per `risk-assessment.md`
 - Advisor consultation requires two gates in the dispatch message: input gate (consult before implementing) and output gate (get sign-off before submitting to reviewer)
 - Developer may add advisor consultations but not remove lead's directives
-- Lead owns plan progress — marks tasks done, records commit SHAs, commits code with plan updates in a single commit per task
+- Lead owns plan progress — marks tasks done, commits code with plan updates in a single commit per task
 - Developer makes WIP commits during implementation — lead squashes at commit time via `git reset <baseline-sha>`
 - Lead's ad-hoc commits happen only in team-down windows — mid-task commits land in the squash reset range and are lost
 - Reviewer backstop: rejects if non-trivial behavioral changes lack tests and no advisor was consulted

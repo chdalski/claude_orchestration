@@ -29,8 +29,8 @@ def test_lead_owns_plan_updates_during_execution(lead_instructions):
     text = lead_instructions.lower()
     assert "update the plan" in text and "mark all checkboxes" in text, (
         "CLAUDE.md must instruct the lead to update the plan after "
-        "each task approval — marking checkboxes and recording "
-        "commit SHAs in a single commit with the code changes"
+        "each task approval — marking checkboxes in a single commit "
+        "with the code changes"
     )
 
 

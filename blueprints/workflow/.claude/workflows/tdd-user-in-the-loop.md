@@ -374,10 +374,11 @@ one phase at a time.
     full changeset before it enters git history.
 
 19. **Lead commits.** Per CLAUDE.md's Committing Approved
-    Work section: the lead stages the Reviewer's file
-    list with specific paths, commits with the prepared
-    message, then amends to bundle the plan update
-    (checkboxes + commit SHA). The lead then sends the
+    Work section: the lead marks the plan checkboxes
+    complete, stages the Reviewer's file list plus the
+    plan file with specific paths, and commits with the
+    prepared message — a single commit covering code and
+    plan progress. The lead then sends the
     next task slice (loop to step 1) or proceeds to plan
     completion if all slices are done.
 

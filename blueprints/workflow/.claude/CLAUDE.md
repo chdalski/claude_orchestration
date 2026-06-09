@@ -433,21 +433,18 @@ proposed commit message, file list):
    continue. If the user approves with message edits,
    apply them to the message before committing.
 
-2. **Stage the exact files** from the Reviewer's file
-   list using `git add` with specific paths. Never use
-   `git add .` or `git add -A` — those can pick up
-   secrets, build artifacts, or unrelated work.
+2. **Update the plan file.** Mark the task's checkboxes
+   complete.
 
-3. **Commit** with the (possibly user-edited) message
-   from step 1. Run `git rev-parse HEAD` to capture the
-   short SHA.
+3. **Stage the exact files** from the Reviewer's file
+   list AND the plan file using `git add` with specific
+   paths. Never use `git add .` or `git add -A` — those
+   can pick up secrets, build artifacts, or unrelated
+   work.
 
-4. **Update the plan file.** Mark the task's checkboxes
-   complete and record the commit SHA in the plan. Then
-   amend: `git commit --amend --no-edit`. This bundles
-   the plan update into the same commit as the code, so
-   each task's plan progress and code change land
-   together.
+4. **Commit** with the (possibly user-edited) message
+   from step 1. This produces a single commit covering
+   both the code change and the plan progress.
 
 5. **Continue the workflow.** Send the next task slice if
    any remain, or proceed to plan completion if all
