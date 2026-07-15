@@ -1,0 +1,7 @@
+# Ignore everything in this directory...
+/*
+
+# ...except this file and the two published blueprints.
+!/.gitignore
+!/autonomous/
+!/workflow/
