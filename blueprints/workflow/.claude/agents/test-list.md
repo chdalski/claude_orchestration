@@ -1,7 +1,7 @@
 ---
 name: test-list
 description: Converts an example mapping into a minimum-required test list of pending-test placeholders for embedding into a new plan
-model: sonnet
+model: sonnet[1m]
 effort: high
 tools:
   - Read
