@@ -245,3 +245,11 @@ is noise.
 - Plans are committed to git alongside the code they
   describe — this ties decisions to the code that
   implemented them, making future archaeology easier.
+- A plan never records the commit SHAs of its own tasks.
+  Each commit instead names its plan with a `Plan:`
+  trailer — the plan's filename without `.md` (e.g.
+  `Plan: YYYY-MM-DD-add-user-auth`). A commit's SHA is
+  unknown until the commit exists, so writing it back into
+  the plan forces an amend, and a later rebase or squash
+  silently orphans it; `git log --grep="Plan: "` is the
+  stable plan→commit lookup.

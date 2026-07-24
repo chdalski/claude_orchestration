@@ -443,8 +443,12 @@ proposed commit message, file list):
    work.
 
 4. **Commit** with the (possibly user-edited) message
-   from step 1. This produces a single commit covering
-   both the code change and the plan progress.
+   from step 1, appending a `Plan:` trailer as the final
+   line — the plan's filename without `.md` (e.g.
+   `Plan: YYYY-MM-DD-add-user-auth`). This produces a
+   single commit covering both the code change and the
+   plan progress, tied to its plan so `git log --grep="Plan: "`
+   recovers the mapping without the plan recording SHAs.
 
 5. **Continue the workflow.** Send the next task slice if
    any remain, or proceed to plan completion if all
