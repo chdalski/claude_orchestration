@@ -1,6 +1,6 @@
 ---
 name: blueprint-audit
-description: Audit a blueprint for cross-file consistency, stale references, contradictions, rationale completeness, and documentation alignment. Returns a structured report with specific findings and fixes.
+description: Audit a blueprint for cross-file consistency, stale references, contradictions, rationale completeness, and documentation alignment. Use when auditing a blueprint, checking blueprint consistency, or verifying blueprint files before merging changes. Returns a structured report with specific findings and fixes.
 ---
 
 # Blueprint Audit Skill
@@ -525,6 +525,52 @@ gaps, report "All guarantees covered."
 
 ---
 
+## Check 12 — Skill Spec Conformance
+
+**Reference:** `/.claude/rules/skill-spec-conformance.md`
+and the Agent Skills spec
+(https://agentskills.io/specification).
+
+**Read:** Every `SKILL.md` under
+`<blueprint>/.claude/skills/*/`. Skip this check if the
+blueprint has no `.claude/skills/` directory.
+
+Blueprint skills are copied into target projects, so a
+non-conformant skill ships the defect downstream. For each
+skill, verify the mandatory rules — a violation is a
+`fail`:
+
+- **`name`** — 1–64 chars; lowercase alphanumerics and
+  hyphens only; no leading, trailing, or consecutive
+  hyphens; and **matches the parent directory name**. A
+  name/directory mismatch breaks skill discovery with no
+  error surfaced.
+- **`description`** — present, non-empty, ≤1024 chars.
+- **Frontmatter keys** — only `name`, `description`,
+  `license`, `compatibility`, `metadata`, and
+  `allowed-tools` are valid top-level keys. Any other key
+  (e.g. a stray `paths:`, which is a rule-file field) is
+  non-conformant.
+
+Then check the recommendations — a shortfall is a `warn`:
+
+- `description` states both what the skill does and when
+  to use it, with trigger keywords.
+- `SKILL.md` is under ~500 lines, unless the skill runs
+  all of its content on every invocation (e.g. an audit
+  that executes every check) — that case is exempt.
+- File references are one level deep from `SKILL.md`.
+
+If `skills-ref validate ./<skill>` is available, run it per
+skill as the authoritative check for the mandatory rules
+and report its output.
+
+Report each violation with the skill path, the rule, and
+the fix. If all skills conform, report "All skills
+conform."
+
+---
+
 ## Output Format
 
 Output in three blocks: scorecard, findings, top fixes. The
@@ -545,7 +591,7 @@ or `[clean]`.
   BLUEPRINT AUDIT: <blueprint_name>
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Score: X/11 clean
+Score: X/12 clean
 
  1. Static tests              [N passed / N failed]
  2. Cross-file consistency    [N findings]
@@ -558,6 +604,7 @@ Score: X/11 clean
  9. Rule file length          [N over target]
 10. Behavior-preserving cuts  [N candidates]
 11. Handoff coverage          [N gaps]
+12. Skill spec conformance    [N violations]
 ```
 
 ### 2. Findings

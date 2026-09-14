@@ -1,6 +1,6 @@
 ---
 name: cache-audit
-description: Audit your Claude Code setup against prompt caching best practices. Checks ordering, tool stability, dynamic content handling, and hook injection patterns. Returns a scored report with specific fixes.
+description: Audit your Claude Code setup against prompt caching best practices. Checks ordering, tool stability, dynamic content handling, and hook injection patterns. Use when reviewing cache efficiency, diagnosing cache misses, or checking whether a config change breaks the prompt prefix. Returns a scored report with specific fixes.
 ---
 
 # Prompt Cache Audit Skill
