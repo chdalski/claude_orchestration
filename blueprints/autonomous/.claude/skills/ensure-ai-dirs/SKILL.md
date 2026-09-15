@@ -1,10 +1,12 @@
 ---
 name: ensure-ai-dirs
 description: >
-  Ensure the configured plans and memory directories exist,
-  sync the plan format guide and review checklist, and
-  move completed and canceled plans into the frozen
-  completed/ directory. Run once before planning begins.
+  Ensure the plans and memory directories exist, point
+  Claude Code's auto memory at .ai/memory/ via
+  settings.local.json, sync the plan format guide and
+  review checklist, and move completed and canceled plans
+  into the frozen completed/ directory. Run once before
+  planning begins.
 ---
 
 # /ensure-ai-dirs
@@ -28,31 +30,45 @@ needs moving.
 
 ## Steps
 
-1. **Read settings** — read `.claude/settings.json` and
-   extract both `plansDirectory` and `autoMemoryDirectory`.
+1. **Read settings and write local overrides** — read
+   `.claude/settings.json` and extract `plansDirectory`.
+   Then update `.claude/settings.local.json` — every run,
+   because `autoMemoryDirectory` is always rewritten:
 
-   If either key is **absent**: the blueprint expects both
-   directories configured. Silently defaulting would leave
-   the configuration missing for future sessions and other
-   agents. Instead:
-
-   a. Read `.claude/settings.local.json` if it exists
-      (it may contain other local overrides that must be
-      preserved).
-   b. Add the missing key(s) to the parsed object (or
-      create a new object if the file does not exist):
-      - `"plansDirectory": ".ai/plans/"` if absent
-      - `"autoMemoryDirectory": ".ai/memory/"` if absent
-   c. Write the result back to `.claude/settings.local.json`.
-   d. Report which keys were not configured and have been
-      set in `settings.local.json` — the lead must relay
-      this to the user so they can move the settings to
-      `settings.json` if they want them version-controlled.
+   a. Read `.claude/settings.local.json` if it exists (it
+      may contain other local overrides that must be
+      preserved); otherwise start from an empty object.
+   b. If `plansDirectory` is **absent** from
+      `settings.json`, add `"plansDirectory": ".ai/plans/"`.
+      The blueprint expects it configured — silently
+      defaulting would leave it missing for future
+      sessions and other agents.
+   c. Set `"autoMemoryDirectory"` to
+      `<autoMemoryDirectory>` — the absolute path of
+      `.ai/memory/` under the project root (the directory
+      containing `.claude/`), with a trailing slash, e.g.
+      `/home/me/my-project/.ai/memory/` — replacing any
+      existing value.
+   d. Write the result back to `.claude/settings.local.json`.
+   e. Report what changed. If `plansDirectory` was added,
+      the lead must relay this to the user so they can
+      move it to `settings.json` if they want it
+      version-controlled. If `autoMemoryDirectory`
+      changed, note that the new memory location may only
+      take effect in the next session.
 
    Using `settings.local.json` (not `settings.json`)
-   avoids modifying the checked-in blueprint configuration.
-   Claude Code merges both files at startup, so the
-   settings take effect immediately.
+   avoids modifying the checked-in blueprint
+   configuration. Claude Code accepts only an absolute or
+   `~/` path for `autoMemoryDirectory` and silently
+   ignores a relative one — and an absolute path differs
+   per machine, so it cannot live in `settings.json` at
+   all. `settings.local.json` is gitignored by
+   `.claude/.gitignore`; never commit it. Replace an
+   existing `autoMemoryDirectory` every run: after the
+   checkout moves, or when host and devcontainer share
+   this file under different paths, a stale value would
+   quietly send memories somewhere else.
 
 2. **Sync the plans directory files** — sync four files
    from `.claude/skills/ensure-ai-dirs/` into

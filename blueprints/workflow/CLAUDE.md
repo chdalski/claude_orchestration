@@ -20,7 +20,7 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 | Path | Purpose |
 |---|---|
 | `.claude/CLAUDE.md` | Lead instructions — clarification, planning, workflow proposal, agent coordination |
-| `.claude/settings.json` | Agent teams config, plans and memory directory paths |
+| `.claude/settings.json` | Agent teams config, plans directory path |
 | `.claude/agents/developer.md` | Implements all code — source and tests (Sonnet) |
 | `.claude/agents/reviewer.md` | Quality gate — scope verification, composes the proposed commit message; lead commits (Opus) |
 | `.claude/agents/test-engineer.md` | Advisory — test design and verification (Sonnet) |
@@ -28,7 +28,7 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 | `.claude/agents/security-engineer.md` | Advisory — security assessment (Sonnet) |
 | `.claude/agents/test-list.md` | Subagent — converts an example mapping into a minimum-required test list (Sonnet) |
 | `.claude/rules/` | Unconditional + conditional rules injected by Claude Code |
-| `.claude/skills/ensure-ai-dirs/` | Skill: creates `.ai/plans/` and `.ai/memory/` directories, syncs plan format guide and review checklist, moves Completed/Canceled plans into a frozen `completed/` directory |
+| `.claude/skills/ensure-ai-dirs/` | Skill: creates `.ai/plans/` and `.ai/memory/` directories, points auto memory at `.ai/memory/` (absolute path in `settings.local.json`), syncs plan format guide and review checklist, moves Completed/Canceled plans into a frozen `completed/` directory |
 | `.claude/skills/example-mapping/` | Skill: facilitates an Example Mapping session and writes a structured mapping file for `/test-list` or clarification |
 | `.claude/skills/project-init/` | Skill: scans project, generates `CLAUDE.md` per `project-context.md` |
 | `.claude/skills/project-sanity/` | Skill: audits repo for common issues (report-only) |

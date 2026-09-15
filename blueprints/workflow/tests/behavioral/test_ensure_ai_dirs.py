@@ -22,7 +22,7 @@ pytestmark = pytest.mark.behavioral
 # into context automatically; the prompt triggers execution.
 ENSURE_AI_DIRS_PROMPT = (
     "Run /ensure-ai-dirs now. Follow the skill instructions exactly:\n"
-    "1. Read .claude/settings.json for plansDirectory and autoMemoryDirectory.\n"
+    "1. Read .claude/settings.json for plansDirectory.\n"
     "2. Sync two template files to the plans directory using `cp` via\n"
     "   Bash so the copy is byte-exact (do NOT use Read+Write — that\n"
     "   risks paraphrasing). Create parent dirs first:\n"

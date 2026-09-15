@@ -6,9 +6,8 @@ skill in a tmp project that has no .ai/ directory. The skill should:
 - Copy .claude/skills/ensure-ai-dirs/claude-md-template.md to .ai/plans/CLAUDE.md
 - Create .ai/memory/ for Claude Code's auto-memory system
 
-When plansDirectory or autoMemoryDirectory is absent from settings.json,
-the skill should create settings.local.json with the default values rather
-than silently defaulting.
+When plansDirectory is absent from settings.json, the skill should add it
+to settings.local.json rather than silently defaulting.
 """
 
 import json
@@ -27,7 +26,7 @@ pytestmark = pytest.mark.behavioral
 # into context automatically; the prompt triggers execution.
 ENSURE_AI_DIRS_PROMPT = (
     "Run /ensure-ai-dirs now. Follow the skill instructions exactly:\n"
-    "1. Read .claude/settings.json for plansDirectory and autoMemoryDirectory.\n"
+    "1. Read .claude/settings.json for plansDirectory.\n"
     "2. Sync two files to the plans directory:\n"
     "   a. Read .claude/skills/ensure-ai-dirs/plan-format.md and write to "
     ".ai/plans/plan-format.md\n"
@@ -147,7 +146,7 @@ async def test_ensure_ai_dirs_leaves_current_format_guide_unchanged(fixture_proj
 # don't include this behavior, and mixing them could confuse the agent.
 ENSURE_AI_DIRS_MISSING_CONFIG_PROMPT = (
     "Run /ensure-ai-dirs now. Follow the skill instructions exactly:\n"
-    "1. Read .claude/settings.json and check for plansDirectory and autoMemoryDirectory.\n"
+    "1. Read .claude/settings.json and check for plansDirectory.\n"
     "2. If plansDirectory is absent, read .claude/settings.local.json (if it "
     "exists), add plansDirectory set to '.ai/plans/' to it, and write it back "
     "to .claude/settings.local.json. If settings.local.json does not exist, "

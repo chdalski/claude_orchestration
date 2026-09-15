@@ -23,6 +23,20 @@ def test_top_level_setting(settings, key, expected):
     )
 
 
+def test_no_auto_memory_directory(settings):
+    """settings.json must not set autoMemoryDirectory.
+
+    Claude Code silently ignores a relative value and an absolute one is
+    machine-specific, so /ensure-ai-dirs writes the absolute path to the
+    gitignored settings.local.json instead.
+    """
+    assert "autoMemoryDirectory" not in settings, (
+        "settings.json must not set autoMemoryDirectory — a relative value "
+        "is silently ignored and an absolute one is machine-specific; "
+        "/ensure-ai-dirs writes it to .claude/settings.local.json"
+    )
+
+
 def test_no_default_mode(settings):
     """settings.json must not set defaultMode — plan mode enforcement is unreliable."""
     permissions = settings.get("permissions", {})

@@ -36,7 +36,6 @@ REQUIRED_ROOT_FILES: list[str] = [
 # Settings.json required configuration
 REQUIRED_SETTINGS: dict[str, object] = {
     "plansDirectory": ".ai/plans/",
-    "autoMemoryDirectory": ".ai/memory/",
 }
 
 # Caching compliance — patterns that indicate dynamic content

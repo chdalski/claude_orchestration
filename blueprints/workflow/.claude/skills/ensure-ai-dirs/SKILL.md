@@ -1,11 +1,12 @@
 ---
 name: ensure-ai-dirs
 description: >
-  Ensure the configured plans and memory directories exist,
-  sync the plan format guide and review checklist, and
-  move completed and canceled plans into the frozen
-  completed/ directory. Run once before writing any plan
-  files.
+  Ensure the plans and memory directories exist, point
+  Claude Code's auto memory at .ai/memory/ via
+  settings.local.json, sync the plan format guide and
+  review checklist, and move completed and canceled plans
+  into the frozen completed/ directory. Run once before
+  writing any plan files.
 ---
 
 # /ensure-ai-dirs
@@ -29,11 +30,39 @@ needs moving.
 
 ## Steps
 
-1. **Read settings** — read `.claude/settings.json` and
-   extract both `plansDirectory` and `autoMemoryDirectory`.
-   If either key is absent, default to `.ai/plans/` and
-   `.ai/memory/` respectively. This respects the project's
-   configured locations rather than assuming fixed paths.
+1. **Read settings and configure auto memory** — read
+   `.claude/settings.json` and extract `plansDirectory`.
+   If the key is absent, default to `.ai/plans/`. This
+   respects the project's configured plans location
+   rather than assuming a fixed path.
+
+   Then point Claude Code's auto memory at `.ai/memory/`
+   — every run, not only when the setting looks missing:
+
+   a. Resolve `<autoMemoryDirectory>`: the absolute path
+      of `.ai/memory/` under the project root (the
+      directory containing `.claude/`), with a trailing
+      slash — e.g. `/home/me/my-project/.ai/memory/`.
+   b. Read `.claude/settings.local.json` if it exists — it
+      may hold other local overrides that must be
+      preserved. Set `"autoMemoryDirectory"` to
+      `<autoMemoryDirectory>`, replacing any existing
+      value, and write the file back. If the file does not
+      exist, create it with just this key.
+   c. Report whether the value changed. If it did, note
+      that the new memory location may only take effect
+      in the next session.
+
+   Claude Code accepts only an absolute or `~/` path for
+   `autoMemoryDirectory` and silently ignores a relative
+   one — and an absolute path differs per machine, so it
+   cannot live in the checked-in `settings.json`.
+   `settings.local.json` is gitignored by
+   `.claude/.gitignore`; never commit it. Replace an
+   existing value every run: after the checkout moves, or
+   when host and devcontainer share this file under
+   different paths, a stale value would quietly send
+   memories somewhere else.
 
 2. **Sync the plans directory files** — sync four files
    from `.claude/skills/ensure-ai-dirs/` into `<plansDirectory>`:
