@@ -3,8 +3,8 @@ name: ensure-ai-dirs
 description: >
   Ensure the configured plans and memory directories exist,
   sync the plan format guide and review checklist, and
-  archive completed plans older than 14 days. Run once
-  before planning begins.
+  move completed and canceled plans into the frozen
+  completed/ directory. Run once before planning begins.
 ---
 
 # /ensure-ai-dirs
@@ -22,9 +22,9 @@ sessions.
 every time.** Do not skip step 2 because the directory
 already exists or the format guide appears current. Do not
 skip step 3 because the memory directory already exists.
-Do not skip step 4 because no plans appear old enough to
-archive — the scan is cheap and the skill is idempotent
-when nothing is archivable.
+Do not skip step 4 because no plan appears finished — the
+scan is cheap and the skill is idempotent when nothing
+needs moving.
 
 ## Steps
 
@@ -54,8 +54,8 @@ when nothing is archivable.
    Claude Code merges both files at startup, so the
    settings take effect immediately.
 
-2. **Sync the plans directory files** — sync two files
-   from `.claude/skills/ensure-ai-dirs/` to
+2. **Sync the plans directory files** — sync four files
+   from `.claude/skills/ensure-ai-dirs/` into
    `<plansDirectory>`. Always read both source and target
    and compare them:
 
@@ -83,11 +83,23 @@ when nothing is archivable.
       at review time — syncing it here ensures the
       checklist is current before any plan is written.
 
-   d. Report whether updates were written or the files
+   d. **Completed plans CLAUDE.md** — create
+      `<plansDirectory>/completed/` if it does not exist.
+      Read the template from
+      `.claude/skills/ensure-ai-dirs/completed-claude-md-template.md`.
+      Read `<plansDirectory>/completed/CLAUDE.md` if it
+      exists. If the file does not exist or its content
+      differs from the template, write the template to
+      `<plansDirectory>/completed/CLAUDE.md` using Write.
+      Claude Code loads this file whenever an agent reads
+      a plan in `completed/`, so every reader of a
+      finished plan learns that it is frozen.
+
+   e. Report whether updates were written or the files
       were already identical.
 
    This step is unconditional — execute it every time,
-   even if the files appear current. The CLAUDE.md is
+   even if the files appear current. The plans CLAUDE.md is
    intentionally slim — it points agents to plan-format.md
    rather than embedding the full format guide, so agents
    reading plans do not load the format guide into their
@@ -100,39 +112,29 @@ when nothing is archivable.
    directly. Report whether the directory was created or
    already existed.
 
-4. **Archive old plans** — scan `<plansDirectory>` for
-   completed or canceled plans older than 14 days and
-   move them to `<plansDirectory>/archive/`. Archiving
-   keeps the active plans directory focused on in-progress
-   work while preserving history.
+4. **Move finished plans to `completed/`** — move every
+   `Completed` or `Canceled` plan from `<plansDirectory>`
+   into `<plansDirectory>/completed/`, the frozen plan
+   log. The active directory then holds only plans that
+   still need work.
 
    a. List files in `<plansDirectory>` matching the plan
       filename pattern `YYYY-MM-DD-*.md`. Exclude the
       synced files (`CLAUDE.md`, `plan-format.md`,
-      `plan-review-checklist.md`) and the `archive/`
+      `plan-review-checklist.md`) and the `completed/`
       subdirectory itself.
 
    b. For each plan file, read the `**Status:**` line
       from the header:
-      - `Canceled` — always archive (no useful date; the
-        plan is terminated).
-      - `Completed (YYYY-MM-DD)` — archive if the recorded
-        date is more than 14 days before today.
-      - `NotStarted` or `InProgress` — never archive.
+      - `Completed (YYYY-MM-DD)` or `Canceled` — move it,
+        however recently it finished.
+      - `NotStarted` or `InProgress` — leave it in place.
 
-   c. If there are any plans to archive:
-      - Create `<plansDirectory>/archive/` if it does not
-        exist.
-      - Move each archivable plan using
-        `git mv <src> <dst>` so git tracks the rename and
-        history is preserved.
+   c. Move each finished plan into
+      `<plansDirectory>/completed/` using
+      `git mv <src> <dst>` so git tracks the rename and
+      history is preserved. If a plan is untracked,
+      `git mv` refuses it — use plain `mv` for that plan.
 
-   d. Report which plans were archived, or state that none
-      were archivable.
-
-   The 14-day window preserves recent completions in the
-   active directory — a user asking "what did we just
-   finish" sees recent work without digging into the
-   archive. Canceled plans bypass the window because they
-   are terminated, not completed, and have no remaining
-   value in the active view.
+   d. Report which plans were moved, or state that none
+      were finished.
