@@ -89,8 +89,8 @@ write an accurate one. The lead executes the commit per
 the Committing Approved Work section of the lead's
 CLAUDE.md, after the workflow's user checkpoint (or
 immediately, in Develop-Review Autonomous). The lead
-creates one team via `TeamCreate` with all listed agents
-so they can communicate via `SendMessage`.
+spawns all listed agents as teammates so they can
+communicate via `SendMessage`.
 
 ## Conventions
 

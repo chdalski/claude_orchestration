@@ -74,7 +74,7 @@ avoid mistakes. One line each. Remove when no longer true. -->
 - Every directive in blueprint markdown files must include its rationale (see `reasoned-instructions.md` rule)
 - Agent files define role and capability only — no named teammates, no workflow-specific coordination (see `agent-design.md` rule)
 - Agent `name:` fields in frontmatter use lowercase hyphenated form: `developer`, `test-engineer`
-- Use official terminology: "launch" subagents, "create" teams, "spawn" teammates, "message" within teams (see `terminology.md` rule)
+- Use official terminology: "launch" subagents, "spawn" and "shut down" teammates, "message" within teams (see `terminology.md` rule)
 - Rule files and CLAUDE.md files target under 200 lines — agent adherence degrades beyond that threshold
 - Blueprint files are cached at prompt cache level 3 — no dynamic content (dates, counters, versions)
 - Test suite uses pytest with `-m static` marker for structural verification

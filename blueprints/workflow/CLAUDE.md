@@ -59,7 +59,7 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 - Generated project `CLAUDE.md` follows `project-context.md`: Overview, Build and Test, Components, Conventions, References
 - On `CLAUDE.md` re-generation: Overview/Build/Components refresh; Conventions/References entries preserve
 - Blueprint does not prescribe architecture, security practices, data modeling, CI/CD, formatting, or testing methodology
-- Terminology: "launch" subagents, "create" teams, "spawn" teammates, "message" within teams
+- Terminology: "launch" subagents, "spawn" and "shut down" teammates, "message" within teams
 
 ## References
 

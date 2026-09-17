@@ -77,14 +77,16 @@ acceptance criterion.
    nothing was supplied, ask the user before proceeding.
 
 2. **Launch the test-list subagent.** Use the `Agent`
-   tool with `subagent_type: "test-list"`. In the prompt,
-   include the example mapping content (transcribe from a
-   pasted image; pass the path if markdown), **the target
-   language and test framework** (required), and the
-   remaining meta if known — feature name, target test
-   file path, target implementation file path. Transcribe
-   rather than attach: the subagent has `Read` only and
-   cannot open in-chat attachments.
+   tool with `subagent_type: "test-list"` and no `name` —
+   with agent teams enabled, a named call spawns a
+   persistent teammate instead of a one-shot subagent. In
+   the prompt, include the example mapping content
+   (transcribe from a pasted image; pass the path if
+   markdown), **the target language and test framework**
+   (required), and the remaining meta if known — feature
+   name, target test file path, target implementation file
+   path. Transcribe rather than attach: the subagent has
+   `Read` only and cannot open in-chat attachments.
 
 3. **Collect the subagent's output** per the agent's
    Output Format section — a framework-specific test case

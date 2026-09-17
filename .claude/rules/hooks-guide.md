@@ -142,9 +142,12 @@ hooks:
 
 These hooks run **only while that subagent is active**
 and are cleaned up when it finishes. Confirmed for
-subagents launched via the Agent tool. Whether they work
-for team members created via TeamCreate is unverified —
-test before relying on this for team-based blueprints.
+subagents launched via the Agent tool. For teammates
+(spawned via the Agent tool with a `name`), the agent-teams
+docs list the definition fields that apply — `tools`,
+`model`, and the body — and `hooks` is not among them.
+Test before relying on frontmatter hooks in team-based
+blueprints.
 
 ## Blueprint Design Implications
 

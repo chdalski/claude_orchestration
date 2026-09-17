@@ -49,7 +49,7 @@ Rules in `/.claude/rules/` guide blueprint development:
 | `agent-design.md` | Agents define role only — no named teammates, no workflow coupling |
 | `reasoned-instructions.md` | Include rationale when it changes how an agent applies an instruction |
 | `prompt-caching.md` | All static content must respect the cache prefix order |
-| `terminology.md` | Official terms: launch subagents, create teams, spawn teammates |
+| `terminology.md` | Official terms: launch subagents, spawn and shut down teammates |
 | `handoff-coverage.md` | Every pipeline guarantee needs an owner with sufficient input |
 | `simplicity.md` | KISS, YAGNI, fewest elements |
 | `behavior-preserving-cuts.md` | Only cut prose that doesn't change agent behavior |
@@ -288,12 +288,16 @@ skills, and running the test suite.
 Agent teams are experimental. Be aware of:
 
 - **No session resumption** — `/resume` and `/rewind` do
-  not restore in-process teammates.
-- **One team per session** — clean up the current team
-  before starting another.
+  not restore in-process teammates; the lead spawns them
+  again.
+- **One team per session** — the team forms implicitly
+  when the lead spawns its first teammate and is cleaned
+  up when the session ends. There is no separate
+  create or delete step; to start fresh, the lead shuts
+  down its teammates and spawns new ones.
 - **No nested teams** — only the lead can manage the team.
-- **Lead is fixed** — the session that creates the team
-  stays the lead.
+- **Lead is fixed** — the main session stays the lead for
+  its lifetime.
 - **Permission mode inherits** — all teammates start with
   the lead's permission mode (e.g., whether tool use
   prompts for approval). Agent `tools:` frontmatter

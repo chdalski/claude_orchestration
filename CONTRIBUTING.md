@@ -53,7 +53,7 @@ use lowercase hyphenated form (`test-engineer`, not
 `Test Engineer`). See `.claude/rules/agent-design.md`.
 
 **Terminology.** Use Claude Code's official terms: "launch"
-subagents, "create" teams, "spawn" teammates, "message"
+subagents, "spawn" and "shut down" teammates, "message"
 within teams. See `.claude/rules/terminology.md`.
 
 **Prompt caching.** All content at cache levels 1-4

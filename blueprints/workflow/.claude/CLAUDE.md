@@ -11,7 +11,7 @@ team. You manage:
    shepherd it through review and user approval
 3. **Workflow selection** — present workflow options to
    the user after the plan is approved
-4. **Coordination** — create and manage agent teams to
+4. **Coordination** — spawn and coordinate teammates to
    execute the plan per the chosen workflow
 
 Implementation happens only through one of the workflows in
@@ -150,7 +150,10 @@ After clarification is complete:
    c. Repeat until the subagent returns "No issues found."
 
    Each launch is stateless — every review pass gets fresh
-   eyes on the current plan state.
+   eyes on the current plan state. Launch it without a
+   `name`: with agent teams enabled, a named launch spawns
+   a persistent teammate, and follow-up passes sent to it
+   carry the previous pass's context.
 
    Do not skip this step for "simple" plans — you wrote
    the plan and are poorly positioned to spot your own
@@ -257,30 +260,41 @@ do not switch workflows mid-execution.
 Workflow selection is per-plan, not per-session. Each new
 implementation task — even within the same session —
 requires its own clarification cycle, plan, and workflow
-selection. **Before creating a new team for a new plan**,
-delete the previous team via `TeamDelete` — teammates
-carry conversation history from the completed work, and
-stale context from one plan pollutes decisions in the
-next. Deleting clears this accumulated state. The new
-team gets fresh context windows; cached content at levels
-1–4 is unaffected.
+selection. **Before spawning teammates for a new plan**,
+shut down every teammate from the previous plan — message
+each a `shutdown_request` via `SendMessage` and wait until
+it has exited. Teammates carry conversation history from
+the completed work, and stale context from one plan
+pollutes decisions in the next. Wait for the exit: a
+teammate finishes its current request first and can still
+edit files and send messages until then. If a teammate
+rejects the request, address its stated reason and ask
+again. The new teammates get fresh context windows;
+cached content at levels 1–4 is unaffected.
+
+**Spawning teammates.** A session has exactly one team,
+formed implicitly — there is no step to create or delete
+it. Spawn each teammate with the `Agent` tool, setting
+both `subagent_type` and `name` to the agent's frontmatter
+`name:` (e.g. `reviewer`). Workflow files and agents
+address teammates by that name; a teammate spawned under
+any other name never receives their messages.
 
 **After the user chooses:**
 
 - **Direct-Review:** Implement the plan directly — read
   the relevant files, make the changes, run tests, then
-  create a one-agent team via `TeamCreate` with the
-  Reviewer for an independent quality check including
-  CLAUDE.md drift detection. If rejected, fix and
-  re-send to the Reviewer. When the Reviewer approves,
-  follow the Committing Approved Work section below.
+  spawn the Reviewer as a teammate for an independent
+  quality check including CLAUDE.md drift detection. If
+  rejected, fix and re-send to the Reviewer. When the
+  Reviewer approves, follow the Committing Approved Work
+  section below.
 - **Develop-Review (Supervised or Autonomous) /
-  TDD User-in-the-Loop:** Create the workflow team via
-  `TeamCreate` with all agents listed in the workflow's
-  Agents section, then dispatch task slices per the
-  workflow definition. When the Reviewer approves a
-  slice, follow the Committing Approved Work section
-  below.
+  TDD User-in-the-Loop:** Spawn every agent listed in the
+  workflow's Agents section as a teammate, then dispatch
+  task slices per the workflow definition. When the
+  Reviewer approves a slice, follow the Committing
+  Approved Work section below.
 
 If a session is paused and resumed (possibly by a
 different user), ask about workflow again. Do not assume
@@ -325,11 +339,11 @@ generalist would make.
 
 ## Monitoring Agents
 
-**Team members vs. background agents:** Agents created via
-`TeamCreate` (the workflow team) communicate via
-`SendMessage`. `TaskOutput` only works for background
-agents spawned individually via the Agent tool. Using
-`TaskOutput` on a team member returns "no task found" —
+**Teammates vs. subagents:** An `Agent` call with a `name`
+spawns a teammate; one without a `name` launches a
+subagent. Teammates communicate via `SendMessage`.
+`TaskOutput` only works for background subagents. Using
+`TaskOutput` on a teammate returns "no task found" —
 this is expected behavior, not a sign that the agent is
 stuck.
 

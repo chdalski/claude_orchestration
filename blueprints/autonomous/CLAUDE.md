@@ -58,15 +58,15 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 - Lead verifies plan goal at completion — adds follow-up tasks if quantitative targets not met
 - All blueprint files must be fully static — no dates, counters, versions (prompt cache level 3)
 - Rule files target under 200 lines — agent adherence degrades beyond that threshold
-- Skills run before team creation — lead commits skill outputs directly per skill-output commit rule
+- Skills run before teammates are spawned — lead commits skill outputs directly per skill-output commit rule
 - Templates live in their skill's directory, not a separate `templates/` directory
 - Generated project `CLAUDE.md` follows `project-context.md`: Overview, Build and Test, Components, Conventions, References
 - On `CLAUDE.md` re-generation: Overview/Build/Components refresh; Conventions/References entries preserve
 - Execution pipeline: Lead → Developer → Reviewer → Lead (developer-reviewer rejection loop is opaque to lead)
-- Team is cycled (TeamDelete + TeamCreate) between task slices — prevents developer context degradation across tasks
+- Teammates are cycled (shut down + re-spawn) between task slices — prevents developer context degradation across tasks
 - Plan queue supports multiple concurrent plans — ordered by dependency and impact, with supersession detection
 - Blueprint does not prescribe architecture, security practices, data modeling, CI/CD, formatting, or testing methodology
-- Terminology: "launch" subagents, "create" teams, "spawn" teammates, "message" within teams
+- Terminology: "launch" subagents, "spawn" and "shut down" teammates, "message" within teams
 
 ## References
 

@@ -25,8 +25,8 @@ miss.
 ## Agents
 
 - **Reviewer** — independent quality gate, including
-  CLAUDE.md drift detection. Created via `TeamCreate` as
-  a one-agent team. The Reviewer composes the proposed
+  CLAUDE.md drift detection. Spawned as the only
+  teammate. The Reviewer composes the proposed
   commit message and returns it with the file list; the
   lead commits after user approval per CLAUDE.md's
   Committing Approved Work section.
@@ -38,8 +38,7 @@ miss.
 2. Lead runs tests and linters if applicable — catching
    regressions before presenting to the Reviewer avoids
    wasted review cycles.
-3. Lead creates a one-agent team via TeamCreate with the
-   Reviewer.
+3. Lead spawns the Reviewer as a teammate.
 4. Lead sends the work to the Reviewer with the plan's
    goal, context, and acceptance criteria so the Reviewer
    can verify scope completeness — Reviewer performs full

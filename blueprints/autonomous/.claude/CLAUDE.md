@@ -126,7 +126,10 @@ After clarification is complete:
    c. Repeat until the subagent returns "No issues found."
 
    Each launch is stateless — every review pass gets fresh
-   eyes on the current plan state.
+   eyes on the current plan state. Launch it without a
+   `name`: with agent teams enabled, a named launch spawns
+   a persistent teammate, and follow-up passes sent to it
+   carry the previous pass's context.
 
    Do not skip this step for "simple" plans — the lead
    wrote the plan and is poorly positioned to spot its
@@ -223,10 +226,16 @@ plan are complete (or an unresolvable blocker occurs).
 
 Before sending the first task:
 
-1. **Create the team** via `TeamCreate` with all four
-   agents: `developer`, `reviewer`, `test-engineer`,
-   `security-engineer`. All four agents must be spawned —
-   the developer's risk-assessment rule directs it to
+1. **Spawn all four agents as teammates:** `developer`,
+   `reviewer`, `test-engineer`, `security-engineer` — the
+   `Agent` tool with each agent's name as both
+   `subagent_type` and `name`. A session has exactly one
+   team, formed implicitly, so there is no separate step
+   to create it. Agents address teammates by exactly these
+   names; a teammate spawned under any other name never
+   receives their messages. All four agents must be
+   spawned — the developer's risk-assessment rule directs
+   it to
    consult advisors for high-risk or high-uncertainty
    tasks, and `SendMessage` to a non-existent advisor
    silently fails, blocking the developer indefinitely.
@@ -460,14 +469,20 @@ When the **reviewer messages you directly** with approval
    progress, tied to its plan so `git log --grep="Plan: "`
    recovers the mapping without the plan recording SHAs.
 
-6. **Cycle the team** if more tasks remain. Delete the
-   current team via `TeamDelete`, then recreate it via
-   `TeamCreate` with all four agents. This gives every
-   agent — especially the developer — a clean context
-   window. Without cycling, the developer accumulates
-   failed attempts, stale reasoning, and trial-and-error
-   patterns from prior tasks, which degrades instruction
-   adherence and produces increasingly fragile fixes.
+6. **Cycle the teammates** if more tasks remain. Message
+   each of the four teammates a `shutdown_request` via
+   `SendMessage`, wait until all four have exited, then
+   spawn all four again as in Starting Execution step 1.
+   Wait for every exit: a teammate finishes its current
+   request first and can still edit files or send
+   messages until then. If a teammate rejects the
+   request, address its stated reason and ask again.
+   Cycling gives every agent — especially the developer —
+   a clean context window. Without cycling, the developer
+   accumulates failed attempts, stale reasoning, and
+   trial-and-error patterns from prior tasks, which
+   degrades instruction adherence and produces
+   increasingly fragile fixes.
    Cached content at levels 1–4 (system prompt, tools,
    CLAUDE.md, rules) is unaffected — only the per-teammate
    message history (level 5) resets. The "spawn advisors
@@ -475,7 +490,7 @@ When the **reviewer messages you directly** with approval
    applies here too — do not prime re-spawned advisors
    with upcoming task hints.
 
-   After recreating the team, re-send the plan file path
+   After re-spawning, re-send the plan file path
    to the `reviewer` via `SendMessage` — same handoff as
    Starting Execution step 2. The reviewer reads the plan
    file
@@ -522,9 +537,9 @@ ensures changes are deliberate.
 
 ## Monitoring Agents
 
-**Team members communicate via `SendMessage`.** `TaskOutput`
-only works for background agents spawned individually via
-the Agent tool. Using `TaskOutput` on a team member returns
+**Teammates communicate via `SendMessage`.** `TaskOutput`
+only works for background subagents — `Agent` calls
+without a `name`. Using `TaskOutput` on a teammate returns
 "no task found" — this is expected behavior, not a sign
 that the agent is stuck.
 
@@ -563,8 +578,9 @@ When you find existing plans in the plans directory:
    (look for completed checkboxes in the plan) and continue
    from the next incomplete task — re-implementing committed
    work wastes effort and creates duplicate commits
-5. Re-create the team before resuming execution — teams do
-   not persist across sessions
+5. Spawn all four teammates before resuming execution, as
+   in Starting Execution step 1 — teammates do not persist
+   across sessions or survive `/resume`
 6. Send the plan file path to the `reviewer` via
    `SendMessage` — same handoff as Starting Execution
    step 2, so the reviewer can resume scope verification
@@ -606,15 +622,15 @@ When all tasks in a plan are committed:
 **New tasks after completion.** Each plan covers one
 feature or task. When the user requests a new task:
 
-1. **Delete the current team** via `TeamDelete` — the team
-   from the final task is still active, and the Planning
-   phase creates a fresh team — only one team can be
-   active per session.
+1. **Shut down all teammates** — message each a
+   `shutdown_request` via `SendMessage` and wait until all
+   have exited. The teammates from the final task still
+   hold that task's context; the new plan gets fresh
+   teammates at Starting Execution.
 2. **Restart the full cycle** — clarification → planning →
-   queue insertion (which includes `TeamCreate` in the
-   Planning phase). Do not reuse the previous plan or skip
-   clarification — the new task has its own scope, risk
-   profile, and advisor needs.
+   queue insertion → Starting Execution. Do not reuse the
+   previous plan or skip clarification — the new task has
+   its own scope, risk profile, and advisor needs.
 
 ## Skill-Output Commits
 
@@ -646,38 +662,40 @@ This covers:
 
 See Commit Timing below for when these commits run — skill
 outputs always land in a team-down window since skills run
-before the team exists for a task.
+before any teammates are spawned for a task.
 
 ## Commit Timing
 
-With a team active, the only commits you make are the
-post-approval task commit sequence (steps 2–6 of After
-Reviewer Approval). Those are bounded by the squash reset
-at step 2 and use the reviewer's handoff data as input.
+While teammates are running, the only commits you make
+are the post-approval task commit sequence (steps 2–6 of
+After Reviewer Approval). Those are bounded by the squash
+reset at step 2 and use the reviewer's handoff data as
+input.
 Every other lead commit — skill outputs, plan file commits,
 plan-status updates, and user-directed ad-hoc changes (doc
 tweaks, convention updates, small fixes) — happens only in
 a team-down window.
 
-**Team-down windows:**
-- Before the first `TeamCreate` (initial planning, skill
-  runs, user clarifications).
-- Between `TeamDelete` and the next `TeamCreate` in the
-  inter-task cycle (step 6 of After Reviewer Approval).
-- After the final `TeamDelete` at plan completion or
+**Team-down windows** (no teammates running):
+- Before the first teammates are spawned (initial
+  planning, skill runs, user clarifications).
+- Between the shutdown of all teammates and their
+  re-spawn in the inter-task cycle (step 6 of After
+  Reviewer Approval).
+- After the final shutdown at plan completion or
   abandonment.
 
-**When the user requests a lead-side change while a team is
-active**, note it and commit it in the next team-down
-window. Do not commit ad-hoc changes while a team is up,
-even if the change is small and the files do not overlap
-with the developer's WIP.
+**When the user requests a lead-side change while
+teammates are running**, note it and commit it in the next
+team-down window. Do not commit ad-hoc changes while
+teammates are running, even if the change is small and the
+files do not overlap with the developer's WIP.
 
 **Why.** The post-approval squash runs
 `git reset <baseline-sha>`, which wipes every commit
 between the task's baseline and HEAD. An ad-hoc commit made
-while a team is active lands in that range and is lost at
-squash time. A production incident committed two
+while teammates are running lands in that range and is
+lost at squash time. A production incident committed two
 user-directed doc changes on top of the developer's WIP;
 the commits were stranded between baseline and WIP and
 required an emergency history reorder (stash + reset +

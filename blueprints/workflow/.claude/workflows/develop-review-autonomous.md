@@ -45,10 +45,10 @@ for documentation or configuration changes.
 
 ## Team Lifecycle
 
-The lead creates one team via `TeamCreate` with all
-workflow agents at workflow start. The team persists
-across all task slices — re-spawning per task incurs
-startup cost and breaks `SendMessage` communication.
+The lead spawns all workflow agents as teammates at
+workflow start. The teammates persist across all task
+slices — re-spawning per task incurs startup cost and
+breaks `SendMessage` communication.
 
 ## Handoff Protocol
 

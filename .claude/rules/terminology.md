@@ -11,37 +11,48 @@ directly to specific tools and APIs, removing ambiguity.
 
 ### launch (a subagent)
 
-Use when sending work to a subagent via the `Agent` tool.
-The subagent runs in a separate conversation, returns a
-result, and exits. This is the verb Claude Code's own
-`Agent` tool description uses.
+Use when sending work to a subagent via the `Agent` tool
+without a `name`. The subagent runs in a separate
+conversation, returns a result, and exits. This is the
+verb Claude Code's own `Agent` tool description uses.
+When agent teams are enabled, a named `Agent` call spawns
+a teammate instead — instructions that depend on a
+stateless subagent result must say to omit `name`.
 
 > "Launch a subagent to handle the security review."
 
 Do not use: "delegate to a subagent", "start a subagent",
 "create a subagent."
 
-### create (a team)
-
-Use when forming a new agent team via `TeamCreate`. This
-sets up the team structure and spawns the initial members.
-
-> "Create a team for the development workflow."
-
-Do not use: "start a team", "spin up a team."
-
 ### spawn (a teammate)
 
-Use when adding a member to an existing team. Spawning
-places an agent into a team where it runs as an independent
-session and communicates via `SendMessage`. This is the
-verb Claude Code uses in its agent infrastructure.
+Use when adding a teammate via the `Agent` tool with a
+`name`. The teammate runs as an independent session and
+communicates via `SendMessage`. A session has exactly one
+team, formed implicitly and cleaned up at session end —
+there is no step to create or delete it. Do not write
+"create a team" or reference `TeamCreate`/`TeamDelete`:
+those tools no longer exist, and agents reading the old
+terms look for a setup step that is not there.
 
 > "Spawn the reviewer as a teammate."
 
 Do not use: "create a teammate", "launch a teammate."
 "Spawn" is specific to teammates — do not use it for
 subagents (those are "launched").
+
+### shut down (a teammate)
+
+Use when ending a teammate's session: message it a
+`shutdown_request` via `SendMessage`. The teammate
+finishes its current request, then exits — or rejects the
+request with an explanation. Shutting down teammates and
+spawning replacements is the only way to get fresh
+context windows mid-session.
+
+> "Shut down the developer before spawning its replacement."
+
+Do not use: "delete the team", "kill the teammate."
 
 ### message
 
@@ -55,10 +66,13 @@ instructions).
 
 ### broadcast
 
-Use when a teammate sends information to all other
-teammates in the team.
+Use when a teammate sends the same information to several
+teammates. `SendMessage` has no all-teammates address —
+a broadcast is one message per recipient, so name every
+recipient.
 
-> "Broadcast the updated plan to the team."
+> "Broadcast the updated plan to the developer and the
+> reviewer."
 
 ### the requester / the implementor
 
@@ -89,10 +103,10 @@ Architect." These belong in workflow files only.
 
 | Action                        | Correct term   | Tool / mechanism |
 |-------------------------------|----------------|------------------|
-| Send work to a subagent       | **launch**     | `Agent` tool     |
-| Form a new team               | **create**     | `TeamCreate`     |
-| Add a member to a team        | **spawn**      | `TeamCreate`     |
+| Send work to a subagent       | **launch**     | `Agent` tool, no `name` |
+| Add a teammate to the team    | **spawn**      | `Agent` tool with `name` |
+| End a teammate's session      | **shut down**  | `SendMessage` `shutdown_request` |
 | Send a message within a team  | **message**    | `SendMessage`    |
-| Send to all teammates         | **broadcast**  | `SendMessage`    |
+| Send to several teammates     | **broadcast**  | `SendMessage` per recipient |
 | Refer to task originator      | **the requester**  | —            |
 | Refer to code author          | **the implementor** | —           |
