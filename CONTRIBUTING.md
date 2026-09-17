@@ -217,7 +217,10 @@ strictness settings).
    with setup instructions
 2. Add a corresponding step to `SKILL.md` that reads the
    file when that language is detected
-3. Update the blueprint's design reference structure diagram
+3. If the language has an official code intelligence
+   plugin, add its row (plugin and server binary) to the
+   Code Intelligence Plugins table in `SKILL.md`
+4. Update the blueprint's design reference structure diagram
 
 No other files need to change. See
 `blueprints/*/skills/project-init/README.md` for details.

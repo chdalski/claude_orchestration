@@ -27,7 +27,7 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 | `.claude/agents/plan-reviewer.md` | Plan quality gate — launched as subagent before user presentation (Sonnet) |
 | `.claude/rules/` | Unconditional + conditional rules injected by Claude Code |
 | `.claude/skills/ensure-ai-dirs/` | Skill: creates `.ai/plans/` and `.ai/memory/` directories, points auto memory at `.ai/memory/` (absolute path in `settings.local.json`), syncs plan format guide and review checklist, moves Completed/Canceled plans into a frozen `completed/` directory |
-| `.claude/skills/project-init/` | Skill: scans project, generates `CLAUDE.md` per `project-context.md` |
+| `.claude/skills/project-init/` | Skill: scans project, generates `CLAUDE.md` per `project-context.md`, enables code intelligence plugins for detected languages |
 | `.claude/skills/project-sanity/` | Skill: audits repo for common issues (report-only) |
 | `tests/blueprint_contracts.py` | Single source of truth for required structure and agent frontmatter |
 | `tests/static/` | Structure, caching compliance, agent frontmatter, rule length tests |
@@ -39,7 +39,7 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 - Agent files define role only — no named teammates, no workflow coordination, no workflow conditionals
 - Use "the requester" / "the implementor" in agent files — never role-specific names
 - Agent `name:` fields use lowercase hyphenated form: `developer`, `test-engineer`
-- Unconditional rules (no `paths:` frontmatter): `acceptance-criteria.md`, `advisor-gate-independence.md`, `claim-verification.md`, `communication-hygiene.md`, `no-silent-target-weakening.md`, `procedural-fidelity.md`, `risk-assessment.md`, `root-cause-discipline.md`, `safe-git.md`, `simplicity.md`
+- Unconditional rules (no `paths:` frontmatter): `acceptance-criteria.md`, `advisor-gate-independence.md`, `claim-verification.md`, `code-navigation.md`, `communication-hygiene.md`, `no-silent-target-weakening.md`, `procedural-fidelity.md`, `risk-assessment.md`, `root-cause-discipline.md`, `safe-git.md`, `simplicity.md`
 - Conditional rules load automatically when agents touch matching file extensions
 - Universal principles stated once in unconditional rules — language rules extend without restating
 - Adding a new language: create `lang-<language>.md` with `paths:` frontmatter, update `functional-style.md`/`code-mass.md`/`code-principles.md` paths — no changes to CLAUDE.md or agents

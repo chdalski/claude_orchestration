@@ -34,7 +34,12 @@ addressing stale state early avoids wasted effort:
   project-appropriate code; without it, agents default to
   generic patterns. After generating, commit the skill's
   outputs (see Skill-Output Commits). Relay relevant
-  findings to the user during clarification.
+  findings to the user during clarification. If it
+  enabled code intelligence plugins, ask the user to run
+  `/reload-plugins` and to install any missing server
+  binaries it reported — you cannot run `/reload-plugins`
+  yourself, and the `LSP` tool stays unavailable until
+  then.
 - Scan the plans directory (path from
   `.claude/settings.json`) for existing plan files. If
   incomplete plans exist, present the full queue state
@@ -652,7 +657,8 @@ infrastructure that you commit directly.
 
 This covers:
 - `/project-init` outputs — `CLAUDE.md`, `Cargo.toml` lint
-  config, TypeScript strictness config
+  config, TypeScript strictness config, code intelligence
+  plugin entries in `.claude/settings.json`
 - `/ensure-ai-dirs` outputs — plan format guide, review
   checklist, `completed/CLAUDE.md`, finished-plan moves
   into `completed/`

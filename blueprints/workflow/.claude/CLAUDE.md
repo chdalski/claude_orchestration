@@ -41,7 +41,12 @@ addressing stale state early avoids wasted effort:
   beyond `CLAUDE.md` were modified (e.g. Cargo.toml lint
   updates, TypeScript strictness config changes), mention
   this during clarification — new lints may surface
-  warnings across the codebase.
+  warnings across the codebase. If it enabled code
+  intelligence plugins, ask the user to run
+  `/reload-plugins` and to install any missing server
+  binaries it reported — you cannot run `/reload-plugins`
+  yourself, and the `LSP` tool stays unavailable until
+  then.
 - Scan the plans directory for existing plan files. If
   in-progress plans exist, present them to the user and
   ask whether to resume or start fresh (see Resuming

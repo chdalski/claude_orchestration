@@ -30,7 +30,7 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 | `.claude/rules/` | Unconditional + conditional rules injected by Claude Code |
 | `.claude/skills/ensure-ai-dirs/` | Skill: creates `.ai/plans/` and `.ai/memory/` directories, points auto memory at `.ai/memory/` (absolute path in `settings.local.json`), syncs plan format guide and review checklist, moves Completed/Canceled plans into a frozen `completed/` directory |
 | `.claude/skills/example-mapping/` | Skill: facilitates an Example Mapping session and writes a structured mapping file for `/test-list` or clarification |
-| `.claude/skills/project-init/` | Skill: scans project, generates `CLAUDE.md` per `project-context.md` |
+| `.claude/skills/project-init/` | Skill: scans project, generates `CLAUDE.md` per `project-context.md`, enables code intelligence plugins for detected languages |
 | `.claude/skills/project-sanity/` | Skill: audits repo for common issues (report-only) |
 | `.claude/skills/test-list/` | Skill: TDD entry path — invokes the test-list subagent and embeds the confirmed list in the plan |
 | `.claude/skills/project-init/project-context.md` | Output format for generated project `CLAUDE.md` |
@@ -47,7 +47,7 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 - Agent `name:` fields use lowercase hyphenated form: `developer`, `test-engineer`
 - Workflow files define team composition, coordination sequences, and sign-off requirements
 - Adding a new workflow: create a file in `.claude/workflows/` — no changes to CLAUDE.md, agents, or rules
-- Unconditional rules (no `paths:` frontmatter): `acceptance-criteria.md`, `advisor-gate-independence.md`, `claim-verification.md`, `communication-hygiene.md`, `no-silent-target-weakening.md`, `procedural-fidelity.md`, `risk-assessment.md`, `root-cause-discipline.md`, `safe-git.md`, `simplicity.md`
+- Unconditional rules (no `paths:` frontmatter): `acceptance-criteria.md`, `advisor-gate-independence.md`, `claim-verification.md`, `code-navigation.md`, `communication-hygiene.md`, `no-silent-target-weakening.md`, `procedural-fidelity.md`, `risk-assessment.md`, `root-cause-discipline.md`, `safe-git.md`, `simplicity.md`
 - Conditional rules load automatically when agents touch matching file extensions
 - Universal principles stated once in unconditional rules — language rules extend without restating
 - Adding a new language: create `lang-<language>.md` with `paths:` frontmatter, update `functional-style.md`/`code-mass.md`/`code-principles.md` paths — no changes to CLAUDE.md, agents, or workflows

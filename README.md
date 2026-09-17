@@ -233,7 +233,9 @@ Reviewer approves.
 
 - **`/project-init`** — scans the project, generates
   `CLAUDE.md` context (overview, build commands,
-  conventions, references). Run on first session.
+  conventions, references), and enables the language
+  server plugin for each detected language. Run on first
+  session.
 - **`/project-sanity`** — audits the repository for
   common issues across detected technologies
   (report-only).
