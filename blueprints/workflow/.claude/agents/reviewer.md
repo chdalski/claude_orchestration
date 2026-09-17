@@ -1,7 +1,7 @@
 ---
 name: reviewer
 description: Independent quality gate — reviews completed work and reports approval or rejection
-model: claude-opus-4-8[1m]
+model: opus[1m]
 effort: high
 color: purple
 tools:
