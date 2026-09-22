@@ -59,9 +59,12 @@ during execution.
 
 ### devcontainer_templates
 
-Docker-based sandboxing for agent execution. Project-scoped
-volume for Claude config, dual auth mode (`proxy`/`oauth`)
-via `CLAUDE_AUTH` env var, base and audio variants.
+Docker Compose-based sandbox for agent execution:
+per-checkout volumes for Claude config and shell history,
+CPU/memory limits, dual auth mode (`proxy`/`oauth`) via
+`CLAUDE_AUTH`, secrets read by the shell instead of Compose,
+and a PulseAudio overlay loaded by default. The root
+`.devcontainer` is a symlink to the template.
 
 ## Conventions
 

@@ -20,7 +20,7 @@ blueprints/*/                      ← Products of the toolkit
 │   .claude/                       ← What gets copied into target projects
 │       CLAUDE.md, agents/, rules/, skills/, workflows/
 │
-devcontainer_templates/            ← Docker sandboxes for agent execution
+devcontainer_templates/            ← Docker sandbox for agent execution
 ```
 
 **Toolkit** (`/.claude/`) — rules, skills, and conventions
@@ -254,13 +254,11 @@ conditional rules when agents touch matching files.
 
 ## Devcontainer Templates
 
-`devcontainer_templates/` provides Docker-based sandboxes
-for running agents in isolation. Two variants are available:
-
-| Template | Directory | Platform |
-|----------|-----------|----------|
-| **Base** | `.devcontainer/` | Cross-platform |
-| **Audio** | `.devcontainer_audio/` | Linux (PulseAudio passthrough) |
+`devcontainer_templates/.devcontainer/` is a Docker
+Compose-based sandbox for running agents in isolation.
+PulseAudio passthrough (Linux) is a Compose overlay, loaded
+by default — remove it from `dockerComposeFile` on macOS and
+Windows.
 
 ```bash
 # Copy into your project
@@ -270,14 +268,25 @@ cp -r devcontainer_templates/.devcontainer/ /path/to/your/project/.devcontainer/
 **Features:**
 
 - **Dual auth mode** — proxy (default) or OAuth, controlled
-  by `CLAUDE_AUTH` in `.devcontainer/.env.local`
-- **Project-scoped volume** — Claude config and history
-  isolated per project
+  by `CLAUDE_AUTH` in `.devcontainer/.env`
+- **Resource limits** — per-developer CPU and memory caps
+  via `DEVCONTAINER_CPUS` and `DEVCONTAINER_MEMORY`
+- **Secrets outside the container config** — tokens in
+  `.devcontainer/.env.credentials` are read by the shell,
+  never by Compose, so they stay out of logs and
+  `docker inspect`
+- **Per-checkout volumes** — Claude config, shell history,
+  and pnpm store isolated per checkout
 - **Host config as template** — `~/.claude/` mounted
   read-only, copied into container on startup
+- **Plugins ready on start** — official plugins the project
+  enables are installed automatically; the TypeScript and
+  Python language servers are preinstalled
 
-See each template's README for auth configuration,
-troubleshooting, and mount details.
+See the template's
+[README](devcontainer_templates/.devcontainer/README.md) for
+configuration, auth modes, troubleshooting, and migrating
+from the `.env.local` layout.
 
 ## Contributing
 
