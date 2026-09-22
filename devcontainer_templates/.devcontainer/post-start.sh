@@ -3,7 +3,8 @@
 # Runs on every container start (postStartCommand).
 #
 # 1. Copies host Claude configuration into the container volume
-# 2. Sets a random git identity for Claude commits
+# 2. Sets a random git identity for Claude commits (mail domain from
+#    GIT_EMAIL_DOMAIN, default codecentric.de)
 # 3. Installs the official Claude plugins the project enables
 #
 # Auth mode is controlled by the CLAUDE_AUTH environment variable:
@@ -112,7 +113,7 @@ init_git_identity() {
 
   FIRST=$(echo "$SELECTED" | awk '{print $1}' | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9')
   SECOND=$(echo "$SELECTED" | awk '{print $2}' | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9')
-  EMAIL="${FIRST}.${SECOND}@codecentric.de"
+  EMAIL="${FIRST}.${SECOND}@${GIT_EMAIL_DOMAIN:-codecentric.de}"
 
   git config --global user.name "$SELECTED"
   git config --global user.email "$EMAIL"

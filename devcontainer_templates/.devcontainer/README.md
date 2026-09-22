@@ -37,7 +37,7 @@ Three env files, each with one job:
 
 | File | Committed | Read by | Holds | Takes effect |
 |------|-----------|---------|-------|--------------|
-| `.env.defaults` | yes | Compose | Team defaults (`CLAUDE_AUTH=proxy`) | Rebuild Container |
+| `.env.defaults` | yes | Compose | Team defaults (`CLAUDE_AUTH`, `GIT_EMAIL_DOMAIN`) | Rebuild Container |
 | `.env` | no | Compose | Personal overrides, resource limits | Rebuild Container |
 | `.env.credentials` | no | fish, at every shell start | Tokens and secrets | Next new shell |
 
@@ -47,6 +47,15 @@ log. Tokens go in `.env.credentials`, which Compose never reads, so they stay
 out of the start log and `docker inspect`. They are not hidden from the
 agent — Claude runs in a shell with these variables exported. See
 `.env.credentials.example` for the format.
+
+Settings:
+
+| Key | Default | Purpose |
+|-----|---------|---------|
+| `CLAUDE_AUTH` | `proxy` | Auth mode (see [Authentication Modes](#authentication-modes)) |
+| `GIT_EMAIL_DOMAIN` | `codecentric.de` | Mail domain of the random git identity for Claude's commits |
+| `DEVCONTAINER_CPUS` | no limit | CPU cap (`.env` only, see [Resource limits](#resource-limits)) |
+| `DEVCONTAINER_MEMORY` | no limit | Memory cap (`.env` only) |
 
 Example `.env`:
 
