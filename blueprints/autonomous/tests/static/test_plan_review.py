@@ -62,10 +62,20 @@ def test_checklist_contains_required_section(section):
 def test_checklist_includes_clean_report_instruction():
     """The checklist must tell the subagent what to return when no issues are found."""
     content = PLAN_REVIEW_CHECKLIST_TEMPLATE.read_text()
-    assert "No issues found" in content, (
-        "plan-review-checklist.md must include 'No issues found' as the "
-        "clean-report phrase — the lead uses this to detect when the "
-        "review cycle can stop"
+    assert "No blocking issues found" in content, (
+        "plan-review-checklist.md must include 'No blocking issues found' "
+        "as the clean-report phrase — the lead uses this to detect when "
+        "the review cycle can stop"
+    )
+
+
+def test_checklist_defines_severity_tiers():
+    """Only Blocking findings may hold the review cycle open."""
+    content = PLAN_REVIEW_CHECKLIST_TEMPLATE.read_text()
+    assert "## Severity" in content and "**Blocking**" in content and "**Advisory**" in content, (
+        "plan-review-checklist.md must define Blocking and Advisory "
+        "severities — without them every nit forces another full "
+        "review pass and the cycle stops converging"
     )
 
 

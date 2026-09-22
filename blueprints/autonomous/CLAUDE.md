@@ -51,7 +51,7 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 - Lead's ad-hoc commits happen only in team-down windows — mid-task commits land in the squash reset range and are lost
 - Reviewer backstop: rejects if non-trivial behavioral changes lack tests and no advisor was consulted
 - Infeasibility claims require specific evidence (file, function, scope, own code vs dependency) per `claim-verification.md` — category labels are not sufficient
-- Plans are reviewed by a Sonnet subagent before user presentation — review cycles until the subagent reports no issues
+- Plans are reviewed by a Sonnet subagent before user presentation — review cycles until the subagent reports no blocking issues
 - Plan review checklist and format guide are synced to the plans directory by `/ensure-ai-dirs`
 - Plan-format.md contains `<!-- agent: -->` comments as authoring hints for the lead
 - Plans are committed only after user approval, not before
