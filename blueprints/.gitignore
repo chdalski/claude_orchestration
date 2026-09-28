@@ -1,7 +1,8 @@
 # Ignore everything in this directory...
 /*
 
-# ...except this file and the two published blueprints.
+# ...except this file and the published blueprints.
 !/.gitignore
 !/autonomous/
+!/direct-review/
 !/workflow/

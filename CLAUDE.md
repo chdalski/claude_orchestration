@@ -4,7 +4,7 @@ A toolkit for building Claude Code multi-agent orchestration
 setups. Provides design rules, audit skills, a test harness,
 and conventions for creating blueprints — `.claude/`
 configurations that turn a Claude Code session into a
-coordinated multi-agent team. The two included blueprints
+coordinated multi-agent team. The three included blueprints
 are products of this framework, not the whole project.
 
 ## Build and Test
@@ -16,6 +16,7 @@ first use — it is required to run the test suite.
 which uv || curl -LsSf https://astral.sh/uv/install.sh | sh
 uv run pytest blueprints/workflow/tests/ -m static -v
 uv run pytest blueprints/autonomous/tests/ -m static -v
+uv run pytest blueprints/direct-review/tests/ -m static -v
 ```
 
 ## Components
@@ -26,6 +27,7 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 | `/.claude/skills/` | Audit skills: `/blueprint-audit`, `/cache-audit` (never copied) |
 | `blueprints/workflow/` | Clarify-first blueprint — user chooses workflow |
 | `blueprints/autonomous/` | Autonomous blueprint — plan queue + developer |
+| `blueprints/direct-review/` | Advisor-first blueprint — lead implements on request, per-task user review |
 | `devcontainer_templates/` | Devcontainer setup for sandboxed agent execution |
 | `CONTRIBUTING.md` | How to develop and extend blueprints |
 
@@ -56,6 +58,19 @@ Reviewer, Test Engineer, Security Engineer) plus the lead
 and the `plan-reviewer` subagent (launched before user
 plan presentation). The lead stays responsive to the user
 during execution.
+
+### direct-review
+
+Advisor first: the lead clarifies, weighs options, and
+recommends without editing files. It implements only on an
+explicit user request — plan (plan-reviewer + user
+approval), then one task at a time: `risk-assessment.md`
+selects Reviewer-only, Security-Hybrid (Security Engineer
+pre/post sign-offs), or escalation to the user. The
+Reviewer approves each task, the user reviews it, the lead
+commits and waits for the user's go. 2 team agents
+(Reviewer, Security Engineer) plus the lead and the
+`plan-reviewer` subagent. No `workflows/` directory.
 
 ### devcontainer_templates
 

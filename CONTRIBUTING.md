@@ -98,7 +98,7 @@ If the rule exceeds 200 lines, split into focused files
 (e.g., `lang-python.md`, `lang-python-patterns.md`,
 `lang-python-testing.md`).
 
-**Apply to both blueprints** — language rules are shared.
+**Apply to all blueprints** — language rules are shared.
 
 **Real examples:**
 - `5da1b8e` — split Go, Python, and TypeScript rule files
@@ -250,16 +250,17 @@ session start and apply to everything agents produce.
 
 ## Cross-Blueprint Changes
 
-Most changes apply to both blueprints (language rules,
+Most changes apply to all blueprints (language rules,
 skills, agent improvements). The convention is to make the
-change in one blueprint and copy it to the other. The commit
+change in one blueprint and copy it to the others. The commit
 messages use the `(v2,v3)` scope prefix to signal this.
 
-Run tests for both blueprints after cross-blueprint changes:
+Run tests for every blueprint after cross-blueprint changes:
 
 ```bash
 uv run pytest blueprints/workflow/tests/ -m static -v
 uv run pytest blueprints/autonomous/tests/ -m static -v
+uv run pytest blueprints/direct-review/tests/ -m static -v
 ```
 
 ## Testing

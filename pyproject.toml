@@ -18,6 +18,6 @@ markers = [
     "static: tests that parse files and validate structure (no API calls)",
     "behavioral: tests that run real Claude Code sessions (requires auth)",
 ]
-testpaths = ["blueprints/workflow/tests", "blueprints/autonomous/tests"]
+testpaths = ["blueprints/workflow/tests", "blueprints/autonomous/tests", "blueprints/direct-review/tests"]
 pythonpath = []
-norecursedirs = ["blueprints/workflow/tests/fixtures", "blueprints/autonomous/tests/fixtures"]
+norecursedirs = ["blueprints/workflow/tests/fixtures", "blueprints/autonomous/tests/fixtures", "blueprints/direct-review/tests/fixtures"]

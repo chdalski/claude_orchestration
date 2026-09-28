@@ -4,7 +4,7 @@ A toolkit for building Claude Code multi-agent setups.
 This repository provides design rules, audit skills, a
 test harness, and conventions for creating `.claude/`
 configurations — called **blueprints** — that turn a Claude
-Code session into a coordinated multi-agent team. Two
+Code session into a coordinated multi-agent team. Three
 production-ready blueprints are included.
 
 ## How It Works
@@ -81,6 +81,7 @@ structure.
 which uv || curl -LsSf https://astral.sh/uv/install.sh | sh
 uv run pytest blueprints/workflow/tests/ -m static -v
 uv run pytest blueprints/autonomous/tests/ -m static -v
+uv run pytest blueprints/direct-review/tests/ -m static -v
 ```
 
 ### Extending Blueprints
@@ -95,6 +96,7 @@ sanity checks, and language-specific init procedures.
 |-----------|----------|--------|
 | **autonomous** | Full autonomy after plan approval via a plan queue | Lead, Developer, Reviewer, Test Engineer, Security Engineer |
 | **workflow** | User chooses a workflow after plan approval | Lead, Developer, Test Engineer, Security Engineer, Reviewer |
+| **direct-review** | Advisor by default; lead implements on request with per-task user review | Lead, Reviewer, Security Engineer |
 
 ### When to Use Which
 
@@ -105,7 +107,9 @@ sanity checks, and language-specific init procedures.
 | Plan queue with concurrent clarification | autonomous |
 | Lead stays responsive during execution | autonomous |
 | Multiple workflow options (supervised, autonomous, TDD) | workflow |
-| Per-commit user approval | workflow (Supervised) |
+| Per-commit user approval | workflow (Supervised), direct-review |
+| An advisor that weighs decisions and edits only when asked | direct-review |
+| Lead implements, with security gates on security-relevant work | direct-review |
 
 ### Quick Start
 
@@ -114,6 +118,8 @@ sanity checks, and language-specific init procedures.
 cp -r blueprints/autonomous/.claude/ /path/to/your/project/.claude/
 # or
 cp -r blueprints/workflow/.claude/ /path/to/your/project/.claude/
+# or
+cp -r blueprints/direct-review/.claude/ /path/to/your/project/.claude/
 ```
 
 Start Claude Code in your project directory. The CLAUDE.md
@@ -251,6 +257,63 @@ Reviewer approves.
 
 Language-specific guidance loads automatically via
 conditional rules when agents touch matching files.
+
+### direct-review — Advisor First
+
+The lead is an advisor by default: it clarifies the
+request, weighs the options with their trade-offs, and
+recommends — without editing files. For security-relevant
+decisions it consults the Security Engineer as a stateless
+subagent. Only an explicit "implement it" enters Implement
+mode: the lead writes a plan (reviewed by the plan-reviewer
+subagent and approved by the user), then implements one
+task at a time and waits for the user's review after each.
+
+Each task is classified by `risk-assessment.md`:
+
+- **Reviewer-only** — no security relevance, and existing
+  tests cover the change (or it is non-behavioral).
+- **Security-Hybrid** — security-relevant work: the
+  Security Engineer signs off before any edit and again on
+  the final diff.
+- **Escalate** — high-risk categories (auth, secrets,
+  new input sources, untrusted dynamic construction,
+  cross-scope effects) or behavioral changes without
+  covering tests. The lead stays in advise mode until the
+  user explicitly chooses Security-Hybrid anyway or
+  handling the task outside the blueprint.
+
+**Agents:**
+
+| Agent | Model | Role |
+|-------|-------|------|
+| Lead | Opus | Advises, plans, implements on request, commits after user review |
+| Reviewer | Opus | Quality gate — scope, code review, proposes commit message |
+| Security Engineer | Opus | Advisory — decision consultations, pre/post-implementation sign-offs |
+| Plan Reviewer (subagent) | Sonnet | Reviews draft plans before user presentation |
+
+```mermaid
+graph TD
+    User --> Lead
+    Lead -->|clarify + weigh options| Advice[Recommendation]
+    Advice -.->|security-relevant| SEC[Security Engineer<br/>subagent]
+    Advice --> UDec{User asks to<br/>implement?}
+    UDec -->|no| User
+    UDec -->|yes| Plan[Plan + plan-reviewer<br/>+ user approval]
+    Plan --> Risk{Risk<br/>assessment}
+    Risk -->|escalate| User
+    Risk -->|Security-Hybrid| Pre[SE pre-sign-off]
+    Risk -->|Reviewer-only| Impl[Lead implements<br/>+ quality checks]
+    Pre --> Impl
+    Impl -->|Security-Hybrid| Post[SE post-sign-off]
+    Impl -->|Reviewer-only| Rev[Reviewer]
+    Post --> Rev
+    Rev -->|rejected| Impl
+    Rev -->|approved| UR{User reviews<br/>task}
+    UR -->|changes| Impl
+    UR -->|approved| Commit[Lead commits]
+    Commit -->|wait for user's go| Risk
+```
 
 ## Devcontainer Templates
 

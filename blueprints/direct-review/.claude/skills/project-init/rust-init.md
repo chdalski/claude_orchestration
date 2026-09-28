@@ -1,0 +1,92 @@
+# Rust Project Initialization — Cargo Lint Configuration
+
+Apply these lints to every `Cargo.toml` in the project when
+Rust is detected. The correct section depends on whether the
+file is a workspace root or a crate manifest — using the wrong
+section is a silent error that Cargo ignores without warning.
+
+## Crate `Cargo.toml` (has `[package]`)
+
+If the crate has `lints.workspace = true`, skip it — the
+workspace definition already covers it. Otherwise add:
+
+```toml
+[lints.clippy]
+# https://github.com/rust-lang/cargo/issues/12918
+all = { level = "warn", priority = -1 }      # -W clippy::all (enabled by default, but good to be explicit)
+pedantic = { level = "warn", priority = -1 } # -W clippy::pedantic
+nursery = { level = "warn", priority = -1 }  # -W clippy::nursery
+indexing_slicing = "deny"                    # panics on out-of-bounds — use .get() instead
+fallible_impl_from = "deny"                  # From impls that can panic — use TryFrom
+wildcard_enum_match_arm = "deny"             # silently ignores new variants when enum grows
+unneeded_field_pattern = "deny"              # dead pattern arms that hide refactoring bugs
+fn_params_excessive_bools = "deny"           # boolean params are easy to swap — use enums
+must_use_candidate = "deny"                  # functions whose return value should not be ignored
+panic = "deny"                               # explicit panic!() — use proper error handling
+expect_used = "deny"                         # panics with a message — use proper error handling
+unwrap_used = "deny"                         # panics on None/Err — use proper error handling
+allow_attributes = "deny"                    # forces #[expect] over #[allow] — self-cleaning suppressions
+allow_attributes_without_reason = "deny"     # every lint suppression must document why
+missing_errors_doc = "warn"                  # document Errors section for fallible public functions
+missing_panics_doc = "warn"                  # document Panics section when a function can panic
+
+[lints.rust]
+missing_docs = "warn"                        # encourage doc comments on public items
+warnings = "deny"                            # -D warnings
+```
+
+## Workspace `Cargo.toml` (has `[workspace]`)
+
+```toml
+[workspace.lints.clippy]
+# https://github.com/rust-lang/cargo/issues/12918
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -1 }
+indexing_slicing = "deny"
+fallible_impl_from = "deny"
+wildcard_enum_match_arm = "deny"
+unneeded_field_pattern = "deny"
+fn_params_excessive_bools = "deny"
+must_use_candidate = "deny"
+panic = "deny"
+expect_used = "deny"
+unwrap_used = "deny"
+allow_attributes = "deny"
+allow_attributes_without_reason = "deny"
+missing_errors_doc = "warn"
+missing_panics_doc = "warn"
+
+[workspace.lints.rust]
+missing_docs = "warn"
+warnings = "deny" # -D warnings
+```
+
+Member crates inherit these by adding `lints.workspace = true`
+to their own `Cargo.toml`. Prefer workspace-level lints in
+multi-crate projects — they enforce consistency and avoid
+duplicating config across crates.
+
+## Merging
+
+If a `Cargo.toml` already has a lints section, merge these
+entries into it. If any lint conflicts with an existing entry,
+keep the stricter setting (`"deny"` over `"warn"` over `"allow"`).
+
+## `clippy.toml`
+
+Create a `clippy.toml` at the workspace root (or project root
+for single-crate projects) with these test-specific allowances:
+
+```toml
+allow-unwrap-in-tests = true
+allow-expect-in-tests = true
+allow-panic-in-tests = true
+allow-indexing-slicing-in-tests = true
+```
+
+These options tell Clippy not to fire `unwrap_used`,
+`expect_used`, `panic`, and `indexing_slicing` inside `#[cfg(test)]`
+modules and integration test files, so test code does not need
+`#[expect]` suppressions for these lints. The workspace-level
+`"deny"` settings in `Cargo.toml` still apply to production code.
