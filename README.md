@@ -238,8 +238,8 @@ Reviewer approves.
 **Skills:**
 
 - **`/project-init`** — scans the project, generates
-  `CLAUDE.md` context (overview, build commands,
-  conventions, references), and enables the language
+  `CLAUDE.md` context (overview, build commands, project
+  language, conventions, references), and enables the language
   server plugin for each detected language. Run on first
   session.
 - **`/project-sanity`** — audits the repository for

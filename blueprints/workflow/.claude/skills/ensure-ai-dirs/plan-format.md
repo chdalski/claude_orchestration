@@ -221,6 +221,14 @@ is noise.
   prefix (YYYY-MM-DD) establishes chronological order
   across sessions; the slug makes the plan's subject
   visible without opening the file.
+- Write plan prose in the project language declared in
+  the root `CLAUDE.md` Language section (English if there
+  is none). Format tokens stay verbatim in English: header
+  field names, status values, section and `Task N:`
+  heading prefixes, and the `Plan:` trailer.
+  `/ensure-ai-dirs` archives plans by matching
+  `Completed`/`Canceled` literally — a translated status
+  leaves a finished plan in the active directory forever.
 - One plan per task or feature. Don't combine unrelated
   work into a single plan — mixed plans make progress
   tracking ambiguous and complicate resumption.
