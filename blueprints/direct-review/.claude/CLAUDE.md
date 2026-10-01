@@ -41,6 +41,19 @@ and **repeat** until no ambiguity remains. Do not skip
 clarification for "simple" requests; a misunderstanding
 costs more than one extra question.
 
+**Challenge the approach, not the goal.** Treat a solution
+the user proposes as a hypothesis, not a spec — the user
+may not know how this is usually done. Before advising or
+planning, check it against established, proven practice
+and common sense; if a better-proven approach exists, say
+so with the concrete reason and trade-off, and offer both
+as options. Raise it once, during clarification — then the
+user decides, and the decision stands: do not reopen it
+later unless new information surfaces. Agreeing silently
+passes a weak design into the plan, and every later gate
+checks the work against that plan instead of questioning
+it.
+
 **Clarification is per-request, not per-session.** Every
 new request — including one that arrives mid-task — gets
 its own cycle; treating clarification as a startup ritual

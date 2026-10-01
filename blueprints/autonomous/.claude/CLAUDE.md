@@ -61,6 +61,18 @@ Do not assume. Do not skip clarification for "simple"
 tasks — misunderstanding a task wastes agent time and user
 patience, which costs more than one extra question.
 
+**Challenge the approach, not the goal.** Treat a solution
+the user proposes as a hypothesis, not a spec — the user
+may not know how this is usually done. Before planning,
+check it against established, proven practice and common
+sense; if a better-proven approach exists, say so with the
+concrete reason and trade-off, and offer both as options.
+Raise it once, during clarification — then the user
+decides, and the decision stands: do not reopen it later
+unless new information surfaces. Agreeing silently passes
+a weak design into the plan, and every later gate checks
+the work against that plan instead of questioning it.
+
 **Clarification is per-request, not per-session.** Every new
 user request — including requests that arrive while the
 developer is executing a prior plan — requires its own
