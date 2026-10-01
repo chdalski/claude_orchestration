@@ -10,12 +10,17 @@
 # Auth mode is controlled by the CLAUDE_AUTH environment variable:
 #   - "proxy"  (default): copies settings.json from host, which contains
 #     API proxy config (Portkey env vars, custom headers, etc.)
-#   - "oauth": copies .credentials.json from host, which contains
-#     Anthropic OAuth tokens. Copies settings.json with the entire env
+#   - "oauth": never copies the host's .credentials.json — each container
+#     runs 'claude login' once and keeps its own OAuth session in the
+#     ~/.claude volume. Copies settings.json with the entire env
 #     block and apiKeyHelper removed — the env block typically contains
 #     proxy config that conflicts with OAuth. Env vars needed in oauth
 #     mode go in .devcontainer/.env (non-secret) or
 #     .devcontainer/.env.credentials (tokens) instead.
+#
+# The host copy runs only while the ~/.claude volume has no settings.json yet;
+# afterwards the container keeps its own settings. To pick up host changes,
+# delete ~/.claude/settings.json in the container (or the volume) and restart.
 #
 # CLAUDE_AUTH defaults to "proxy" in .devcontainer/.env.defaults. Override it
 # in .devcontainer/.env (gitignored); changes take effect after "Rebuild
@@ -47,6 +52,14 @@ init_claude_settings() {
 
   section "Initializing Claude Settings (auth mode: $CLAUDE_AUTH)"
 
+  # ~/.claude is a persistent volume: once settings exist, keep them instead of
+  # overwriting them with the host copy on every start.
+  if [ -f "$CONTAINER_DIR/settings.json" ]; then
+    echo "Container settings already present at $CONTAINER_DIR — skipping host copy."
+    echo "$SEP"
+    return 0
+  fi
+
   mkdir -p "$CONTAINER_DIR"
 
   case "$CLAUDE_AUTH" in
@@ -61,13 +74,12 @@ init_claude_settings() {
       fi
       ;;
     oauth)
-      HOST_CREDENTIALS="$HOST_DIR/.credentials.json"
-      if [ -f "$HOST_CREDENTIALS" ]; then
-        echo "Copying host .credentials.json (OAuth mode)"
-        cp "$HOST_CREDENTIALS" "$CONTAINER_DIR/.credentials.json"
-      else
-        echo "WARNING: No .credentials.json found at $HOST_CREDENTIALS"
-        echo "Run 'claude login' inside the container to authenticate."
+      # Never copy the host's .credentials.json: OAuth refresh tokens rotate,
+      # so a copy shared by host and containers dies as soon as one of them
+      # refreshes. Each container logs in once and keeps its own session.
+      if [ ! -f "$CONTAINER_DIR/.credentials.json" ]; then
+        echo "No container credentials yet (OAuth mode)."
+        echo "Run 'claude login' once inside the container to authenticate."
       fi
       # Copy settings.json if it exists, but strip the entire env block
       # and apiKeyHelper — the env block contains proxy config that conflicts

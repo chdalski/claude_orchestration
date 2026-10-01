@@ -81,7 +81,13 @@ The `CLAUDE_AUTH` environment variable controls how Claude Code authenticates.
 | Mode | `CLAUDE_AUTH` | What gets copied | Use case |
 |------|---------------|------------------|----------|
 | Proxy (default) | `proxy` | `settings.json` (with env vars) | Work account via API proxy (e.g. Portkey) |
-| OAuth | `oauth` | `.credentials.json` + `settings.json` (env block and apiKeyHelper stripped) | Private Anthropic account |
+| OAuth | `oauth` | `settings.json` (env block and apiKeyHelper stripped); no credentials | Private Anthropic account |
+
+The host copy happens only on the first start of a fresh Claude config volume
+(no `settings.json` in it yet). Later starts keep the container's own
+settings, so changes inside the container survive restarts. To pick up
+changes from the host, delete `~/.claude/settings.json` inside the container
+(or the whole volume, see [Troubleshooting](#troubleshooting)) and restart.
 
 ### Proxy mode (default)
 
@@ -90,8 +96,10 @@ the container, including any `env` block with proxy configuration.
 
 ### OAuth mode
 
-Requires `~/.claude/.credentials.json` from a prior `claude login` on the
-host. The script copies it into the container and strips the entire `env`
+The host's `~/.claude/.credentials.json` is never copied: OAuth refresh
+tokens rotate, so a copy shared between host and container breaks as soon as
+one side refreshes it. Run `claude login` once inside the container; the
+session is kept in the Claude config volume. The script strips the entire `env`
 block and `apiKeyHelper` from `settings.json` so OAuth credentials are used
 and no proxy config leaks in. Env vars needed in oauth mode (e.g.
 `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS`) go in `.devcontainer/.env`, or in
@@ -222,8 +230,9 @@ and Go features.
 - The former `.devcontainer_audio/` template is now `docker-compose.audio.yml`,
   loaded by default.
 - All volumes are renamed, so the first start uses a fresh Claude config
-  (host credentials are copied in again). To keep your sessions, copy the old
-  volume into the new one while the devcontainer is stopped:
+  (host settings are copied in again; in oauth mode, run `claude login`
+  again). To keep your sessions, copy the old volume into the new one while
+  the devcontainer is stopped:
 
   ```bash
   docker volume ls   # old: claude-code-config-<folder>, new: <folder>_devcontainer_claude-config-<id>
