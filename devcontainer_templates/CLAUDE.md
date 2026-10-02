@@ -35,6 +35,10 @@ they are inert without the overlay.
   `claude-plugins-official`** (`setup_plugins` in
   `post-start.sh`) — whoever can write the project's
   `settings.json` decides what that step installs.
+- **No `claude` call in `post-start.sh` before
+  `init_claude_config`.** A call that finds no config file
+  creates an empty `.claude.json` on the volume; the
+  one-time fill then keeps it and Claude onboards again.
 
 ## Documentation
 

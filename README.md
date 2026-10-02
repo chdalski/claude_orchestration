@@ -340,8 +340,12 @@ cp -r devcontainer_templates/.devcontainer/ /path/to/your/project/.devcontainer/
   `docker inspect`
 - **Per-checkout volumes** — Claude config, shell history,
   and pnpm store isolated per checkout
-- **Host config as template** — `~/.claude/` mounted
-  read-only, copied into container on startup
+- **Host config as template** — `~/.claude/` and
+  `~/.claude.json` mounted read-only, copied onto the Claude
+  config volume once
+- **Claude survives rebuilds** — settings, login and the
+  global config (`.claude.json`, via `CLAUDE_CONFIG_DIR`)
+  live on the Claude config volume
 - **Plugins ready on start** — official plugins the project
   enables are installed automatically; the TypeScript and
   Python language servers are preinstalled

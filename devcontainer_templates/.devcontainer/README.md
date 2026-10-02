@@ -89,6 +89,14 @@ settings, so changes inside the container survive restarts. To pick up
 changes from the host, delete `~/.claude/settings.json` inside the container
 (or the whole volume, see [Troubleshooting](#troubleshooting)) and restart.
 
+Claude Code's global config (`.claude.json`: onboarding state, account,
+project settings) lives on the same volume — `CLAUDE_CONFIG_DIR` points
+Claude Code at `~/.claude` — so "Rebuild Container" does not start the
+onboarding again. `post-start.sh` fills it once, while the volume does not
+hold one yet: from the container's own `~/.claude.json` if one exists,
+otherwise from the host's `~/.claude.json`. Afterwards it is never
+overwritten.
+
 ### Proxy mode (default)
 
 No extra setup needed. Your `~/.claude/settings.json` is copied as-is into
@@ -178,7 +186,7 @@ across rebuilds.
 
 | Volume | Target | Purpose |
 |--------|--------|---------|
-| `<folder>_devcontainer_claude-config-<id>` | `/home/vscode/.claude` | Claude config, sessions, memory, installed plugins |
+| `<folder>_devcontainer_claude-config-<id>` | `/home/vscode/.claude` | Claude settings, global config (`.claude.json`), sessions, memory, installed plugins |
 | `<folder>_devcontainer_shell-history-<id>` | `/home/vscode/.local/share/fish` | fish history |
 | `<folder>_devcontainer_pnpm-store-<id>` | `/home/vscode/.local/share/pnpm/store` | pnpm store |
 
@@ -200,7 +208,7 @@ cannot run at the same time.
 |--------|--------|---------|
 | Project folder | `/workspace` | Workspace |
 | `~/.claude/` (read-only) | `/home/vscode/.claude-host/` | Host config template directory |
-| `~/.claude.json` (read-only) | `/home/vscode/.claude-host.json` | Host Claude config file (copied into container on startup) |
+| `~/.claude.json` (read-only) | `/home/vscode/.claude-host.json` | Host Claude config file (copied onto the Claude config volume once) |
 | `$XDG_RUNTIME_DIR/pulse/` | same path | PulseAudio socket (audio overlay) |
 
 The read-only binds are declared in `docker-compose.yml`, not in

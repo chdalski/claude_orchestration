@@ -2,10 +2,14 @@
 
 # Runs on every container start (postStartCommand).
 #
-# 1. Copies host Claude configuration into the container volume
-# 2. Sets a random git identity for Claude commits (mail domain from
+# 1. Copies host Claude settings into the container volume, once
+# 2. Fills Claude Code's global config (.claude.json) on the volume, once:
+#    from the container's ~/.claude.json, otherwise from the host copy.
+#    CLAUDE_CONFIG_DIR (containerEnv in devcontainer.json) makes Claude Code
+#    read it there, so onboarding and account state survive a rebuild
+# 3. Sets a random git identity for Claude commits (mail domain from
 #    GIT_EMAIL_DOMAIN, default codecentric.de)
-# 3. Installs the official Claude plugins the project enables
+# 4. Installs the official Claude plugins the project enables
 #
 # Auth mode is controlled by the CLAUDE_AUTH environment variable:
 #   - "proxy"  (default): copies settings.json from host, which contains
@@ -33,6 +37,10 @@ SEP="============================================================"
 HOST_DIR="/home/vscode/.claude-host"
 CONTAINER_DIR="/home/vscode/.claude"
 HOST_CONFIG="/home/vscode/.claude-host.json"
+CONTAINER_CONFIG="$CONTAINER_DIR/.claude.json"
+# Where Claude Code kept its global config before CLAUDE_CONFIG_DIR was set;
+# on the container filesystem, so a rebuild removes it.
+LEGACY_CONFIG="/home/vscode/.claude.json"
 
 PROJECT_SETTINGS="/workspace/.claude/settings.json"
 OFFICIAL_MARKETPLACE="claude-plugins-official"
@@ -106,14 +114,56 @@ init_claude_settings() {
       ;;
   esac
 
-  if [ -f "$HOST_CONFIG" ]; then
-    echo "Copying host .claude.json"
-    cp "$HOST_CONFIG" "/home/vscode/.claude.json"
-  else
-    echo "WARNING: No .claude.json found at $HOST_CONFIG"
+  echo "Written container settings to $CONTAINER_DIR"
+  echo "$SEP"
+}
+
+init_claude_config() {
+  # CLAUDE_CONFIG_DIR (containerEnv) points Claude Code at the ~/.claude
+  # volume, so its global config (onboarding, account, project settings) lives
+  # there as .claude.json and survives a rebuild. Fill it once, then never
+  # overwrite it. Runs before any `claude` call in this script: a call that
+  # finds no config file creates an empty one, which this check would then
+  # take as present.
+  #
+  # The file names account details, so it is written 0600 via a temp file in
+  # the same directory (an interrupted copy leaves no truncated file that
+  # counts as present), and only paths are logged, never its content.
+  section "Initializing Claude Config"
+
+  # A symlink counts as present, even a dangling one: never write through it.
+  if [ -e "$CONTAINER_CONFIG" ] || [ -L "$CONTAINER_CONFIG" ]; then
+    echo "Claude config already present at $CONTAINER_CONFIG — keeping it."
+    echo "$SEP"
+    return 0
   fi
 
-  echo "Written container settings to $CONTAINER_DIR"
+  # The container's own file keeps the current state when an existing
+  # container switches over; after a rebuild only the host copy is left.
+  local src
+  if [ -f "$LEGACY_CONFIG" ]; then
+    src="$LEGACY_CONFIG"
+  elif [ -f "$HOST_CONFIG" ]; then
+    src="$HOST_CONFIG"
+  else
+    echo "No Claude config at $LEGACY_CONFIG or $HOST_CONFIG — Claude sets itself up on first use."
+    echo "$SEP"
+    return 0
+  fi
+
+  mkdir -p "$CONTAINER_DIR"
+  local tmp
+  if ! tmp="$(mktemp "$CONTAINER_CONFIG.XXXXXX")"; then
+    echo "WARNING: could not create a temp file next to $CONTAINER_CONFIG"
+    echo "$SEP"
+    return 0
+  fi
+  if cp "$src" "$tmp" && chmod 600 "$tmp" && mv -fT "$tmp" "$CONTAINER_CONFIG"; then
+    echo "Copied Claude config from $src to $CONTAINER_CONFIG"
+  else
+    rm -f "$tmp"
+    echo "WARNING: could not copy Claude config from $src to $CONTAINER_CONFIG"
+  fi
   echo "$SEP"
 }
 
@@ -205,8 +255,13 @@ setup_plugins() {
 
 main() {
   init_claude_settings
+  # Before setup_plugins, the first phase that calls `claude`.
+  init_claude_config
   init_git_identity
   setup_plugins
 }
 
-main "$@"
+# Run only when executed, so the phases can be sourced and tested in isolation.
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  main "$@"
+fi
