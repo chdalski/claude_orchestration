@@ -130,7 +130,8 @@ After clarification is complete:
    directory and fix the mechanical items directly: escape
    hatches (§2), hedge words (§3), references to other plan
    files (§1), task checkboxes written as steps instead of
-   outcomes (§7), and format (§10). Escape hatches and hedge
+   outcomes (§7), format (§10), and plan noise (§14).
+   Escape hatches and hedge
    words are Blocking findings, so each one left for the
    reviewer costs a full review pass. This is proofreading,
    not review — the plan-reviewer still runs afterward.

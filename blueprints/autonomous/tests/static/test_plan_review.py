@@ -47,6 +47,7 @@ REQUIRED_CHECKLIST_SECTIONS = [
     "Goal-Task Alignment",
     "Format Compliance",
     "Separable Concerns",
+    "Plan Noise",
 ]
 
 

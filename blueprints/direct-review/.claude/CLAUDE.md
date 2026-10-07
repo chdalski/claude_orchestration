@@ -111,7 +111,7 @@ When the user asks you to implement:
    the plan.
 4. **Review the plan via subagent.** First fix the
    mechanical items from `plan-review-checklist.md`
-   yourself (§1, §2, §3, §7, §10). Then launch
+   yourself (§1, §2, §3, §7, §10, §14). Then launch
    `plan-reviewer` without a `name`, passing the plan
    path, the plans directory path, and the user's
    original request in their own words. Fix each Blocking
