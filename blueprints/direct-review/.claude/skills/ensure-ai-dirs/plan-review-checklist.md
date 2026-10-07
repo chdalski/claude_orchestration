@@ -14,9 +14,10 @@ no issues are found in a section, skip it in the report.
 ## Severity
 
 Classify every finding as **Blocking** or **Advisory**. Only
-Blocking findings send the plan back for revision and
-another full review pass — over-classifying costs a whole
-cycle, not a few seconds of reading.
+Blocking findings hold the plan back from the user — each
+costs a revision and another full review pass, so
+over-classifying costs a whole cycle, not a few seconds of
+reading.
 
 - **Blocking** — executing the plan as written would deliver
   something other than what the user asked for, or would let

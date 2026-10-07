@@ -174,13 +174,22 @@ After clarification is complete:
    b. Fix each Blocking finding, or decline one you judge
       wrong by recording the reason in the plan's
       Decisions section — the user sees every decline
-      (step 6). Apply the Advisory findings you agree
-      with; they never require another pass.
-   c. If you fixed any Blocking finding, re-launch the
-      subagent — a fix can break what an earlier pass
-      approved. Repeat until it returns
-      "No blocking issues found" or every remaining
-      Blocking finding is declined.
+      (step 6).
+   c. If you changed the plan, re-launch the subagent — a
+      fix can break what an earlier pass approved. Repeat
+      until it returns "No blocking issues found" or every
+      remaining Blocking finding is declined.
+   d. Take Advisory findings in one batch: at the first
+      pass that reports no Blocking findings, decide once
+      which of its Advisory findings to take, apply them
+      all in one revision, and re-launch once more. If you
+      take none, the cycle is done. Every pass after the
+      batch is a closing pass: fix and re-pass its
+      Blocking findings as in b–c, but do not apply its
+      Advisory findings — name them to the user in step 6.
+      A prior session applied Advisory findings one round
+      at a time and took a one-task plan through six
+      passes.
 
    Each launch is stateless — every review pass gets fresh
    eyes on the current plan state. Launch it without a
@@ -196,12 +205,20 @@ After clarification is complete:
 
 6. **Present the plan to the user** for approval. Use
    `AskUserQuestion` to confirm. Name each Blocking finding
-   you declined and each split or consolidation suggestion
-   the review raised — those are the user's decisions, not
-   yours. If the user requests changes, revise the plan and
-   restart the review cycle (step 5) — revisions based on
-   user feedback can reintroduce issues the subagent would
-   catch.
+   you declined, each split or consolidation suggestion
+   the review raised, and each Advisory finding from a
+   closing pass — those are the user's decisions, not
+   yours. Present only plan text the plan-reviewer has
+   reviewed in its current form: any edit after a review
+   pass — a fix for a Blocking or an Advisory finding, a
+   change the user asked for, your own correction, however
+   small — goes through step 5 again first. A prior
+   session worked seven Advisory findings into a plan and
+   asked for approval without a review pass. If the user
+   requests changes, revise the plan and restart the
+   review cycle (step 5), treating its first pass as a
+   closing pass — revisions based on user feedback can
+   reintroduce issues the subagent would catch.
 
 Plans live in the `plansDirectory` configured in
 `.claude/settings.json` (outside `.claude/` to avoid
@@ -297,16 +314,22 @@ Workflow selection is per-plan, not per-session. Each new
 implementation task — even within the same session —
 requires its own clarification cycle, plan, and workflow
 selection. **Before spawning teammates for a new plan**,
-shut down every teammate from the previous plan — message
-each a `shutdown_request` via `SendMessage` and wait until
-it has exited. Teammates carry conversation history from
-the completed work, and stale context from one plan
-pollutes decisions in the next. Wait for the exit: a
-teammate finishes its current request first and can still
-edit files and send messages until then. If a teammate
-rejects the request, address its stated reason and ask
-again. The new teammates get fresh context windows;
-cached content at levels 1–4 is unaffected.
+shut down every teammate from the previous plan — send
+each the structured `SendMessage` message
+`{"type": "shutdown_request", "reason": "..."}` and wait
+until it has exited. A plain-text message, even one that
+names `shutdown_request`, leaves the teammate alive: it
+needs the request ID the structured message carries to
+answer with its `shutdown_response` and exit. Teammates
+carry conversation history from the completed work, and
+stale context from one plan pollutes decisions in the
+next. Wait for the exit: a teammate finishes its current
+request first and can still edit files and send messages
+until then, and a new teammate of the same name cannot be
+spawned before it. If a teammate rejects the request,
+address its stated reason and ask again. The new
+teammates get fresh context windows; cached content at
+levels 1–4 is unaffected.
 
 **Spawning teammates.** A session has exactly one team,
 formed implicitly — there is no step to create or delete

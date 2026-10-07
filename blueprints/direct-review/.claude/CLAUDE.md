@@ -120,9 +120,28 @@ When the user asks you to implement:
    reports "No blocking issues found" or every remaining
    Blocking finding is declined. Do not skip this for "simple"
    plans — you cannot see your own escape hatches.
+   Take Advisory findings in one batch per review cycle:
+   at the first pass that reports no Blocking findings,
+   decide once which of its Advisory findings to take,
+   apply them all in one revision, and run one more pass.
+   If you take none, no extra pass is needed. Every pass
+   after the batch is a closing pass: fix and re-pass its
+   Blocking findings as always, but do not apply its
+   Advisory findings — name them to the user with the
+   plan. A prior session applied Advisory findings one
+   round at a time and took a one-task plan through six
+   passes.
 5. **Present the plan to the user** via `AskUserQuestion`,
-   naming every declined finding and split suggestion. On
-   changes, revise and restart the review cycle (step 4).
+   naming every declined finding, split suggestion, and
+   closing-pass Advisory finding. Present only plan text
+   the plan-reviewer has reviewed in its current form: any
+   edit after a review pass — a fix for a Blocking or an
+   Advisory finding, a change the user asked for, your own
+   correction, however small — goes through step 4 again
+   first. A prior session worked seven Advisory findings
+   into a plan and asked for approval without a review
+   pass. On changes, revise and restart the review cycle
+   (step 4); its first pass is a closing pass.
 6. **Commit the plan** after approval:
    `docs(<scope>): add plan for <feature>` — a committed
    plan survives a crashed session.
@@ -185,10 +204,15 @@ both paths.
    with `git add <paths>` — never `git add .` or `-A`.
    Commit with the approved message plus a final `Plan:`
    trailer: the plan filename without `.md`.
-9. **Shut down the teammates** — message each a
-   `shutdown_request` via `SendMessage` and wait for its
-   exit, since it can still act until then. Fresh
-   teammates keep one task's context out of the next.
+9. **Shut down the teammates** — send each the structured
+   message `{"type": "shutdown_request", "reason": "..."}`
+   via `SendMessage`. A plain-text message, even one that
+   names `shutdown_request`, leaves the teammate alive: it
+   needs the request ID the structured message carries to
+   answer with its `shutdown_response` and exit. Wait for
+   that exit — until then the teammate can still act, and
+   a new teammate of the same name cannot be spawned.
+   Fresh teammates keep one task's context out of the next.
 10. **Wait for the user's go** before starting the next
     task. Report what remains and ask via
     `AskUserQuestion`; never chain tasks on your own.

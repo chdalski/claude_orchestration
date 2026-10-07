@@ -43,10 +43,17 @@ subagents (those are "launched").
 
 ### shut down (a teammate)
 
-Use when ending a teammate's session: message it a
-`shutdown_request` via `SendMessage`. The teammate
-finishes its current request, then exits — or rejects the
-request with an explanation. Shutting down teammates and
+Use when ending a teammate's session: send it the
+structured `SendMessage` message
+`{"type": "shutdown_request", "reason": "..."}`. A
+plain-text message that merely names `shutdown_request`
+leaves the teammate running — it needs the request ID the
+structured message carries to answer with a
+`shutdown_response`. The teammate finishes its current
+request, then exits — or rejects the request with an
+explanation. Blueprint instructions must name the
+structured form, since "message it a `shutdown_request`"
+reads as plain text. Shutting down teammates and
 spawning replacements is the only way to get fresh
 context windows mid-session.
 
@@ -105,7 +112,7 @@ Architect." These belong in workflow files only.
 |-------------------------------|----------------|------------------|
 | Send work to a subagent       | **launch**     | `Agent` tool, no `name` |
 | Add a teammate to the team    | **spawn**      | `Agent` tool with `name` |
-| End a teammate's session      | **shut down**  | `SendMessage` `shutdown_request` |
+| End a teammate's session      | **shut down**  | `SendMessage` structured `shutdown_request` |
 | Send a message within a team  | **message**    | `SendMessage`    |
 | Send to several teammates     | **broadcast**  | `SendMessage` per recipient |
 | Refer to task originator      | **the requester**  | —            |

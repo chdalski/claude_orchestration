@@ -150,13 +150,22 @@ After clarification is complete:
    b. Fix each Blocking finding, or decline one you judge
       wrong by recording the reason in the plan's
       Decisions section — the user sees every decline
-      (step 6). Apply the Advisory findings you agree
-      with; they never require another pass.
-   c. If you fixed any Blocking finding, re-launch the
-      subagent — a fix can break what an earlier pass
-      approved. Repeat until it returns
-      "No blocking issues found" or every remaining
-      Blocking finding is declined.
+      (step 6).
+   c. If you changed the plan, re-launch the subagent — a
+      fix can break what an earlier pass approved. Repeat
+      until it returns "No blocking issues found" or every
+      remaining Blocking finding is declined.
+   d. Take Advisory findings in one batch: at the first
+      pass that reports no Blocking findings, decide once
+      which of its Advisory findings to take, apply them
+      all in one revision, and re-launch once more. If you
+      take none, the cycle is done. Every pass after the
+      batch is a closing pass: fix and re-pass its
+      Blocking findings as in b–c, but do not apply its
+      Advisory findings — name them to the user in step 6.
+      A prior session applied Advisory findings one round
+      at a time and took a one-task plan through six
+      passes.
 
    Each launch is stateless — every review pass gets fresh
    eyes on the current plan state. Launch it without a
@@ -172,12 +181,20 @@ After clarification is complete:
 
 6. **Present the plan to the user** for approval. Use
    `AskUserQuestion` to confirm. Name each Blocking finding
-   you declined and each split or consolidation suggestion
-   the review raised — those are the user's decisions, not
-   yours. If the user requests changes, revise the plan and
-   restart the review cycle (step 5) — revisions based on
-   user feedback can reintroduce issues the subagent would
-   catch.
+   you declined, each split or consolidation suggestion
+   the review raised, and each Advisory finding from a
+   closing pass — those are the user's decisions, not
+   yours. Present only plan text the plan-reviewer has
+   reviewed in its current form: any edit after a review
+   pass — a fix for a Blocking or an Advisory finding, a
+   change the user asked for, your own correction, however
+   small — goes through step 5 again first. A prior
+   session worked seven Advisory findings into a plan and
+   asked for approval without a review pass. If the user
+   requests changes, revise the plan and restart the
+   review cycle (step 5), treating its first pass as a
+   closing pass — revisions based on user feedback can
+   reintroduce issues the subagent would catch.
 
 7. **Commit the plan.** After user approval, commit the
    plan file using conventional commit format:
@@ -505,14 +522,20 @@ When the **reviewer messages you directly** with approval
    progress, tied to its plan so `git log --grep="Plan: "`
    recovers the mapping without the plan recording SHAs.
 
-6. **Cycle the teammates** if more tasks remain. Message
-   each of the four teammates a `shutdown_request` via
-   `SendMessage`, wait until all four have exited, then
-   spawn all four again as in Starting Execution step 1.
-   Wait for every exit: a teammate finishes its current
-   request first and can still edit files or send
-   messages until then. If a teammate rejects the
-   request, address its stated reason and ask again.
+6. **Cycle the teammates** if more tasks remain. Send
+   each of the four teammates the structured `SendMessage`
+   message `{"type": "shutdown_request", "reason": "..."}`,
+   wait until all four have exited, then spawn all four
+   again as in Starting Execution step 1. A plain-text
+   message, even one that names `shutdown_request`, leaves
+   the teammate alive: it needs the request ID the
+   structured message carries to answer with its
+   `shutdown_response` and exit. Wait for every exit: a
+   teammate finishes its current request first and can
+   still edit files or send messages until then, and a new
+   teammate of the same name cannot be spawned before it.
+   If a teammate rejects the request, address its stated
+   reason and ask again.
    Cycling gives every agent — especially the developer —
    a clean context window. Without cycling, the developer
    accumulates failed attempts, stale reasoning, and
@@ -658,9 +681,9 @@ When all tasks in a plan are committed:
 **New tasks after completion.** Each plan covers one
 feature or task. When the user requests a new task:
 
-1. **Shut down all teammates** — message each a
-   `shutdown_request` via `SendMessage` and wait until all
-   have exited. The teammates from the final task still
+1. **Shut down all teammates** — send each the
+   structured `shutdown_request` message (After Reviewer
+   Approval step 6) and wait until all have exited. The teammates from the final task still
    hold that task's context; the new plan gets fresh
    teammates at Starting Execution.
 2. **Restart the full cycle** — clarification → planning →
