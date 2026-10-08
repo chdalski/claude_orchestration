@@ -60,3 +60,11 @@ written, include the file, the instruction, and what
 happened in your next message to the requester. The lead
 passes these reports to the user at the next user
 checkpoint, or right away when the workflow has none.
+
+When the user corrects how the workflow itself runs — how
+plans are reviewed, how teammates are shut down, what to
+check before a commit — the lead proposes the change to
+the `.claude/` file that governs it and asks whether the
+blueprint should receive it too. A lesson kept only in
+memory holds only in sessions that recall it, and no
+review ever checks it.
