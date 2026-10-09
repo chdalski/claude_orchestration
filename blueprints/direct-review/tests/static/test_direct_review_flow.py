@@ -6,7 +6,7 @@ import re
 import pytest
 
 from blueprint_contracts import AGENT_FILES
-from conftest import AGENTS_DIR, CLAUDE_DIR, CLAUDE_MD, RULES_DIR
+from conftest import AGENTS_DIR, CLAUDE_DIR, CLAUDE_MD, PLAN_FORMAT_TEMPLATE, RULES_DIR
 
 pytestmark = pytest.mark.static
 
@@ -28,6 +28,14 @@ def _step_number(section, title):
     match = re.search(rf"^(\d+)\.\s+\*\*{re.escape(title)}", section, re.MULTILINE)
     assert match, f"Missing numbered step starting with '**{title}'"
     return int(match.group(1))
+
+
+def _step_text(section, title):
+    """Return the numbered step whose bold title starts with title, whitespace-flattened."""
+    pattern = rf"^\d+\.\s+\*\*{re.escape(title)}.*?(?=^\d+\.\s+\*\*|\Z)"
+    match = re.search(pattern, section, re.DOTALL | re.MULTILINE)
+    assert match, f"Missing numbered step starting with '**{title}'"
+    return " ".join(match.group(0).split())
 
 
 # --- Structure ---
@@ -81,6 +89,45 @@ def test_advise_mode_security_consultation_is_stateless(lead_instructions):
     """A named Agent call spawns a teammate; advise-mode consults must not."""
     advise = _extract_section(lead_instructions, "Advise Mode")
     assert "security-engineer" in advise and "no `name`" in advise
+
+
+def test_advise_mode_design_consultation_is_stateless(lead_instructions):
+    """The design-advisor shapes the options before the user decides."""
+    advise = _extract_section(lead_instructions, "Advise Mode")
+    step = _step_text(advise, "Consult the Design Advisor")
+    assert "`design-advisor`" in step and "no `name`" in step
+    # Its proposals can add options, which the security consultation must see.
+    order = [
+        _step_number(advise, "Consult the Design Advisor"),
+        _step_number(advise, "Consult the Security Engineer"),
+        _step_number(advise, "Stop"),
+    ]
+    assert order == sorted(order), f"Advise-mode steps out of order: {order}"
+
+
+# --- Planning ---
+
+
+def test_design_settled_before_plan_is_written(lead_instructions):
+    """Every code-changing plan rests on a design-advisor report, taken
+    before the plan exists — a proposal taken after review restarts it."""
+    planning = _extract_section(lead_instructions, "Planning")
+    assert _step_number(planning, "Settle the design") < _step_number(planning, "Write the plan")
+    step = _step_text(planning, "Settle the design")
+    assert "`design-advisor`" in step
+    assert "Every plan that changes code" in step
+    assert "Do not skip it for a small change" in step
+
+
+def test_refactor_tasks_pin_behavior_with_tests():
+    """A refactor is Reviewer-only only when tests pin the behavior it preserves."""
+    reviewer_only = " ".join(
+        _extract_section((RULES_DIR / "risk-assessment.md").read_text(), "Reviewer-Only").split()
+    )
+    assert "behavior-preserving refactor" in reviewer_only
+    assert "a preceding task added to pin it" in reviewer_only
+    plan_format = " ".join(PLAN_FORMAT_TEMPLATE.read_text().split())
+    assert "pass with their assertions unchanged" in plan_format
 
 
 # --- Implement mode ---

@@ -7,8 +7,8 @@ implements only when the user explicitly asks, one plan
 task at a time, behind an independent Reviewer gate (plus
 Security Engineer pre/post gates for security-relevant
 work), and waits for the user's review after every task.
-3 agents (reviewer, security-engineer, plan-reviewer) plus
-the lead.
+4 agents (reviewer, security-engineer, plan-reviewer,
+design-advisor) plus the lead.
 
 ## Build and Test
 
@@ -25,6 +25,7 @@ uv run pytest blueprints/direct-review/tests/ -m static -v
 | `.claude/agents/reviewer.md` | Quality gate — scope, code review, commit message; never commits (Opus) |
 | `.claude/agents/security-engineer.md` | Advisory — decision consultations and pre/post-implementation sign-offs (Opus) |
 | `.claude/agents/plan-reviewer.md` | Plan quality gate — launched as subagent before user presentation (Sonnet) |
+| `.claude/agents/design-advisor.md` | Advisory — proposes the change's shape, preparatory refactors, and larger redesigns; launched as subagent (Opus) |
 | `.claude/rules/` | Unconditional + conditional rules injected by Claude Code |
 | `.claude/skills/ensure-ai-dirs/` | Skill: creates `.ai/plans/` and `.ai/memory/`, syncs plan format guide and review checklist, moves finished plans into `completed/` |
 | `.claude/skills/project-init/` | Skill: scans project, generates `CLAUDE.md` per `project-context.md`, enables code intelligence plugins |
@@ -44,6 +45,8 @@ uv run pytest blueprints/direct-review/tests/ -m static -v
 - Escalation triggers (high-risk categories; behavioral change without covering tests) keep the lead in advise mode until the user explicitly chooses Security-Hybrid anyway or handling outside the blueprint
 - Security-Hybrid requires separately named pre- and post-implementation sign-offs; `advisor-gate-independence.md` lists what cannot stand in for either
 - Advise-mode Security Engineer consultations are stateless subagents (no `name`); implementation gates use teammates spawned per task
+- The design-advisor is a stateless subagent consulted whenever an option changes code; every code-changing plan rests on its report, and the user decides each proposal before the plan is written
+- An adopted preparatory refactor is its own task ahead of the feature work; when no test covers the behavior it preserves, a preceding task pins that behavior with tests
 - Teammates are spawned before a task's first edit and shut down after its commit — no context carries across tasks
 - The user reviews every task after Reviewer approval; the lead waits for the user's go before the next task
 - The Reviewer composes the commit message and file list; the lead commits after user approval with a `Plan:` trailer

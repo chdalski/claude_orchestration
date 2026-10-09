@@ -83,13 +83,22 @@ After clarification:
    recommendation with its reasoning. Classify each option
    with `risk-assessment.md`, so the user sees which path
    implementing it would take, including escalations.
-3. **Consult the Security Engineer** when an option is
-   security-relevant: launch `security-engineer` as a
-   subagent — `Agent` with `subagent_type` and no `name`,
-   since a named call spawns a teammate that carries this
-   consultation into later work — and fold its assessment
-   into your advice.
-4. **Stop.** The user decides. Do not edit project files
+3. **Consult the Design Advisor** when an option changes
+   code: launch `design-advisor` as a subagent — `Agent`
+   with `subagent_type` and no `name`, since a named call
+   spawns a teammate that carries this consultation into
+   later work — passing the user's request, the options,
+   and the code each would touch. Fold its proposals into
+   your advice: a better shape for the change becomes an
+   option of its own, weighed and classified like the
+   others; name preparatory refactors and larger redesigns
+   with their cost. Consult before the user decides — a
+   design flaw found after the choice reopens a decision
+   the user has already made.
+4. **Consult the Security Engineer** when an option is
+   security-relevant: launch `security-engineer` the same
+   way and fold its assessment into your advice.
+5. **Stop.** The user decides. Do not edit project files
    in advise mode.
 
 ## Planning
@@ -100,16 +109,31 @@ When the user asks you to implement:
    directory exists — the skill refreshes a stale format
    guide. Commit any changes it made (see Skill-Output
    Commits).
-2. **Write the plan** to the plans directory following
+2. **Settle the design.** Every plan that changes code
+   rests on a `design-advisor` report on the approach it
+   plans. Reuse the advise-mode report if the approach has
+   not changed since; otherwise launch `design-advisor` as
+   in advise mode, passing the proposals the user already
+   declined. Do not skip it for a small change — whether
+   the design matters depends on the code around the
+   change, not on the change's size. Before writing the
+   plan, ask via `AskUserQuestion` about every proposal
+   the user has not decided yet; a proposal taken after
+   review adds tasks and restarts the review cycle.
+3. **Write the plan** to the plans directory following
    `<plansDirectory>/CLAUDE.md`. Decompose the work into
    vertical task slices, each independently committable —
-   every slice becomes one user review. Name risk
+   every slice becomes one user review. Each adopted
+   preparatory refactor is its own task ahead of the
+   feature work. Record each declined design proposal with
+   its reason in Decisions, so the Reviewer does not flag
+   the structure the user chose to keep. Name risk
    categories in Context; do not prescribe controls.
-3. **Classify every task** with `risk-assessment.md` and
+4. **Classify every task** with `risk-assessment.md` and
    record it in the task's `Review path:` line. If any task hits an escalation trigger, stop
    and escalate as that rule describes before presenting
    the plan.
-4. **Review the plan via subagent.** First fix the
+5. **Review the plan via subagent.** First fix the
    mechanical items from `plan-review-checklist.md`
    yourself (§1, §2, §3, §7, §10, §14). Then launch
    `plan-reviewer` without a `name`, passing the plan
@@ -131,18 +155,19 @@ When the user asks you to implement:
    plan. A prior session applied Advisory findings one
    round at a time and took a one-task plan through six
    passes.
-5. **Present the plan to the user** via `AskUserQuestion`,
+6. **Present the plan to the user** via `AskUserQuestion`,
    naming every declined finding, split suggestion, and
    closing-pass Advisory finding. Present only plan text
    the plan-reviewer has reviewed in its current form: any
    edit after a review pass — a fix for a Blocking or an
    Advisory finding, a change the user asked for, your own
-   correction, however small — goes through step 4 again
+   correction, however small — goes through step 5 again
    first. A prior session worked seven Advisory findings
    into a plan and asked for approval without a review
    pass. On changes, revise and restart the review cycle
-   (step 4); its first pass is a closing pass.
-6. **Commit the plan** after approval:
+   (step 5); its first pass is a closing pass. A change of
+   approach goes back to step 2 first.
+7. **Commit the plan** after approval:
    `docs(<scope>): add plan for <feature>` — a committed
    plan survives a crashed session.
 

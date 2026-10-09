@@ -196,6 +196,17 @@ every site, while "rename the trait in ports.rs, change the
 generic parameter in service.rs…" is the implementation —
 which the compiler verifies, not the plan.
 
+A behavior-preserving refactor task names the tests that
+pin the behavior it preserves and carries the criterion
+that they pass with their assertions unchanged — only
+mechanical edits such as import paths. A refactor that
+also edits what its tests assert can hide a behavior
+change behind a green build. When no test covers that
+behavior, a preceding task first adds tests that pin it at
+its public entry points — the general behavior, not every
+line. Only a separate, earlier commit shows that those
+tests pass against the code as it was before the refactor.
+
 Order tasks by dependency — foundational work first. Use
 vertical slices (each task touches all layers needed for
 that feature) rather than horizontal slices (all routes,

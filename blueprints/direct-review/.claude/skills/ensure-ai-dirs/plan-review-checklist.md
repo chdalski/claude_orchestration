@@ -176,6 +176,12 @@ stated as outcomes, not as a procedure.
   implementor what was intended.
 - Can the reviewer distinguish "task done" from "task
   partially done" using only the task description?
+- Does each behavior-preserving refactor task name the
+  tests that pin the behavior it preserves and require
+  them to pass with their assertions unchanged? When no
+  test covered that behavior, does a preceding task add
+  them? Without both, a refactor can change behavior and
+  still pass review.
 
 ## 8. Goal Covers User Request
 

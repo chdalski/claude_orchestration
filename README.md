@@ -96,7 +96,7 @@ sanity checks, and language-specific init procedures.
 |-----------|----------|--------|
 | **autonomous** | Full autonomy after plan approval via a plan queue | Lead, Developer, Reviewer, Test Engineer, Security Engineer |
 | **workflow** | User chooses a workflow after plan approval | Lead, Developer, Test Engineer, Security Engineer, Reviewer |
-| **direct-review** | Advisor by default; lead implements on request with per-task user review | Lead, Reviewer, Security Engineer |
+| **direct-review** | Advisor by default; lead implements on request with per-task user review | Lead, Reviewer, Security Engineer, Design Advisor |
 
 ### When to Use Which
 
@@ -264,10 +264,18 @@ The lead is an advisor by default: it clarifies the
 request, weighs the options with their trade-offs, and
 recommends — without editing files. For security-relevant
 decisions it consults the Security Engineer as a stateless
-subagent. Only an explicit "implement it" enters Implement
-mode: the lead writes a plan (reviewed by the plan-reviewer
-subagent and approved by the user), then implements one
-task at a time and waits for the user's review after each.
+subagent; for options that change code, the Design Advisor
+(also a stateless subagent) proposes a better shape for the
+change, preparatory refactors, and larger redesigns, so they
+become options before the user decides. Only an explicit
+"implement it" enters Implement mode: every plan that
+changes code rests on a Design Advisor report whose
+proposals the user has decided; adopted refactors become
+tasks ahead of the feature work, preceded by tests that pin
+the behavior when none exist. The lead writes the plan
+(reviewed by the plan-reviewer subagent and approved by the
+user), then implements one task at a time and waits for the
+user's review after each.
 
 Each task is classified by `risk-assessment.md`:
 
@@ -291,15 +299,18 @@ Each task is classified by `risk-assessment.md`:
 | Reviewer | Opus | Quality gate — scope, code review, proposes commit message |
 | Security Engineer | Opus | Advisory — decision consultations, pre/post-implementation sign-offs |
 | Plan Reviewer (subagent) | Sonnet | Reviews draft plans before user presentation |
+| Design Advisor (subagent) | Opus | Proposes the change's shape, preparatory refactors, and larger redesigns |
 
 ```mermaid
 graph TD
     User --> Lead
     Lead -->|clarify + weigh options| Advice[Recommendation]
     Advice -.->|security-relevant| SEC[Security Engineer<br/>subagent]
+    Advice -.->|changes code| DA[Design Advisor<br/>subagent]
     Advice --> UDec{User asks to<br/>implement?}
     UDec -->|no| User
-    UDec -->|yes| Plan[Plan + plan-reviewer<br/>+ user approval]
+    UDec -->|yes| Design[Design Advisor report<br/>+ user decides proposals]
+    Design --> Plan[Plan + plan-reviewer<br/>+ user approval]
     Plan --> Risk{Risk<br/>assessment}
     Risk -->|escalate| User
     Risk -->|Security-Hybrid| Pre[SE pre-sign-off]

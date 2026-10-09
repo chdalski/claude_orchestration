@@ -12,6 +12,10 @@ and one of these applies:
 
 - Existing tests exercise the changed production entry
   point and assert the behavior being changed.
+- The change is a behavior-preserving refactor, and tests
+  that pass before it exercise the behavior it preserves —
+  existing ones, or ones a preceding task added to pin it.
+- The change only adds tests for existing behavior.
 - The change is non-behavioral documentation, comment, or
   formatting work and needs no test.
 
