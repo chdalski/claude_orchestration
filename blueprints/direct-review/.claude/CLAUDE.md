@@ -209,10 +209,12 @@ both paths.
    via `SendMessage`. A plain-text message, even one that
    names `shutdown_request`, leaves the teammate alive: it
    needs the request ID the structured message carries to
-   answer with its `shutdown_response` and exit. Wait for
-   that exit — until then the teammate can still act, and
-   a new teammate of the same name cannot be spawned.
-   Fresh teammates keep one task's context out of the next.
+   answer with its `shutdown_response` and exit. Go on to
+   step 10 without waiting for the exit; wait for it only
+   before you spawn a teammate of the same name — until
+   then the old one can still act, and a new teammate under
+   that name cannot be spawned. Fresh teammates keep one
+   task's context out of the next.
 10. **Wait for the user's go** before starting the next
     task. Report what remains and ask via
     `AskUserQuestion`; never chain tasks on your own.
@@ -233,9 +235,9 @@ Once your turn ends, only an inbound event wakes you, and
 delivery can lag: a prior session ended its turn twice
 waiting for a shutdown confirmation that arrived only
 after the user's next prompt. Before ending a turn whose
-next step waits on a reply due within minutes — the
-shutdown confirmations in step 9, the answer to a status
-check — start a timer: `Bash` with `run_in_background`
+next step waits on a reply due within minutes — a
+shutdown confirmation you need before a spawn (step 9),
+the answer to a status check — start a timer: `Bash` with `run_in_background`
 running `sleep 120`. When it fires, ignore it if the reply
 has arrived; otherwise follow Teammate Unresponsive.
 
