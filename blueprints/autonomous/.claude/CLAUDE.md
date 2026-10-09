@@ -607,6 +607,18 @@ The developer-reviewer rejection loop is opaque to you.
 The reviewer messages you directly on approval — you do
 not need to monitor this exchange.
 
+**Never idle on a quick teammate reply alone.** Once your
+turn ends, only an inbound event wakes you, and delivery
+can lag: a prior session ended its turn twice waiting for a
+shutdown confirmation that arrived only after the user's
+next prompt. Before ending a turn whose next step waits on
+a reply due within minutes — the shutdown confirmations
+when cycling teammates, the answer to a status check —
+start a timer: `Bash` with `run_in_background` running
+`sleep 120`. When it fires, ignore it if the reply has
+arrived; otherwise send the teammate a status check, and
+if it stays silent, inform the user and ask how to proceed.
+
 **If the developer appears unresponsive:**
 1. Send a status check via `SendMessage`
 2. If still no response, send the message again — the

@@ -411,6 +411,18 @@ stuck.
 - Use `SendMessage` to ask a team agent for a status
   update — they will respond via `SendMessage`.
 
+**Never idle on a quick teammate reply alone.** Once your
+turn ends, only an inbound event wakes you, and delivery
+can lag: a prior session ended its turn twice waiting for a
+shutdown confirmation that arrived only after the user's
+next prompt. Before ending a turn whose next step waits on
+a reply due within minutes — a shutdown confirmation, a
+handoff acknowledgment, the answer to a status check —
+start a timer: `Bash` with `run_in_background` running
+`sleep 120`. When it fires, ignore it if the reply has
+arrived; otherwise relay at a monitored handoff (below) or
+apply the Recovery protocol.
+
 **Handoff monitoring** — the Develop-Review and TDD
 workflows define lead-monitored transitions (see the
 Handoff Protocol section in the workflow file). At these
@@ -419,10 +431,11 @@ unreliable — messages can be silently dropped due to name
 mismatches, with no error feedback to the sender. When a
 monitored transition occurs:
 
-1. Note the transition and start a 2-minute window
+1. Note the transition and start the 2-minute timer
 2. Watch for an acknowledgment message from the recipient
-3. If no acknowledgment arrives within 2 minutes, relay
-   the message to the recipient yourself via `SendMessage`
+3. If the timer fires before an acknowledgment arrives,
+   relay the message to the recipient yourself via
+   `SendMessage`
 4. Do not wait passively for longer — undetected message
    loss causes multi-minute stalls that compound per task
 

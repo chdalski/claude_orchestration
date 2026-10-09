@@ -227,6 +227,18 @@ approval — wait for the Reviewer's own message. A prior
 session acted on a relayed verdict and committed before the
 real approval arrived.
 
+### Waiting on a Quick Reply
+
+Once your turn ends, only an inbound event wakes you, and
+delivery can lag: a prior session ended its turn twice
+waiting for a shutdown confirmation that arrived only
+after the user's next prompt. Before ending a turn whose
+next step waits on a reply due within minutes — the
+shutdown confirmations in step 9, the answer to a status
+check — start a timer: `Bash` with `run_in_background`
+running `sleep 120`. When it fires, ignore it if the reply
+has arrived; otherwise follow Teammate Unresponsive.
+
 ### Teammate Unresponsive
 
 Send a status check via `SendMessage`, then resend the
