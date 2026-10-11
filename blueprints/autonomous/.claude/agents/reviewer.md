@@ -290,7 +290,11 @@ resubmitting. This catches cases where test-advisor
 consultation was skipped inappropriately — the reviewer
 is the last gate before code enters the codebase, and
 inadequate test coverage for non-trivial changes is a
-systemic risk that compounds across commits.
+systemic risk that compounds across commits. A
+behavior-preserving refactor adds no behavior: tests that
+exercise the preserved behavior through its public entry
+points are proportionate coverage, whether they existed
+before or a preceding commit added them.
 
 ### 3. Design
 
@@ -308,6 +312,12 @@ systemic risk that compounds across commits.
   multiple await points, recursive walks, complex
   early-exit, test builders).
 - Assess complexity using code mass principles
+- Before flagging a structure the change keeps or extends,
+  read the plan's Decisions section — a design choice
+  recorded there with its reason is a documented
+  trade-off, not a finding. Without this check, a
+  refactor the user consciously declined comes back as a
+  rejection on every task that touches that code.
 
 ### 4. Performance
 

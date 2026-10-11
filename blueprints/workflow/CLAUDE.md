@@ -7,7 +7,8 @@ the user), then presents workflow options. The user
 chooses: Direct-Review for simple tasks, Develop-Review
 (Supervised or Autonomous) for complex ones, or TDD
 User-in-the-Loop. 4 agents (developer, reviewer,
-test-engineer, security-engineer) plus the lead.
+test-engineer, security-engineer) plus the lead and
+three subagents (plan-reviewer, design-advisor, test-list).
 
 ## Build and Test
 
@@ -25,6 +26,7 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 | `.claude/agents/reviewer.md` | Quality gate — scope verification, composes the proposed commit message; lead commits (Opus) |
 | `.claude/agents/test-engineer.md` | Advisory — test design and verification (Sonnet) |
 | `.claude/agents/plan-reviewer.md` | Plan quality gate — launched as subagent before user presentation (Sonnet) |
+| `.claude/agents/design-advisor.md` | Advisory — proposes the change's shape, preparatory refactors, and larger redesigns; launched as subagent while planning (Opus) |
 | `.claude/agents/security-engineer.md` | Advisory — security assessment (Sonnet) |
 | `.claude/agents/test-list.md` | Subagent — converts an example mapping into a minimum-required test list (Sonnet) |
 | `.claude/rules/` | Unconditional + conditional rules injected by Claude Code |
@@ -52,6 +54,10 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 - Universal principles stated once in unconditional rules — language rules extend without restating
 - Adding a new language: create `lang-<language>.md` with `paths:` frontmatter, update `functional-style.md`/`code-mass.md`/`code-principles.md` paths — no changes to CLAUDE.md, agents, or workflows
 - Risk assessment at workflow selection: high-risk indicators require Develop-Review, not Direct-Review
+- The design-advisor is a stateless subagent; every code-changing plan rests on its report, and the user decides each proposal before the plan is written
+- An adopted preparatory refactor is its own task ahead of the feature work; when no test covers the behavior it preserves, a preceding task pins that behavior with tests
+- Every workflow's review request carries the plan's Decisions, so the Reviewer does not flag a design proposal the user declined
+- TDD runs pinning-test and refactor tasks without a Red phase — their tests pass against the current code by design
 - Lead does not prescribe security mitigations — names risk categories and routes to Security Engineer
 - All blueprint files must be fully static — no dates, counters, versions (prompt cache level 3)
 - Rule files target under 200 lines — agent adherence degrades beyond that threshold

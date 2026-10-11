@@ -6,7 +6,8 @@ feeds tasks to the developer autonomously. The developer
 implements and sends to the reviewer for independent
 quality review. No user checkpoints gate
 individual tasks after plan approval. 4 agents (developer,
-reviewer, test-engineer, security-engineer) plus the lead.
+reviewer, test-engineer, security-engineer) plus the lead
+and two subagents (plan-reviewer, design-advisor).
 
 ## Build and Test
 
@@ -25,6 +26,7 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 | `.claude/agents/test-engineer.md` | Advisory — test design on demand (Sonnet) |
 | `.claude/agents/security-engineer.md` | Advisory — security assessment on demand (Sonnet) |
 | `.claude/agents/plan-reviewer.md` | Plan quality gate — launched as subagent before user presentation (Sonnet) |
+| `.claude/agents/design-advisor.md` | Advisory — proposes the change's shape, preparatory refactors, and larger redesigns; launched as subagent while planning (Opus) |
 | `.claude/rules/` | Unconditional + conditional rules injected by Claude Code |
 | `.claude/skills/ensure-ai-dirs/` | Skill: creates `.ai/plans/` and `.ai/memory/` directories, points auto memory at `.ai/memory/` (absolute path in `settings.local.json`), syncs plan format guide and review checklist, moves Completed/Canceled plans into a frozen `completed/` directory |
 | `.claude/skills/project-init/` | Skill: scans project, generates `CLAUDE.md` per `project-context.md`, enables code intelligence plugins for detected languages |
@@ -51,6 +53,8 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 - Lead's ad-hoc commits happen only in team-down windows — mid-task commits land in the squash reset range and are lost
 - Reviewer backstop: rejects if non-trivial behavioral changes lack tests and no advisor was consulted
 - Infeasibility claims require specific evidence (file, function, scope, own code vs dependency) per `claim-verification.md` — category labels are not sufficient
+- The design-advisor is a stateless subagent; every code-changing plan rests on its report, and the user decides each proposal before the plan is written
+- An adopted preparatory refactor is its own task ahead of the feature work; when no test covers the behavior it preserves, a preceding task pins that behavior with tests
 - Plans are reviewed by a Sonnet subagent before user presentation — review cycles until the subagent reports no blocking issues
 - Plan review checklist and format guide are synced to the plans directory by `/ensure-ai-dirs`
 - Plan-format.md contains `<!-- agent: -->` comments as authoring hints for the lead

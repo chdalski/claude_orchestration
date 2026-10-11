@@ -196,7 +196,9 @@ multi-minute stalls from undetected message loss.
 
 11. **Lead sends to Reviewer** — include the task
     description and acceptance criteria from the plan so
-    the Reviewer can verify scope completeness. Without
+    the Reviewer can verify scope completeness, and the
+    plan's Decisions section so it does not flag a design
+    choice the user already made. Without
     the task context, the Reviewer can only evaluate code
     quality, not whether every requested feature was
     delivered. Pass through the advisor sign-off statuses

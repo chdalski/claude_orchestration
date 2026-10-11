@@ -177,6 +177,17 @@ by collapsing phases, writing tests and implementation
 together, or skipping refactoring. Sending one phase at
 a time makes it structurally impossible to skip ahead.
 
+**Tasks that add no behavior.** A task that only adds
+tests pinning existing behavior, or a behavior-preserving
+refactor, has no Red phase: its tests pass against the
+current code by design, so every Red instruction would end
+in a failed prediction. For such a task, replace these
+cycles with one instruction — write the pinning tests, or
+perform the refactor without changing what the pinned
+tests assert — and one user checkpoint on the code and its
+passing test output. The Sign-offs and Review steps still
+apply.
+
 For each test case in the approved test list:
 
 5. **Lead sends Red phase instruction** to the Developer
@@ -341,7 +352,9 @@ one phase at a time.
 
 15. **Lead sends to Reviewer** — include the task
     description and acceptance criteria from the plan so
-    the Reviewer can verify scope completeness. Without
+    the Reviewer can verify scope completeness, and the
+    plan's Decisions section so it does not flag a design
+    choice the user already made. Without
     the task context, the Reviewer can only evaluate code
     quality, not whether every requested feature was
     delivered. Pass through the advisor sign-off statuses

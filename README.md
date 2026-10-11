@@ -94,8 +94,8 @@ sanity checks, and language-specific init procedures.
 
 | Blueprint | Approach | Agents |
 |-----------|----------|--------|
-| **autonomous** | Full autonomy after plan approval via a plan queue | Lead, Developer, Reviewer, Test Engineer, Security Engineer |
-| **workflow** | User chooses a workflow after plan approval | Lead, Developer, Test Engineer, Security Engineer, Reviewer |
+| **autonomous** | Full autonomy after plan approval via a plan queue | Lead, Developer, Reviewer, Test Engineer, Security Engineer, Design Advisor |
+| **workflow** | User chooses a workflow after plan approval | Lead, Developer, Test Engineer, Security Engineer, Reviewer, Design Advisor |
 | **direct-review** | Advisor by default; lead implements on request with per-task user review | Lead, Reviewer, Security Engineer, Design Advisor |
 
 ### When to Use Which
@@ -138,7 +138,11 @@ export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 ### autonomous — Plan Queue + Developer
 
 The lead handles clarification, planning, and plan queue
-management. For each task, the lead assesses risk and
+management. Every plan that changes code rests on a Design
+Advisor report whose proposals the user decides before the
+plan is written; adopted refactors become tasks ahead of the
+feature work, preceded by tests that pin the behavior when
+none exist. For each task, the lead assesses risk and
 uncertainty at dispatch time and directs the Developer to
 consult advisors when warranted. The lead stays responsive
 to the user during execution — new requests become plans in
@@ -154,10 +158,12 @@ the queue.
 | Test Engineer | Sonnet | Advisory — test lists on demand |
 | Security Engineer | Sonnet | Advisory — security assessments on demand |
 | Plan Reviewer (subagent) | Sonnet | Reviews draft plans before user presentation |
+| Design Advisor (subagent) | Opus | Proposes the change's shape, preparatory refactors, and larger redesigns |
 
 ```mermaid
 graph TD
     User --> Lead
+    Lead -.->|changes code| DA[Design Advisor<br/>subagent]
     Lead -->|clarify + plan| PQ[Plan Queue]
     PQ --> Assess{Lead assesses\nrisk/uncertainty}
     Assess -->|sends task with\nadvisor directives| Dev[Developer]
@@ -180,7 +186,10 @@ The Developer-Reviewer rejection loop is opaque to the lead.
 
 The lead clarifies the task, writes a plan (reviewed by the
 plan-reviewer subagent and approved by the user), then
-presents workflow options. The user chooses how work gets
+presents workflow options. Every plan that changes code
+rests on a Design Advisor report whose proposals the user
+decides before the plan is written; adopted refactors
+become tasks ahead of the feature work. The user chooses how work gets
 done. Workflows are separate files in `.claude/workflows/` —
 adding one requires no changes to CLAUDE.md.
 
@@ -195,6 +204,7 @@ adding one requires no changes to CLAUDE.md.
 | Reviewer | Opus | Quality gate — reviews and proposes commit message; lead commits |
 | Plan Reviewer (subagent) | Sonnet | Reviews draft plans before user presentation |
 | Test List (subagent) | Sonnet | Converts an example mapping into a minimum required test list (used by `/test-list`) |
+| Design Advisor (subagent) | Opus | Proposes the change's shape, preparatory refactors, and larger redesigns |
 
 **Workflows:**
 
@@ -212,6 +222,8 @@ adding one requires no changes to CLAUDE.md.
 ```mermaid
 graph TD
     User --> Lead
+    Lead -->|changes code| DA[Design Advisor report<br/>+ user decides proposals]
+    DA --> Lead
     Lead -->|write plan| PR[plan-reviewer<br/>subagent]
     PR -->|cycle until clean| Lead
     Lead -->|present plan| UPlan{User approves<br/>plan?}

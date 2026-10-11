@@ -40,9 +40,11 @@ miss.
    wasted review cycles.
 3. Lead spawns the Reviewer as a teammate.
 4. Lead sends the work to the Reviewer with the plan's
-   goal, context, and acceptance criteria so the Reviewer
-   can verify scope completeness — Reviewer performs full
-   review including CLAUDE.md drift detection. Even small
+   goal, context, Decisions, and acceptance criteria so the
+   Reviewer can verify scope completeness and does not flag
+   a design choice the user already made — Reviewer
+   performs full review including CLAUDE.md drift
+   detection. Even small
    changes can introduce drift (e.g., renaming a directory
    that CLAUDE.md references), and Direct-Review has the
    least process, making undetected drift most likely

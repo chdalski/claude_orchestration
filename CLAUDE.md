@@ -39,10 +39,12 @@ the user), then presents workflow options. The user
 chooses: Direct-Review for simple tasks, Develop-Review
 (Supervised or Autonomous) for complex ones, or TDD
 User-in-the-Loop. 4 team agents (Developer, Test Engineer,
-Security Engineer, Reviewer) plus the lead, with two
+Security Engineer, Reviewer) plus the lead, with three
 on-demand subagents launched during planning and TDD
-entry: `plan-reviewer` (reviews draft plans before user
-presentation) and `test-list` (converts an example
+entry: `design-advisor` (proposes design improvements and
+preparatory refactors before every code-changing plan),
+`plan-reviewer` (reviews draft plans before user
+presentation), and `test-list` (converts an example
 mapping into a minimum required test list). Workflows
 defined as separate files — adding one requires no
 changes to CLAUDE.md or agents.
@@ -55,9 +57,11 @@ assesses risk and directs the developer to consult advisors
 when warranted. The developer implements, the reviewer
 approves, and the lead commits. 4 team agents (Developer,
 Reviewer, Test Engineer, Security Engineer) plus the lead
-and the `plan-reviewer` subagent (launched before user
-plan presentation). The lead stays responsive to the user
-during execution.
+and two subagents: `design-advisor` (proposes design
+improvements and preparatory refactors before every
+code-changing plan) and `plan-reviewer` (launched before
+user plan presentation). The lead stays responsive to the
+user during execution.
 
 ### direct-review
 

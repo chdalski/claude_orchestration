@@ -114,27 +114,52 @@ After clarification is complete:
    surface-level understanding produces task slices that
    miss dependencies or conflict with existing patterns.
 
-3. **Write the plan** to the plans directory (read the path
+3. **Settle the design.** Every plan that changes code
+   rests on a `design-advisor` report on the approach it
+   plans. Launch `design-advisor` as a subagent — `Agent`
+   with `subagent_type` and no `name`, since a named call
+   spawns a teammate that carries this consultation into
+   later work — passing the user's request, the approach
+   clarification settled on, the code it will touch, and
+   the alternatives and proposals the user already
+   declined, with their reasons. While the developer is
+   executing another plan, also name the files its current
+   task is changing, so the advisor does not judge
+   half-finished code. Do not skip it for a small change —
+   whether the design matters depends on the code around
+   the change, not on the change's size. Before writing the
+   plan, ask via `AskUserQuestion` about every proposal; a
+   proposal taken after review adds tasks and restarts the
+   review cycle. A proposal that revises the approach the
+   user chose during clarification is new information from
+   the code — put it to the user like the others.
+
+4. **Write the plan** to the plans directory (read the path
    from `.claude/settings.json`) following the format guide
    in `<plansDirectory>/CLAUDE.md`. Include the goal,
-   context, steps, and task decomposition.
+   context, steps, and task decomposition. Record each
+   declined design proposal with its reason in Decisions,
+   so the reviewer does not flag the structure the user
+   chose to keep.
 
-4. **Decompose into vertical task slices.** Each slice
+5. **Decompose into vertical task slices.** Each slice
    should be independently committable and touch all layers
    needed for the feature. Order slices so later ones build
    on earlier ones. This enables incremental review — the
-   reviewer can evaluate each slice in isolation.
+   reviewer can evaluate each slice in isolation. Each
+   adopted preparatory refactor is its own task ahead of
+   the feature work.
 
-5. **Review the plan via subagent.** First proofread your
+6. **Review the plan via subagent.** First proofread your
    draft against `plan-review-checklist.md` in the plans
    directory and fix the mechanical items directly: escape
    hatches (§2), hedge words (§3), references to other plan
    files (§1), task checkboxes written as steps instead of
    outcomes (§7), format (§10), and plan noise (§14).
-   Escape hatches and hedge
-   words are Blocking findings, so each one left for the
-   reviewer costs a full review pass. This is proofreading,
-   not review — the plan-reviewer still runs afterward.
+   Escape hatches and hedge words are Blocking findings, so
+   each one left for the reviewer costs a full review pass.
+   This is proofreading, not review — the plan-reviewer
+   still runs afterward.
 
    Then launch the `plan-reviewer` agent to review the plan
    before presenting it to the user. Pass it:
@@ -151,7 +176,7 @@ After clarification is complete:
    b. Fix each Blocking finding, or decline one you judge
       wrong by recording the reason in the plan's
       Decisions section — the user sees every decline
-      (step 6).
+      (step 7).
    c. If you changed the plan, re-launch the subagent — a
       fix can break what an earlier pass approved. Repeat
       until it returns "No blocking issues found" or every
@@ -163,7 +188,7 @@ After clarification is complete:
       take none, the cycle is done. Every pass after the
       batch is a closing pass: fix and re-pass its
       Blocking findings as in b–c, but do not apply its
-      Advisory findings — name them to the user in step 6.
+      Advisory findings — name them to the user in step 7.
       A prior session applied Advisory findings one round
       at a time and took a one-task plan through six
       passes.
@@ -180,7 +205,7 @@ After clarification is complete:
    cleanup tasks. The same anti-pattern that justifies
    independent code review applies to plans.
 
-6. **Present the plan to the user** for approval. Use
+7. **Present the plan to the user** for approval. Use
    `AskUserQuestion` to confirm. Name each Blocking finding
    you declined, each split or consolidation suggestion
    the review raised, and each Advisory finding from a
@@ -189,15 +214,16 @@ After clarification is complete:
    reviewed in its current form: any edit after a review
    pass — a fix for a Blocking or an Advisory finding, a
    change the user asked for, your own correction, however
-   small — goes through step 5 again first. A prior
+   small — goes through step 6 again first. A prior
    session worked seven Advisory findings into a plan and
    asked for approval without a review pass. If the user
    requests changes, revise the plan and restart the
-   review cycle (step 5), treating its first pass as a
+   review cycle (step 6), treating its first pass as a
    closing pass — revisions based on user feedback can
-   reintroduce issues the subagent would catch.
+   reintroduce issues the subagent would catch. A change
+   of approach goes back to step 3 first.
 
-7. **Commit the plan.** After user approval, commit the
+8. **Commit the plan.** After user approval, commit the
    plan file using conventional commit format:
    `docs(<scope>): add plan for <feature>`. Committing
    before implementation ensures the plan is persisted in
@@ -206,7 +232,7 @@ After clarification is complete:
    session can resume from a committed plan rather than a
    dangling file.
 
-8. **Add the plan to the queue.** After the plan is
+9. **Add the plan to the queue.** After the plan is
    committed, it enters the queue. If other plans are
    already queued, decide optimal execution order based on
    dependencies and impact (see Plan Queue Management).
@@ -480,7 +506,7 @@ acting on inaccurate or stale relays.
 
 ### After Reviewer Approval
 
-Steps 1–8 below execute after every task approval — do not
+Steps 1–7 below execute after every task approval — do not
 skip any step based on task complexity or developer
 performance.
 
@@ -696,9 +722,10 @@ feature or task. When the user requests a new task:
 
 1. **Shut down all teammates** — send each the
    structured `shutdown_request` message (After Reviewer
-   Approval step 6) and wait until all have exited. The teammates from the final task still
-   hold that task's context; the new plan gets fresh
-   teammates at Starting Execution.
+   Approval step 6) and wait until all have exited. The
+   teammates from the final task still hold that task's
+   context; the new plan gets fresh teammates at Starting
+   Execution.
 2. **Restart the full cycle** — clarification → planning →
    queue insertion → Starting Execution. Do not reuse the
    previous plan or skip clarification — the new task has
