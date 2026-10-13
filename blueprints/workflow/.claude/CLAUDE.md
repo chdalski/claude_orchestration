@@ -345,7 +345,10 @@ selection. **Before spawning teammates for a new plan**,
 shut down every teammate from the previous plan — send
 each the structured `SendMessage` message
 `{"type": "shutdown_request", "reason": "..."}` and wait
-until it has exited. A plain-text message, even one that
+until it has exited. Confirm each exit with `ListAgents`,
+which no longer lists an exited teammate, rather than
+waiting for the `shutdown_response`: confirmations can
+reach you late. A plain-text message, even one that
 names `shutdown_request`, leaves the teammate alive: it
 needs the request ID the structured message carries to
 answer with its `shutdown_response` and exit. Teammates
@@ -438,33 +441,45 @@ stuck.
 - Use `SendMessage` to ask a team agent for a status
   update — they will respond via `SendMessage`.
 
-**Never idle on a quick teammate reply alone.** Once your
-turn ends, only an inbound event wakes you, and delivery
-can lag: a prior session ended its turn twice waiting for a
-shutdown confirmation that arrived only after the user's
-next prompt. Before ending a turn whose next step waits on
-a reply due within minutes — a shutdown confirmation, a
-handoff acknowledgment, the answer to a status check —
-start a timer: `Bash` with `run_in_background` running
-`sleep 120`. When it fires, ignore it if the reply has
-arrived; otherwise relay at a monitored handoff (below) or
-apply the Recovery protocol.
+**Act on idle notifications, not timers.** When a
+teammate's turn ends, you receive its idle notification at
+once, with its final text. An idle teammate resumes only
+when something wakes it: a message from another agent, or
+the completion of a command it started in the background.
+Check each notification against what you are waiting for
+from that teammate:
+
+- Its result has reached you in its own message —
+  proceed.
+- It names a message or a running command it waits for —
+  let it wait; that event wakes it.
+- Anything else is a stall, even when the text reads like
+  progress — no deliverable, or a result it says it sent
+  that never reached you. Message it at once with what you
+  need.
+
+`ListAgents` shows whether a teammate is `running` or
+`idle` when you need its state between notifications. Do
+not start `sleep` timers to wait for a teammate: a timer
+only delays noticing a stall that the idle notification
+already shows — prior sessions lost over ten minutes per
+stall that way.
 
 **Handoff monitoring** — the Develop-Review and TDD
 workflows define lead-monitored transitions (see the
 Handoff Protocol section in the workflow file). At these
 transitions, peer-to-peer `SendMessage` between agents is
-unreliable — messages can be silently dropped due to name
-mismatches, with no error feedback to the sender. When a
-monitored transition occurs:
+unreliable — a message can be lost even when `SendMessage`
+reports success. When a monitored transition occurs:
 
-1. Note the transition and start the 2-minute timer
-2. Watch for an acknowledgment message from the recipient
-3. If the timer fires before an acknowledgment arrives,
-   relay the message to the recipient yourself via
-   `SendMessage`
-4. Do not wait passively for longer — undetected message
-   loss causes multi-minute stalls that compound per task
+1. Note the transition
+2. When the sender's idle notification shows the handoff,
+   check the recipient: its acknowledgment, or `ListAgents`
+   showing it `running`, means the message arrived
+3. If the recipient is `idle` and has not acknowledged,
+   relay the message to it yourself via `SendMessage`
+4. Do not wait passively — undetected message loss causes
+   multi-minute stalls that compound per task
 
 This is not a fallback for exceptional cases — expect to
 relay at monitored transitions regularly until the

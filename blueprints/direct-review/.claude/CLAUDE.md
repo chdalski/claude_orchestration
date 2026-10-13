@@ -238,7 +238,10 @@ both paths.
    step 10 without waiting for the exit; wait for it only
    before you spawn a teammate of the same name — until
    then the old one can still act, and a new teammate under
-   that name cannot be spawned. Fresh teammates keep one
+   that name cannot be spawned. Confirm the exit with
+   `ListAgents`, which no longer lists an exited teammate,
+   rather than waiting for the `shutdown_response`: it can
+   reach you late. Fresh teammates keep one
    task's context out of the next.
 10. **Wait for the user's go** before starting the next
     task. Report what remains and ask via
@@ -254,17 +257,30 @@ approval — wait for the Reviewer's own message. A prior
 session acted on a relayed verdict and committed before the
 real approval arrived.
 
-### Waiting on a Quick Reply
+### Idle Notifications
 
-Once your turn ends, only an inbound event wakes you, and
-delivery can lag: a prior session ended its turn twice
-waiting for a shutdown confirmation that arrived only
-after the user's next prompt. Before ending a turn whose
-next step waits on a reply due within minutes — a
-shutdown confirmation you need before a spawn (step 9),
-the answer to a status check — start a timer: `Bash` with `run_in_background`
-running `sleep 120`. When it fires, ignore it if the reply
-has arrived; otherwise follow Teammate Unresponsive.
+When a teammate's turn ends, you receive its idle
+notification at once, with its final text. An idle
+teammate resumes only when something wakes it: a message
+from another agent, or the completion of a command it
+started in the background. Check each notification against
+what you are waiting for from that teammate:
+
+- Its result has reached you in its own message —
+  proceed.
+- It names a message or a running command it waits for —
+  let it wait; that event wakes it.
+- Anything else is a stall, even when the text reads like
+  progress — no deliverable, or a result it says it sent
+  that never reached you. Message it at once with what you
+  need; if it stays silent, follow Teammate Unresponsive.
+
+`ListAgents` shows whether a teammate is `running` or
+`idle` when you need its state between notifications. Do
+not start `sleep` timers to wait for a teammate: a timer
+only delays noticing a stall that the idle notification
+already shows — prior sessions lost over ten minutes per
+stall that way.
 
 ### Teammate Unresponsive
 

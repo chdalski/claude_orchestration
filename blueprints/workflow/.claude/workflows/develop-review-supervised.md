@@ -118,9 +118,11 @@ for acknowledgment at these transitions:
 - **Step 12** — Reviewer sends rejection findings to
   Developer, Test Engineer, and Security Engineer
 
-If no acknowledgment arrives within 2 minutes of a
-monitored transition, the lead relays the message directly
-to the recipient. This adds one message hop but eliminates
+When the sender goes idle after a monitored transition
+and the recipient has neither acknowledged nor started
+working, the lead relays the message directly to the
+recipient (see Handoff monitoring in the lead's
+`CLAUDE.md`). This adds one message hop but eliminates
 multi-minute stalls from undetected message loss.
 
 ## Flow
