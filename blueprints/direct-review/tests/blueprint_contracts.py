@@ -82,12 +82,15 @@ AGENT_FILES: dict[str, str] = {
 AGENT_TOOLS: dict[str, set[str]] = {
     "reviewer": {
         "Read", "Glob", "Grep", "Bash", "SendMessage",
+        "LSP", "ToolSearch",
     },
     "security-engineer": {
         "Read", "Glob", "Grep", "Bash", "SendMessage",
+        "LSP", "ToolSearch",
     },
     "plan-reviewer": {
         "Read", "Glob", "Grep",
+        "LSP", "ToolSearch",
     },
     "design-advisor": {
         "Read", "Glob", "Grep", "LSP", "ToolSearch",

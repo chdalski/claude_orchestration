@@ -13,6 +13,7 @@ no `rust-analyzer` binary on PATH, or the session's tool list has no
 """
 
 import json
+import re
 import shutil
 from pathlib import Path
 
@@ -56,27 +57,20 @@ def rust_project(tmp_path: Path) -> Path:
     return tmp_path
 
 
-@pytest.mark.asyncio
-@pytest.mark.timeout(240)
-async def test_lead_uses_lsp_for_call_sites(rust_project):
-    """Asked for call sites of an ambiguous name, the lead queries LSP."""
+async def run_session(project: Path, prompt: str, max_turns: int) -> tuple[list[str], ToolCallLog]:
+    """Run one lead session; return the session's tool list and the tools it called."""
     tool_log = ToolCallLog()
     session_tools: list[str] = []
     # setting_sources=["project"]: the SDK loads no settings by default,
     # which would drop both the plugin entry and the blueprint rules
     # this test exercises.
     options = ClaudeAgentOptions(
-        cwd=str(rust_project),
-        max_turns=10,
+        cwd=str(project),
+        max_turns=max_turns,
         env=NESTED_SESSION_ENV,
         permission_mode="bypassPermissions",
         setting_sources=["project"],
         system_prompt={"type": "preset", "preset": "claude_code", "append": DIRECT_MODE},
-    )
-    prompt = (
-        "List every call site of the free function `add` defined in "
-        "src/math.rs (not the `Ledger::add` method), as file and line. "
-        "Do not modify any files. Be brief."
     )
 
     async for message in query(prompt=prompt, options=options):
@@ -89,8 +83,59 @@ async def test_lead_uses_lsp_for_call_sites(rust_project):
 
     if "LSP" not in session_tools:
         pytest.skip(f"LSP tool not available in session (is {RUST_LSP_PLUGIN} installed?)")
+    return session_tools, tool_log
+
+
+@pytest.mark.asyncio
+@pytest.mark.timeout(240)
+async def test_lead_uses_lsp_for_call_sites(rust_project):
+    """Asked for call sites of an ambiguous name, the lead queries LSP."""
+    _, tool_log = await run_session(
+        rust_project,
+        "List every call site of the free function `add` defined in "
+        "src/math.rs (not the `Ledger::add` method), as file and line. "
+        "Do not modify any files. Be brief.",
+        max_turns=10,
+    )
 
     assert tool_log.has("LSP"), (
         "Lead answered a symbol-level question without the LSP tool; "
         f"tools used: {tool_log.tool_names}"
     )
+
+
+@pytest.mark.asyncio
+@pytest.mark.timeout(300)
+async def test_lead_renames_through_lsp_references(rust_project):
+    """Asked to rename a function whose name a method shares, the lead
+    resolves the sites with LSP and edits them, never with a text rewrite.
+
+    A prior session renamed a field with a regex script, which also hit
+    unrelated values of the same name; the rule's rename section exists
+    for that case.
+    """
+    _, tool_log = await run_session(
+        rust_project,
+        "Rename the free function `add` in src/math.rs to `sum` and update "
+        "every caller. Leave the `Ledger::add` method unchanged. Make the "
+        "change now, without a plan or review. Be brief.",
+        max_turns=20,
+    )
+
+    rewrites = [
+        r.input_data.get("command", "")
+        for r in tool_log.calls_for("Bash")
+        if re.search(r"\b(sed|perl)\b", r.input_data.get("command", ""))
+    ]
+    assert not rewrites, f"Lead renamed with a text rewrite: {rewrites}"
+    assert tool_log.has("LSP"), (
+        "Lead renamed a symbol without resolving its references through LSP; "
+        f"tools used: {tool_log.tool_names}"
+    )
+
+    src = rust_project / "src"
+    assert "pub fn sum(" in (src / "math.rs").read_text()
+    assert "math::sum(acc, *v)" in (src / "lib.rs").read_text()
+    ledger = (src / "ledger.rs").read_text()
+    assert "pub fn add(&mut self" in ledger, "Ledger::add was renamed too"
+    assert "math::sum(acc, *v)" in ledger
