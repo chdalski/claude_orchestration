@@ -56,6 +56,7 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 - Risk assessment at workflow selection: high-risk indicators require Develop-Review, not Direct-Review
 - The design-advisor is a stateless subagent; every code-changing plan rests on its report, and the user decides each proposal before the plan is written
 - An adopted preparatory refactor is its own task ahead of the feature work; when no test covers the behavior it preserves, a preceding task pins that behavior with tests
+- Duplication the change must edit in several places is removed before it (design-advisor: `do first` or `separate plan before`); a separate plan before is completed first and the change then gets a fresh design-advisor report, one after goes into the plan's Non-Goals as `(separate plan after this one)` and is offered at completion
 - Every workflow's review request carries the plan's Decisions, so the Reviewer does not flag a design proposal the user declined
 - TDD runs pinning-test and refactor tasks without a Red phase — their tests pass against the current code by design
 - Lead does not prescribe security mitigations — names risk categories and routes to Security Engineer

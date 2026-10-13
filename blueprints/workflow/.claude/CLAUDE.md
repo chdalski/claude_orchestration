@@ -160,7 +160,15 @@ After clarification is complete:
    taken after review adds tasks and restarts the review
    cycle. A proposal that revises the approach the user
    chose during clarification is new information from the
-   code — put it to the user like the others.
+   code — put it to the user like the others. A proposal
+   adopted as a separate plan before this change gets its
+   own plan, written and completed first, whose Goal names
+   the change it prepares; then plan this change with a
+   fresh `design-advisor` report, since the first one
+   judged the code before the refactor. One adopted as a
+   separate plan after goes into this plan's Non-Goals,
+   marked `(separate plan after this one)` — planned now,
+   it would judge code this plan changes.
 
 4. **Write the plan** to the plans directory (read the
    path from `.claude/settings.json`) following the format
@@ -601,7 +609,10 @@ proposed commit message, file list):
 
 5. **Continue the workflow.** Send the next task slice if
    any remain, or proceed to plan completion if all
-   slices are done.
+   slices are done; then offer to plan the change the
+   plan's Goal says it prepares, and each Non-Goal marked
+   `(separate plan after this one)` — no plan file holds
+   them yet.
 
 ## Conventional Commits
 

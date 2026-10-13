@@ -47,6 +47,7 @@ uv run pytest blueprints/direct-review/tests/ -m static -v
 - Advise-mode Security Engineer consultations are stateless subagents (no `name`); implementation gates use teammates spawned per task
 - The design-advisor is a stateless subagent consulted whenever an option changes code; every code-changing plan rests on its report, and the user decides each proposal before the plan is written
 - An adopted preparatory refactor is its own task ahead of the feature work; when no test covers the behavior it preserves, a preceding task pins that behavior with tests
+- Duplication the change must edit in several places is removed before it (design-advisor: `do first` or `separate plan before`); a separate plan before is completed first and the change then gets a fresh design-advisor report, one after goes into the plan's Non-Goals as `(separate plan after this one)` and is offered at completion
 - Teammates are spawned before a task's first edit and shut down after its commit — no context carries across tasks
 - The user reviews every task after Reviewer approval; the lead waits for the user's go before the next task
 - The Reviewer composes the commit message and file list; the lead commits after user approval with a `Plan:` trailer
