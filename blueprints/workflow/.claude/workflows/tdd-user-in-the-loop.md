@@ -57,8 +57,8 @@ breaks `SendMessage` communication.
 
 Peer-to-peer `SendMessage` between team agents is
 unreliable — messages are silently dropped if the sender
-uses an incorrect agent name (e.g., `test-engineer` instead
-of `Test Engineer`), and `SendMessage` returns success when
+uses an incorrect agent name (e.g., `Test Engineer` instead
+of `test-engineer`), and `SendMessage` returns success when
 a message is queued, not when it is delivered. Senders have
 no way to detect failed delivery, which causes stalls that
 require lead intervention.

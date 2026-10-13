@@ -13,9 +13,10 @@ Before running `git checkout -- <file>`, `git reset
 --hard`, `git clean -f`, or `git restore <file>`:
 
 1. Run `git status` to check for uncommitted changes.
-2. If the working tree is dirty, commit or stash first:
-   `git stash push -m "before <operation>"` or
-   `git add <files> && git commit -m "wip: <desc>"`.
+2. If the working tree is dirty, stash first:
+   `git stash push -m "before <operation>"`. Do not make a
+   WIP commit instead — every commit follows the Reviewer's
+   approval of the reviewed task.
 3. Only then run the destructive command.
 
 ## Why
@@ -29,7 +30,4 @@ from.
 
 ## Scope
 
-This applies to any agent with Bash access. Use `git
-stash` when the changes are not ready to commit, or a WIP
-commit when they are ready to land but the current task
-is not yet complete.
+This applies to any agent with Bash access.

@@ -207,17 +207,6 @@ because quality reviews naturally focus on what _is_ there,
 not what _isn't_ — missing features are invisible unless
 you check the spec.
 
-**Minimum Required Tests.** If the task's plan has a
-`## Minimum Required Tests` section, every entry must be
-implemented as a passing test. Read the section, list every
-entry, and confirm each one is present in the test files
-and passing. A handoff that does not cite the list — or
-that cites it without confirming each entry — is grounds
-for rejection. The user approved that list
-as a binding acceptance criterion; partial coverage
-without explicit user sign-off is incomplete delivery
-even if every other check passes.
-
 **Investigation and audit deliverables.** When the
 deliverable is an investigation or audit rather than
 code, apply scope verification to the _conclusions_, not
@@ -312,6 +301,27 @@ they existed before or a preceding commit added them.
 - Idiomatic use of language features and type system
 - Conventions from the language-specific rules that load
   automatically when touching source files
+
+### 7. Documentation for Readers
+
+Applies to pages people read — READMEs and `docs/` pages,
+not `CLAUDE.md` files or plans. The checks above only ever
+ask for more; applied to prose, they turn every
+simplification into a caveat to add, and the page grows
+with each review. Judge the page against its audience and
+the Reader's Need section of `documentation.md`, in both
+directions:
+
+- A caveat, limitation, or edge case the page leaves out
+  is a finding only when a reader following the page would
+  run into it.
+- Content the page's audience does not need —
+  implementation detail on a page for users, threat-model
+  reasoning, caveats no reader acts on — is a Medium
+  finding: suggest the cut, or a link to the file that
+  holds the detail.
+- A request for content beyond the acceptance criteria and
+  the behavior the change alters is Low.
 
 ## Reporting Findings
 

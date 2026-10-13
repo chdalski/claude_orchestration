@@ -111,7 +111,7 @@ communicate via `SendMessage`.
   options to the user.
 - `develop-review-supervised.md` and
   `develop-review-autonomous.md` share an identical
-  dev-team flow (steps 1–14) — only the Commit section
+  dev-team flow (steps 1–13) — only the Commit section
   differs. When editing either file's dev-team flow,
   apply the same change to the other.
 - File names should be descriptive:

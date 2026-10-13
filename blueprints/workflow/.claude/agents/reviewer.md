@@ -58,7 +58,7 @@ file list) or a rejection (with findings).
    handoff. The handoff message must declare which
    advisors were consulted and whether each one signed
    off — or state "no advisors consulted" with a brief
-   reason (e.g., "Direct-Review workflow"). Check:
+   reason (e.g., "no security relevance"). Check:
    - **Field present** — if missing, reject and ask the
      implementor to include it. Don't infer from
      surrounding text.
@@ -163,8 +163,8 @@ changed files:
   and tests passed (originals still in place), so the
   misread was invisible from quality signals alone.
 - The implementor's handoff cites a clean linter result
-  for every step in their Before Reporting Done procedure
-  (e.g., `cargo clippy: 0 warnings`). If the linter
+  for every changed component (e.g., `cargo clippy: 0
+  warnings`). If the linter
   citation is missing or shows warnings, reject — the
   linter step is the most-frequently skipped, and a prior
   session shipped seven warnings to `main` because both
@@ -258,9 +258,8 @@ coverage matches the complexity of the changes. If the
 implementation modifies observable behavior, adds new
 code paths, or introduces a new module without
 proportionate test additions, flag as **High** and
-reject. The expected source of test design (Test
-Engineer in workflows that include them; the implementor
-in Direct-Review) is irrelevant to this check — the
+reject. Who was expected to design the tests is
+irrelevant to this check — the
 reviewer evaluates adequacy independently, because the
 reviewer is the last gate before code enters the
 codebase. Inadequate test coverage for non-trivial
@@ -305,6 +304,27 @@ they existed before or a preceding commit added them.
 - Idiomatic use of language features and type system
 - Conventions from the language-specific rules that load
   automatically when touching source files
+
+### 7. Documentation for Readers
+
+Applies to pages people read — READMEs and `docs/` pages,
+not `CLAUDE.md` files or plans. The checks above only ever
+ask for more; applied to prose, they turn every
+simplification into a caveat to add, and the page grows
+with each review. Judge the page against its audience and
+the Reader's Need section of `documentation.md`, in both
+directions:
+
+- A caveat, limitation, or edge case the page leaves out
+  is a finding only when a reader following the page would
+  run into it.
+- Content the page's audience does not need —
+  implementation detail on a page for users, threat-model
+  reasoning, caveats no reader acts on — is a Medium
+  finding: suggest the cut, or a link to the file that
+  holds the detail.
+- A request for content beyond the acceptance criteria and
+  the behavior the change alters is Low.
 
 ## Reporting Findings
 
