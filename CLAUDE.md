@@ -89,6 +89,16 @@ CPU/memory limits, dual auth mode (`proxy`/`oauth`) via
 and a PulseAudio overlay loaded by default. The root
 `.devcontainer` is a symlink to the template.
 
+## Language
+
+Everything written to this repository is in English —
+blueprint files, rules, skills, tests, docs, and commit
+messages — regardless of the language the user chats in.
+There are no exceptions: translate quoted non-English
+material, such as user feedback or notes from a target
+project, before it goes into a file or a commit message.
+Chat replies may use the user's language.
+
 ## Conventions
 
 <!-- Agents: add non-obvious project conventions discovered
