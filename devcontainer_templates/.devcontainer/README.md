@@ -27,7 +27,7 @@ Requires Docker Compose 2.24 or newer (optional `env_file` entries).
 | `fish/config.fish` | Shell config; reads `.env.credentials` |
 | `cargo/config.toml` | Links Rust builds with mold |
 | `post-create.sh` | Once per container: volume ownership, cargo config, language servers |
-| `post-start.sh` | Every start: Claude config, git identity, plugins |
+| `post-start.sh` | Every start: Claude config, Claude Code update, git identity, plugins |
 | `.env.defaults` | Committed environment defaults |
 | `.env.credentials.example` | Documents the credentials file format |
 
@@ -228,6 +228,43 @@ continues.
 `post-create.sh` installs `typescript-language-server` and `pyright` for the
 TypeScript and Python plugins; `rust-analyzer` and `gopls` come with the Rust
 and Go features.
+
+## Claude Code Updates
+
+On every start, `post-start.sh` runs `claude update`, so the first session
+already runs the latest release. Without it, that session installs the
+update in the background and has to be restarted to use it. "Rebuild
+Container" needs the step as well: the image's install layer comes from the
+build cache and holds the release of the first build. A failed update, or one
+that takes longer than two minutes, warns and the start continues.
+
+## Docker-in-Docker
+
+Without the `docker-in-docker` feature, `/tmp` lives in the container's
+writable layer on disk. The feature's init script mounts a tmpfs over `/tmp`
+unless `/tmp` already is a mount point. A tmpfs lives in RAM and counts
+against the container's memory limit, so large builds in `/tmp` (an agent's
+scratchpad, for example) get the container OOM-killed.
+
+When you add the feature, put `/tmp` on a named volume in `mounts`:
+
+```jsonc
+"source=tmp-${devcontainerId},target=/tmp,type=volume"
+```
+
+A volume keeps its content across restarts and rebuilds, so clean it at the
+start of `post-start.sh`, and add `systemd` to the Dockerfile packages for
+`systemd-tmpfiles`:
+
+```bash
+echo 'e /tmp - - - 2d' | sudo systemd-tmpfiles --clean -
+```
+
+This removes every file untouched for two days and the directories it
+empties; recent files, such as the scratchpad of a session that crashed, stay.
+Mount points inside `/tmp`, such as VS Code's Wayland socket, are skipped.
+Two days, not one: `relatime` refreshes a file's access time at most once a
+day, so a file read an hour ago can look a day old.
 
 ## Migrating from the `.env.local` Layout
 

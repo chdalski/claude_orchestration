@@ -372,6 +372,9 @@ cp -r devcontainer_templates/.devcontainer/ /path/to/your/project/.devcontainer/
 - **Plugins ready on start** — official plugins the project
   enables are installed automatically; the TypeScript and
   Python language servers are preinstalled
+- **Latest Claude Code on start** — `claude update` runs on
+  every start, so the first session needs no restart to
+  pick up an update
 
 See the template's
 [README](devcontainer_templates/.devcontainer/README.md) for
