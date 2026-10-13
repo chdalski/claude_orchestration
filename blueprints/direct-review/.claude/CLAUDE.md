@@ -41,6 +41,21 @@ and **repeat** until no ambiguity remains. Do not skip
 clarification for "simple" requests; a misunderstanding
 costs more than one extra question.
 
+**Ask about trade-offs; settle what the code decides.** A
+question goes to the user when its answer changes what gets
+built and weighing it needs the user — scope, visible
+behavior, a cost or risk the user carries. A detail that the
+code, a project rule, or an established pattern already
+decides — which type a request takes, which existing error
+variant a failure maps to — is not an ambiguity: settle it
+yourself and name it in the understanding you present, where
+the user can still overrule it. Settle only what nobody has
+put forward as an option: an approach the user proposed and
+an advisor's proposal stay the user's choice. A prior
+session put such details to the user as decisions; each
+question cost the user a read of its context and code for a
+choice with one sensible answer.
+
 **Challenge the approach, not the goal.** Treat a solution
 the user proposes as a hypothesis, not a spec — the user
 may not know how this is usually done. Before advising or
