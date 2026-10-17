@@ -135,7 +135,7 @@ def test_refactor_tasks_pin_behavior_with_tests():
 
 def test_implementation_step_order(lead_instructions):
     """Pre-gate before implementing; post-gate before review; user review
-    before commit; wait for the user's go last."""
+    before commit; start the next task last."""
     section = _extract_section(lead_instructions, "Implementing a Task")
     order = [
         _step_number(section, "Spawn the task's teammates"),
@@ -146,15 +146,23 @@ def test_implementation_step_order(lead_instructions):
         _step_number(section, "User review"),
         _step_number(section, "Commit"),
         _step_number(section, "Shut down the teammates"),
-        _step_number(section, "Wait for the user's go"),
+        _step_number(section, "Start the next task of the plan"),
     ]
     assert order == sorted(order), f"Implementation steps out of order: {order}"
 
 
-def test_user_review_has_no_exceptions(lead_instructions):
-    section = _extract_section(lead_instructions, "Implementing a Task").lower()
-    assert "there are no exceptions" in section
-    assert "never chain tasks" in section
+def test_user_review_is_the_checkpoint_between_tasks(lead_instructions):
+    """Plan approval starts the first task; every task gets the user's review,
+    which reports what remains; the plan's next task follows at once, a task of
+    another plan waits for the user's go."""
+    planning = _extract_section(lead_instructions, "Planning")
+    assert "Then start its first task at once" in _step_text(planning, "Commit the plan")
+    section = _extract_section(lead_instructions, "Implementing a Task")
+    user_review = _step_text(section, "User review")
+    assert "There are no exceptions" in user_review
+    assert "tasks that remain" in user_review
+    next_task = _step_text(section, "Start the next task of the plan")
+    assert "A task of another plan still waits for the user's go" in next_task
 
 
 def test_reviewer_handoff_states_both_security_gates(lead_instructions):

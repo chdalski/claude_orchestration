@@ -72,7 +72,7 @@ approval), then one task at a time: `risk-assessment.md`
 selects Reviewer-only, Security-Hybrid (Security Engineer
 pre/post sign-offs), or escalation to the user. The
 Reviewer approves each task, the user reviews it, the lead
-commits and waits for the user's go. 2 team agents
+commits and starts the plan's next task. 2 team agents
 (Reviewer, Security Engineer) plus the lead and two
 subagents: `design-advisor` (proposes design improvements
 and preparatory refactors for options and plans that

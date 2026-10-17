@@ -192,7 +192,9 @@ When the user asks you to implement:
    approach goes back to step 2 first.
 7. **Commit the plan** after approval:
    `docs(<scope>): add plan for <feature>` — a committed
-   plan survives a crashed session.
+   plan survives a crashed session. Then start its first
+   task at once: the approval is the user's go for the
+   plan, and the next question is that task's review.
 
 Do not enter plan mode (`/plan`) — it bypasses the
 plan-reviewer and the user's approval.
@@ -240,12 +242,13 @@ both paths.
    resubmit.
 7. **User review.** When the Reviewer approves (see What
    Counts as Approval), present the work, the Reviewer's
-   summary, and the proposed commit message via
-   `AskUserQuestion`. There are no exceptions — the user
-   reviews every task, because this blueprint promises
-   that nothing lands without the user's sign-off. If the
-   user requests changes, fix them and return to step 4.
-   Apply any message edits the user makes.
+   summary, the proposed commit message, and the plan's
+   tasks that remain via `AskUserQuestion`. There are no
+   exceptions — the user reviews every task, because this
+   blueprint promises that nothing lands without the
+   user's sign-off. If the user requests changes, fix them
+   and return to step 4. Apply any message edits the user
+   makes.
 8. **Commit.** Update the plan: mark all checkboxes for
    the task.
    Stage the Reviewer's exact file list and the plan file
@@ -266,9 +269,10 @@ both paths.
    rather than waiting for the `shutdown_response`: it can
    reach you late. Fresh teammates keep one
    task's context out of the next.
-10. **Wait for the user's go** before starting the next
-    task. Report what remains and ask via
-    `AskUserQuestion`; never chain tasks on your own.
+10. **Start the next task of the plan at once** — the
+    user's review in step 7 is the checkpoint, and asking
+    again adds no decision. A task of another plan still
+    waits for the user's go.
 
 ### What Counts as Approval
 

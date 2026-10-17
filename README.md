@@ -335,7 +335,7 @@ graph TD
     Rev -->|approved| UR{User reviews<br/>task}
     UR -->|changes| Impl
     UR -->|approved| Commit[Lead commits]
-    Commit -->|wait for user's go| Risk
+    Commit -->|next task of the plan| Risk
 ```
 
 ## Devcontainer Templates
