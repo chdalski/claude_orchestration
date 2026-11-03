@@ -188,5 +188,5 @@ def test_escalation_requires_explicit_user_choice():
         (RULES_DIR / "risk-assessment.md").read_text(), "Escalate to the User"
     )
     assert "Proceed with Security-Hybrid anyway" in section
-    assert "Handle the task outside this blueprint" in section
+    assert "Handle the task outside this process" in section
     assert "make no implementation edit" in section

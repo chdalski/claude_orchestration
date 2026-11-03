@@ -113,6 +113,8 @@ avoid mistakes. One line each. Remove when no longer true. -->
 - Use official terminology: "launch" subagents, "spawn" and "shut down" teammates, "message" within teams (see `terminology.md` rule)
 - Rule files and CLAUDE.md files target under 200 lines — agent adherence degrades beyond that threshold
 - Blueprint files are cached at prompt cache level 3 — no dynamic content (dates, counters, versions)
+- Files under `blueprints/*/.claude/` never name their origin — projects know nothing of the template they came from (a static test checks this)
+- Blueprints run with auto memory off and say themselves where knowledge goes (`instruction-feedback.md`); this repository keeps its own memory
 - Test suite uses pytest with `-m static` marker for structural verification
 
 ## References

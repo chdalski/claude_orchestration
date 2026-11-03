@@ -98,6 +98,12 @@ sanity checks, and language-specific init procedures.
 | **workflow** | User chooses a workflow after plan approval | Lead, Developer, Test Engineer, Security Engineer, Reviewer, Design Advisor |
 | **direct-review** | Advisor by default; lead implements on request with per-task user review | Lead, Reviewer, Security Engineer, Design Advisor |
 
+All three run with Claude Code's auto memory off. Knowledge
+goes where a review or a later session finds it: process
+lessons into `.claude/`, project facts into `CLAUDE.md` or the
+docs, running state into the plan and Git, and open findings
+into a tracked `.ai/backlog.md`.
+
 ### When to Use Which
 
 | If you want... | Use |
@@ -301,7 +307,7 @@ Each task is classified by `risk-assessment.md`:
   cross-scope effects) or behavioral changes without
   covering tests. The lead stays in advise mode until the
   user explicitly chooses Security-Hybrid anyway or
-  handling the task outside the blueprint.
+  handling the task outside this process.
 
 **Agents:**
 

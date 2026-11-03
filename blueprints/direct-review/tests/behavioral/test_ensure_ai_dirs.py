@@ -4,7 +4,7 @@ These tests spawn a real Claude Code session and invoke the /ensure-ai-dirs
 skill in a tmp project that has no .ai/ directory. The skill should:
 - Copy .claude/skills/ensure-ai-dirs/plan-format.md to .ai/plans/plan-format.md
 - Copy .claude/skills/ensure-ai-dirs/claude-md-template.md to .ai/plans/CLAUDE.md
-- Create .ai/memory/ for Claude Code's auto-memory system
+- Create .ai/backlog.md from its template
 
 When plansDirectory is absent from settings.json, the skill should add it
 to settings.local.json rather than silently defaulting.
@@ -32,7 +32,7 @@ ENSURE_AI_DIRS_PROMPT = (
     ".ai/plans/plan-format.md\n"
     "   b. Read .claude/skills/ensure-ai-dirs/claude-md-template.md and write to "
     ".ai/plans/CLAUDE.md\n"
-    "3. Ensure .ai/memory/ directory exists.\n"
+    "3. Ensure .ai/backlog.md exists.\n"
     "4. Report what you did.\n"
     "Do this now."
 )
@@ -41,9 +41,9 @@ ENSURE_AI_DIRS_PROMPT = (
 @pytest.mark.asyncio
 @pytest.mark.timeout(120)
 async def test_ensure_ai_dirs_creates_directories_and_syncs_templates(fixture_project):
-    """The skill should create .ai/plans/ with both templates and .ai/memory/ when they don't exist."""
+    """The skill should create .ai/plans/ with both templates and .ai/backlog.md when they don't exist."""
     plans_dir = fixture_project / ".ai" / "plans"
-    memory_dir = fixture_project / ".ai" / "memory"
+    backlog = fixture_project / ".ai" / "backlog.md"
     format_guide = plans_dir / "plan-format.md"
     plans_claude_md = plans_dir / "CLAUDE.md"
     format_template = fixture_project / ".claude" / "skills" / "ensure-ai-dirs" / "plan-format.md"
@@ -51,7 +51,7 @@ async def test_ensure_ai_dirs_creates_directories_and_syncs_templates(fixture_pr
 
     # Preconditions: .ai/ does not exist, templates do
     assert not plans_dir.exists(), "Test precondition: .ai/plans/ should not exist yet"
-    assert not memory_dir.exists(), "Test precondition: .ai/memory/ should not exist yet"
+    assert not backlog.exists(), "Test precondition: .ai/backlog.md should not exist yet"
     assert format_template.exists(), "Test precondition: plan-format.md template must exist"
     assert claude_md_template.exists(), "Test precondition: claude-md-template.md must exist"
 
@@ -68,7 +68,7 @@ async def test_ensure_ai_dirs_creates_directories_and_syncs_templates(fixture_pr
     assert plans_dir.is_dir(), "Skill should have created .ai/plans/"
     assert format_guide.is_file(), "Skill should have written .ai/plans/plan-format.md"
     assert plans_claude_md.is_file(), "Skill should have written .ai/plans/CLAUDE.md"
-    assert memory_dir.is_dir(), "Skill should have created .ai/memory/"
+    assert backlog.is_file(), "Skill should have created .ai/backlog.md"
 
     expected_format = format_template.read_text().rstrip("\n")
     actual_format = format_guide.read_text().rstrip("\n")
@@ -156,7 +156,7 @@ ENSURE_AI_DIRS_MISSING_CONFIG_PROMPT = (
     ".ai/plans/plan-format.md\n"
     "   b. Read .claude/skills/ensure-ai-dirs/claude-md-template.md and write to "
     ".ai/plans/CLAUDE.md\n"
-    "4. Ensure .ai/memory/ directory exists.\n"
+    "4. Ensure .ai/backlog.md exists.\n"
     "5. Report what you did.\n"
     "Do this now."
 )

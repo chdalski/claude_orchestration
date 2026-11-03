@@ -40,7 +40,8 @@ miss.
    wasted review cycles.
 3. Lead spawns the Reviewer as a teammate.
 4. Lead sends the work to the Reviewer with the plan's
-   goal, context, Decisions, and acceptance criteria so the
+   goal, context, Decisions, and acceptance criteria
+   including the task's Task Notes, so the
    Reviewer can verify scope completeness and does not flag
    a design choice the user already made — Reviewer
    performs full review including CLAUDE.md drift

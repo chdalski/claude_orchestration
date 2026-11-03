@@ -353,7 +353,8 @@ one phase at a time.
 ### Review
 
 15. **Lead sends to Reviewer** — include the task
-    description and acceptance criteria from the plan so
+    description and acceptance criteria from the plan, with
+    the task's Task Notes, so
     the Reviewer can verify scope completeness, and the
     plan's Decisions section so it does not flag a design
     choice the user already made. Without

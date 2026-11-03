@@ -51,6 +51,12 @@ serialization, or data-integrity changes are Security-Hybrid
 work when no trigger applies. Network, persistence, or API
 contact alone is not a trigger.
 
+A new or widened accepted input form on an existing input
+path — a new field or an alternative shape of a value — is
+Security-Hybrid work when no other trigger applies; the
+Security Engineer's pre-implementation assessment names its
+controls.
+
 ## Escalate to the User
 
 Stay in advise mode — make no implementation edit — when a
@@ -61,8 +67,9 @@ task has either of these:
      decisions
    - Secrets, credentials, tokens, or cryptographic
      operations
-   - A new or widened external input source or accepted
-     input form
+   - A new external input source — an endpoint, consumer,
+     file import or other channel through which untrusted
+     data first enters
    - Dynamic SQL, identifiers, file paths, URLs, commands,
      or templates constructed from untrusted data
    - A possible effect beyond the current operation and data
@@ -77,9 +84,9 @@ scope, then ask the user to choose explicitly:
 - **Proceed with Security-Hybrid anyway.** For trigger 2,
   the plan must add tests that exercise the changed entry
   point, and the Reviewer verifies them against the plan.
-- **Handle the task outside this blueprint.**
+- **Handle the task outside this process.**
 
-This blueprint has no separate developer and test-advisor
+This process has no separate developer and test-advisor
 pipeline for these tasks, so the lead cannot compensate on
 its own. Proceeding silently would give high-risk work less
 scrutiny than the user expects; the choice is the user's,

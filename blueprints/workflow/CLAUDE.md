@@ -21,7 +21,7 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 | Path | Purpose |
 |---|---|
 | `.claude/CLAUDE.md` | Lead instructions — clarification, planning, workflow proposal, agent coordination |
-| `.claude/settings.json` | Agent teams config, plans directory path |
+| `.claude/settings.json` | Agent teams config, plans directory path, auto memory off |
 | `.claude/agents/developer.md` | Implements all code — source and tests (Sonnet) |
 | `.claude/agents/reviewer.md` | Quality gate — scope verification, composes the proposed commit message; lead commits (Opus) |
 | `.claude/agents/test-engineer.md` | Advisory — test design and verification (Sonnet) |
@@ -30,7 +30,7 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 | `.claude/agents/security-engineer.md` | Advisory — security assessment (Sonnet) |
 | `.claude/agents/test-list.md` | Subagent — converts an example mapping into a minimum-required test list (Sonnet) |
 | `.claude/rules/` | Unconditional + conditional rules injected by Claude Code |
-| `.claude/skills/ensure-ai-dirs/` | Skill: creates `.ai/plans/` and `.ai/memory/` directories, points auto memory at `.ai/memory/` (absolute path in `settings.local.json`), syncs plan format guide and review checklist, moves Completed/Canceled plans into a frozen `completed/` directory |
+| `.claude/skills/ensure-ai-dirs/` | Skill: creates `.ai/plans/` and `.ai/backlog.md`, syncs plan format guide and review checklist, moves Completed/Canceled plans into a frozen `completed/` directory |
 | `.claude/skills/example-mapping/` | Skill: facilitates an Example Mapping session and writes a structured mapping file for `/test-list` or clarification |
 | `.claude/skills/project-init/` | Skill: scans project, generates `CLAUDE.md` per `project-context.md`, enables code intelligence plugins for detected languages |
 | `.claude/skills/project-sanity/` | Skill: audits repo for common issues (report-only) |
@@ -60,6 +60,11 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 - Every workflow's review request carries the plan's Decisions, so the Reviewer does not flag a design proposal the user declined
 - TDD runs pinning-test and refactor tasks without a Red phase — their tests pass against the current code by design
 - Lead does not prescribe security mitigations — names risk categories and routes to Security Engineer
+- Auto memory is off (`autoMemoryEnabled: false`); `instruction-feedback.md` says where each kind of knowledge goes, and open findings go into `.ai/backlog.md`, created by `/ensure-ai-dirs` and owned by the lead
+- After approval a plan changes only through Task Notes (how an open task is implemented safely), a revision with a follow-up review and new approval (open tasks only, the Goal stands or gains something), a gate's demand on the running task (criteria adapted, Decisions entry, no new approval), or cancellation with the reason in Decisions (Goal no longer holds); a rebase that invalidates a checked task's text is the only reason to correct it
+- The plan file is created uncommitted at the user's first decision in planning; an untracked plan is not approved, and resuming starts from `git status` with fresh gates
+- The reviewer's follow-up pass after a rejection reviews only the diff between the recorded tree of its last pass and the resubmission; build and tests run only when a change can affect them, never for prose alone
+- Files under `.claude/` never name their origin — projects know nothing of the template they came from
 - All blueprint files must be fully static — no dates, counters, versions (prompt cache level 3)
 - Rule files target under 200 lines — agent adherence degrades beyond that threshold
 - Templates live in their skill's directory, not a separate `templates/` directory

@@ -1,4 +1,4 @@
-# Workflow Blueprint — Lead Instructions
+# Lead Instructions
 
 ## Your Role
 
@@ -158,7 +158,13 @@ After clarification is complete:
    not on the change's size. Before writing the plan, ask
    via `AskUserQuestion` about every proposal; a proposal
    taken after review adds tasks that need a follow-up
-   pass (step 6b–d). A proposal that revises the approach
+   pass (step 6b–d). As soon as the user
+   decides the first proposal, create the plan file with
+   its Goal and that decision in Decisions, and keep
+   adding to it: uncommitted on disk, it survives a crashed
+   session, which the conversation does not. It is neither
+   reviewed nor approved until step 7.
+   A proposal that revises the approach
    the user chose during clarification is new information
    from the code — put it to the user like the others. A
    proposal adopted as a separate plan before this change
@@ -250,7 +256,12 @@ After clarification is complete:
       instance, fix every instance of its kind in the plan;
       the reviewer may have reported only those it saw.
       Apply the Advisory findings you agree with in the
-      same revision.
+      same revision. A Blocking finding whose fix needs a
+      trade-off the user weighs (_Ask about trade-offs_) is
+      neither fixed nor declined: collect it for step 7
+      rather than asking during the cycle, since a question
+      asked mid-cycle concerns a plan the next pass may still
+      change.
    c. **Follow-up pass: the revision only.** Launch one
       `plan-reviewer` with the Blocking findings of the
       previous pass and the output of
@@ -258,8 +269,9 @@ After clarification is complete:
       the diff itself. It checks that the revision resolves
       those findings and holds up against the rest of the
       plan; it does not review unchanged text again. Repeat
-      b–c until a pass reports no Blocking findings or
-      every remaining one is declined.
+      b–c until a pass reports no Blocking findings other
+      than trade-off findings you collected, or every
+      remaining one is declined.
    d. **No pass for Advisory findings alone.** A pass
       without Blocking findings ends the cycle, and its
       Advisory findings are dropped — except after the
@@ -282,7 +294,8 @@ After clarification is complete:
 
 7. **Present the plan to the user** for approval. Use
    `AskUserQuestion` to confirm. Name each Blocking finding
-   you declined and each split or consolidation suggestion
+   you declined, each trade-off finding you collected, and
+   each split or consolidation suggestion
    the review raised — those are the user's decisions, not
    yours. Present only plan text the plan-reviewer has
    reviewed in its current form: any edit after a review
@@ -294,8 +307,23 @@ After clarification is complete:
    pass. If the user requests changes, revise the plan and
    run follow-up passes on the revision (step 6b–d) —
    revisions based on user feedback can reintroduce issues
-   the subagent would catch. A change of approach goes
-   back to step 3 first.
+   the subagent would catch — and ask nothing in between
+   until the cycle ends. A change of approach goes back to
+   step 3 first; ask about the new design-advisor report's
+   proposals at once, as step 3 requires, because they
+   decide what the passes review.
+
+   Show the complete plan text in your message before you
+   ask, not a summary: a quick yes to an outline bypasses
+   this gate. The approval question stands alone, after the
+   last review pass. Settle wanted changes with their own
+   question first, and never offer "apply these, then
+   approve" as an option. An answer such as "apply the
+   corrections, then approve" is sequencing, not consent:
+   apply them, run the follow-up pass, and ask again. A prior
+   lead read such an answer as approval, committed the plan,
+   and began its first task before the user had seen the
+   revision.
 
 Plans live in the `plansDirectory` configured in
 `.claude/settings.json` (outside `.claude/` to avoid
@@ -303,11 +331,41 @@ permission prompts). They are committed to git as project
 documentation — decision records for future sessions.
 
 **Do not enter plan mode** (`/plan`) — plan mode is
-single-agent and this blueprint uses a multi-agent process
+single-agent and this team uses a multi-agent process
 where the plan-reviewer subagent independently checks your
 work and the user approves before workflow selection.
 Writing plans directly to the plans directory using the
 Write tool preserves the multi-agent flow.
+
+**After approval, a plan changes in only these ways.**
+Settle every question whose answer changes a criterion before
+approval: a prior plan parked one as an open decision and was
+rewritten in the middle of a task, through three review
+rounds.
+
+- **Task Notes** — a hint on how an open task is implemented
+  safely, such as what a gate demands of a later task. Add it
+  to the plan's Task Notes section without a new approval, and
+  pass the task's notes along with its acceptance criteria,
+  so the review checks them.
+- **Revision** — open tasks or criteria change, or the Goal
+  gains something, and everything it already says stands.
+  Revise open tasks only, never checked ones (the one
+  exception: "A rebase can change an approved task"), run a
+  follow-up pass (step 6b–d), and ask for a new approval. No
+  task of the changed version runs before it.
+- **Gate demand on the running task** — a gate demands more
+  of the task in progress. Implement it, adapt the task's
+  criteria, and add a Decisions entry; no new approval,
+  because the demand only tightens the task. Name it at the
+  next user checkpoint, or at the plan's end when the
+  workflow has none. A demand beyond the task's scope is a
+  revision.
+- **Cancellation** — the Goal no longer holds. Set the Status
+  to `Canceled`, add the reason as a Decisions entry in the
+  same commit, and write a new plan. Committed tasks stay.
+- **Unrelated new work** that the Goal does not need goes into
+  its own plan or `.ai/backlog.md`, never into this plan.
 
 ## When the User Asks for a Plan Directly
 
@@ -321,7 +379,7 @@ once missing details surface.
 Acknowledge the intent and continue clarification. Once
 clarification is complete, write the plan as described in
 Planning above. The user's "plan first" request is
-satisfied automatically by this blueprint — every
+satisfied automatically — every
 implementation path goes through the Planning section.
 
 ## When the User Invokes /test-list
@@ -399,7 +457,13 @@ each the structured `SendMessage` message
 until it has exited. Confirm each exit with `ListAgents`,
 which no longer lists an exited teammate, rather than
 waiting for the `shutdown_response`: confirmations can
-reach you late. A plain-text message, even one that
+reach you late, and neither they nor the exit reliably
+wake you. So while a teammate is still listed, never end
+your turn on it: start a background `sleep 20`
+(`run_in_background`) and check again when it ends. After
+five checks, tell the user. A prior lead ended its turn
+waiting for an exit and stood still until the user asked.
+A plain-text message, even one that
 names `shutdown_request`, leaves the teammate alive: it
 needs the request ID the structured message carries to
 answer with its `shutdown_response` and exit. Teammates
@@ -503,18 +567,32 @@ from that teammate:
 - Its result has reached you in its own message —
   proceed.
 - It names a message or a running command it waits for —
-  let it wait; that event wakes it.
+  let it wait; that event wakes it. At the next event, check
+  that the command is still running. If it has ended and the
+  teammate has not reported, message it to continue.
 - Anything else is a stall, even when the text reads like
   progress — no deliverable, or a result it says it sent
   that never reached you. Message it at once with what you
   need.
 
+**A reply that never arrived.** When a teammate is idle and
+says it sent a result you do not have, read its transcript in
+the session's subagents directory before asking again: its
+`SendMessage` calls hold the full text. Ask again only if
+nothing is there, since a teammate answers a repeated request
+with "sign-off stands". Before passing on an escalation, check
+your newer messages: if they answer it, answer instead of
+forwarding, and mark any forwarded intermediate state as such.
+
 `ListAgents` shows whether a teammate is `running` or
 `idle` when you need its state between notifications. Do
-not start `sleep` timers to wait for a teammate: a timer
-only delays noticing a stall that the idle notification
+not start `sleep` timers to wait for a teammate's result: a
+timer only delays noticing a stall that the idle notification
 already shows — prior sessions lost over ten minutes per
-stall that way.
+stall that way. The one exception is a teammate's exit after
+a shutdown request, which the shutdown before a new plan
+(_Proposing the Approach_) checks with a timer, since no
+notification reliably reports it.
 
 **Handoff monitoring** — the Develop-Review and TDD
 workflows define lead-monitored transitions (see the
@@ -557,6 +635,45 @@ harder to misread or skip than questions buried in prose.
 Each call supports 1-4 questions with 2-4 options each
 (plus an automatic "Other" option for free text).
 
+**Each question stands on its own.** An explanation written
+above the dialog has often scrolled out of view and is
+missed, or there is none, and the user cannot tell what the
+question is about. So write every question so the user can
+answer it from the dialog alone. When a question would be
+hard to understand without an explanation, name its
+subject and say in a clause what it is or what the problem
+is, and why you ask. A question that is already clear stays
+as it is. An option marked `(Recommended)` states the
+reason for the recommendation in its description. Do not
+bloat the dialog: add only the clause that makes the
+question understandable — often one is enough — and keep
+the reasoning behind it out of the dialog.
+
+**A timeout is not an answer.** When `AskUserQuestion`
+reports that nobody responded and tells you to proceed on
+your best judgment, the user is away; nothing has been
+delegated. Do not decide what belongs to the user: wait,
+and continue only with read-only or reversible preparation.
+A prior lead guessed such an answer, and the user had to
+object.
+
+**Put findings one at a time, each with a fix.** Present
+findings one question at a time, or a few that belong
+together, each with its background, why it is a problem, and
+the concrete change you propose: for documentation the new
+wording, for a follow-up plan what it would do. For a
+decision about code, show the changed code in the option's
+`preview` field. A category is not a solution: a prior lead
+listed 29 findings as a table with labels, and the user could
+decide none of them.
+
+**A question from the user is not an order.** Answer it
+directly in two or three plain sentences, give background
+only when asked, and stop there. Do not append an
+`AskUserQuestion` about implementing what you just explained:
+it presses the user toward a change they did not ask for.
+Clarification starts when the user wants a change.
+
 If the user's answers raise new questions, call
 `AskUserQuestion` again. Repeat until resolved.
 
@@ -571,7 +688,14 @@ When you find existing plans in the plans directory:
    assume the previous choice, because the new user may
    have different preferences or the project context may
    have changed
-5. Continue from where the plan left off
+5. Run `git status` first. Edits that fit the open task are a
+   crashed attempt: continue from them and name that in your
+   status; ask the user only about edits you cannot assign to
+   a task. Sign-offs do not survive the session, so the task's
+   gates run fresh. A plan file Git does not track has not
+   been approved: continue its planning and start no task from
+   it.
+6. Continue from where the plan left off
 
 ## Committing Approved Work
 
@@ -614,7 +738,9 @@ proposed commit message, file list):
    apply them to the message before committing.
 
 2. **Update the plan file.** Mark the task's checkboxes
-   complete.
+   complete. Add every finding the task
+   leaves open — an unfixed Low finding, a cleanup wish — to
+   `.ai/backlog.md` and stage that file too.
 
 3. **Stage the exact files** from the Reviewer's file
    list AND the plan file using `git add` with specific
@@ -632,14 +758,31 @@ proposed commit message, file list):
 
 5. **Continue the workflow.** Send the next task slice if
    any remain, or proceed to plan completion if all
-   slices are done; then offer to plan the change the
+   slices are done; then name the entries the plan added
+   to `.ai/backlog.md`, and offer to plan the change the
    plan's Goal says it prepares, and each Non-Goal marked
    `(separate plan after this one)` — no plan file holds
    them yet.
 
+**A rebase can change an approved task.** When a rebase
+brings in other people's commits, check what they change in
+the code your tasks rely on, not only whether it still
+builds: one such rebase cut a task's log line off from its
+alarm, and the call still built. Code that changes afterwards
+goes back through the Reviewer. If a checked task's text no
+longer holds, correct it and give the reason in the commit
+message; this is the only case for editing a checked task.
+
+**Check CI after a push.** After any push, check the
+pipeline result for the pushed commit across every job of
+the matrix before you report the work as done: a green
+local run covers neither other platforms nor CI-only
+steps. A prior plan was reported complete while its CI
+stayed red for a whole session.
+
 ## Conventional Commits
 
-This blueprint uses conventional commit prefixes. The
+This project uses conventional commit prefixes. The
 Reviewer composes the message; you commit it per
 Committing Approved Work above. Commit type definitions
 live in the Reviewer's agent file (so the Reviewer

@@ -196,6 +196,11 @@ of cadence:
 
 ### After Implementation
 
+- Delete any scratch file you wrote to measure or try
+  something before you hand off. It is a tool, not a
+  deliverable, and only the task's files belong in
+  `git status`: a prior measurement test stayed in the
+  working tree and nearly reached the commit.
 - Report completion to the team. Wait for any required
   sign-offs from advisory team members before reporting
   task completion — the workflow defines which sign-offs
@@ -207,8 +212,10 @@ of cadence:
   signed off; security-engineer signed off`) so the
   requester can pass them through to the downstream
   reviewer — the reviewer rejects handoffs that omit this
-  field. Do not mark the task completed — the requester
-  does that after the downstream review and commit
+  field. Name every demand an advisor made beyond the
+  acceptance criteria, so the requester can adapt the plan
+  before the review. Do not mark the task completed — the
+  requester does that after the downstream review and commit
   confirm the work is accepted.
 - Do NOT commit. Downstream agents handle staging and
   committing after review approval — committing before

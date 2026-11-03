@@ -21,13 +21,13 @@ uv run pytest blueprints/direct-review/tests/ -m static -v
 | Path | Purpose |
 |---|---|
 | `.claude/CLAUDE.md` | Lead instructions — clarification, advise mode, planning, per-task implementation gates |
-| `.claude/settings.json` | Agent teams config, plans directory path |
+| `.claude/settings.json` | Agent teams config, plans directory path, auto memory off |
 | `.claude/agents/reviewer.md` | Quality gate — scope, code review, commit message; never commits (Opus) |
 | `.claude/agents/security-engineer.md` | Advisory — decision consultations and pre/post-implementation sign-offs (Opus) |
 | `.claude/agents/plan-reviewer.md` | Plan quality gate — launched as subagent before user presentation (Sonnet) |
 | `.claude/agents/design-advisor.md` | Advisory — proposes the change's shape, preparatory refactors, and larger redesigns; launched as subagent (Opus) |
 | `.claude/rules/` | Unconditional + conditional rules injected by Claude Code |
-| `.claude/skills/ensure-ai-dirs/` | Skill: creates `.ai/plans/` and `.ai/memory/`, syncs plan format guide and review checklist, moves finished plans into `completed/` |
+| `.claude/skills/ensure-ai-dirs/` | Skill: creates `.ai/plans/` and `.ai/backlog.md`, syncs plan format guide and review checklist, moves finished plans into `completed/` |
 | `.claude/skills/project-init/` | Skill: scans project, generates `CLAUDE.md` per `project-context.md`, enables code intelligence plugins |
 | `.claude/skills/project-sanity/` | Skill: audits repo for common issues (report-only) |
 | `tests/blueprint_contracts.py` | Single source of truth for required structure and agent frontmatter |
@@ -42,7 +42,7 @@ uv run pytest blueprints/direct-review/tests/ -m static -v
 - Advise mode is the default; only an explicit implement request enters Implement mode — imperative phrasing ("fix X") starts clarification, not edits
 - The lead implements; there is no developer or test-engineer agent
 - `risk-assessment.md` is the single source for path selection: Reviewer-only, Security-Hybrid, or escalate to the user
-- Escalation triggers (high-risk categories; behavioral change without covering tests) keep the lead in advise mode until the user explicitly chooses Security-Hybrid anyway or handling outside the blueprint
+- Escalation triggers (high-risk categories; behavioral change without covering tests) keep the lead in advise mode until the user explicitly chooses Security-Hybrid anyway or handling outside this process
 - Security-Hybrid requires separately named pre- and post-implementation sign-offs; `advisor-gate-independence.md` lists what cannot stand in for either
 - Advise-mode Security Engineer consultations are stateless subagents (no `name`); implementation gates use teammates spawned per task
 - The design-advisor is a stateless subagent consulted whenever an option changes code; every code-changing plan rests on its report, and the user decides each proposal before the plan is written
@@ -54,6 +54,11 @@ uv run pytest blueprints/direct-review/tests/ -m static -v
 - No WIP commits and no ad-hoc commits mid-task — a mid-task commit lands inside the task's diff and escapes the gates
 - Agent files define role only — no named teammates, no workflow names; use "the requester" / "the implementor"
 - Agent `name:` fields use lowercase hyphenated form
+- Auto memory is off (`autoMemoryEnabled: false`); `instruction-feedback.md` says where each kind of knowledge goes, and open findings go into `.ai/backlog.md`, created by `/ensure-ai-dirs` and owned by the lead
+- After approval a plan changes only through Task Notes (how an open task is implemented safely), a revision with a follow-up review and new approval (open tasks only, the Goal stands or gains something), a gate's demand on the running task (criteria adapted, Decisions entry, no new approval), or cancellation with the reason in Decisions (Goal no longer holds); a rebase that invalidates a checked task's text is the only reason to correct it
+- The plan file is created uncommitted at the user's first decision in planning; an untracked plan is not approved, and resuming starts from `git status` with fresh gates
+- The reviewer's follow-up pass after a rejection reviews only the diff between the recorded tree of its last pass and the resubmission; build and tests run only when a change can affect them, never for prose alone
+- Files under `.claude/` never name their origin — projects know nothing of the template they came from
 - All blueprint files must be fully static — no dates, counters, versions (prompt cache level 3)
 - Rule files target under 200 lines — agent adherence degrades beyond that threshold
 - Terminology: "launch" subagents, "spawn" and "shut down" teammates, "message" within teams

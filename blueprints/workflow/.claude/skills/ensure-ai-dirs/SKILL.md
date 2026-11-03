@@ -1,68 +1,37 @@
 ---
 name: ensure-ai-dirs
 description: >
-  Ensure the plans and memory directories exist, point
-  Claude Code's auto memory at .ai/memory/ via
-  settings.local.json, sync the plan format guide and
-  review checklist, and move completed and canceled plans
+  Ensure the plans directory and the backlog exist, sync
+  the plan format guide and review checklist, and move
+  completed and canceled plans
   into the frozen completed/ directory. Run once before
   writing any plan files.
 ---
 
 # /ensure-ai-dirs
 
-Prepare the `.ai/` directories before writing any plan
-files or storing memories. The lead writes plans to the
+Prepare the `.ai/` directory before writing any plan
+files. The lead writes plans to the
 configured plans directory and consults its `CLAUDE.md`
 for the required format — without the directory, the
 CLAUDE.md pointer, and the format guide, the planning
-flow breaks. The memory directory must exist for Claude
-Code's auto-memory system to persist memories across
-sessions.
+flow breaks. Open findings go into the backlog file, which
+must exist before the first task can add one.
 
 **All steps below are mandatory — execute every step,
 every time.** Do not skip step 2 because the directory
 already exists or the format guide appears current. Do not
-skip step 3 because the memory directory already exists.
+skip step 3 because the `.ai/` directory already exists.
 Do not skip step 4 because no plan appears finished — the
 scan is cheap and the skill is idempotent when nothing
 needs moving.
 
 ## Steps
 
-1. **Read settings and configure auto memory** — read
-   `.claude/settings.json` and extract `plansDirectory`.
-   If the key is absent, default to `.ai/plans/`. This
-   respects the project's configured plans location
-   rather than assuming a fixed path.
-
-   Then point Claude Code's auto memory at `.ai/memory/`
-   — every run, not only when the setting looks missing:
-
-   a. Resolve `<autoMemoryDirectory>`: the absolute path
-      of `.ai/memory/` under the project root (the
-      directory containing `.claude/`), with a trailing
-      slash — e.g. `/home/me/my-project/.ai/memory/`.
-   b. Read `.claude/settings.local.json` if it exists — it
-      may hold other local overrides that must be
-      preserved. Set `"autoMemoryDirectory"` to
-      `<autoMemoryDirectory>`, replacing any existing
-      value, and write the file back. If the file does not
-      exist, create it with just this key.
-   c. Report whether the value changed. If it did, note
-      that the new memory location may only take effect
-      in the next session.
-
-   Claude Code accepts only an absolute or `~/` path for
-   `autoMemoryDirectory` and silently ignores a relative
-   one — and an absolute path differs per machine, so it
-   cannot live in the checked-in `settings.json`.
-   `settings.local.json` is gitignored by
-   `.claude/.gitignore`; never commit it. Replace an
-   existing value every run: after the checkout moves, or
-   when host and devcontainer share this file under
-   different paths, a stale value would quietly send
-   memories somewhere else.
+1. **Read settings** — read `.claude/settings.json` and
+   extract `plansDirectory`. If the key is absent, default
+   to `.ai/plans/`. This respects the project's configured
+   plans location rather than assuming a fixed path.
 
 2. **Sync the plans directory files** — sync four files
    from `.claude/skills/ensure-ai-dirs/` into `<plansDirectory>`:
@@ -108,11 +77,12 @@ needs moving.
    guide into their context unnecessarily. Only the agent
    writing plans reads plan-format.md on demand.
 
-3. **Ensure the memory directory exists** — create
-   `<autoMemoryDirectory>` if it does not exist. No format
-   guide is needed — Claude Code manages memory files
-   directly. Report whether the directory was created or
-   already existed.
+3. **Ensure the backlog exists** — if `.ai/backlog.md` does
+   not exist under the project root, write it from
+   `.claude/skills/ensure-ai-dirs/backlog-template.md`.
+   Never overwrite an existing file: it holds open work the
+   template does not know. Report whether the file was
+   created or already existed.
 
 4. **Move finished plans to `completed/`** — move every
    `Completed` or `Canceled` plan from `<plansDirectory>`

@@ -28,3 +28,15 @@ def test_directory_exists(dirname):
 def test_root_file_exists(filepath):
     path = BLUEPRINT_ROOT / filepath
     assert path.exists(), f"Missing required file: {filepath}"
+
+
+def test_copied_files_do_not_name_their_origin():
+    """Files under .claude/ are copied into projects, which know nothing of
+    the template they came from.
+    """
+    offenders = [
+        str(path.relative_to(CLAUDE_DIR))
+        for path in CLAUDE_DIR.rglob("*")
+        if path.is_file() and "blueprint" in path.read_text().lower()
+    ]
+    assert not offenders, f"Files name their origin: {offenders}"
