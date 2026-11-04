@@ -65,6 +65,7 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 - After approval a plan changes only through Task Notes (how an open task is implemented safely), a revision with a follow-up review and new approval (open tasks only, the Goal stands or gains something), a gate's demand on the running task (criteria adapted, Decisions entry, no new approval), or cancellation with the reason in Decisions (Goal no longer holds); a rebase that invalidates a checked task's text is the only reason to correct it
 - The plan file is created uncommitted at the user's first decision in planning; an untracked plan is not approved, and resuming starts from `git status` with fresh gates
 - The reviewer's follow-up pass after a rejection reviews only the diff between the recorded tree of its last pass and the resubmission; build and tests run only when a change can affect them, never for prose alone
+- Teammates run builds and tests in the foreground (`waiting-on-commands.md`): the end of a teammate's background command does not wake it while it is idle (a Claude Code bug), and the lead treats a teammate waiting on its own background command as a stall
 - Files under `.claude/` never name their origin — projects know nothing of the template they came from
 - All blueprint files must be fully static — no dates, counters, versions (prompt cache level 3)
 - Rule files target under 200 lines — agent adherence degrades beyond that threshold

@@ -37,6 +37,19 @@ with the same flaws.
    loop that watches your own command, its output file, or
    its processes.
 
+   **Teammates run in the foreground.** If you are a
+   teammate (spawned with a `name`), never use
+   `run_in_background` for a command whose result you need
+   before you can reply — a build, a test suite. Run it in
+   the foreground with a `timeout` that covers it (up to
+   600000 ms); split a longer run into foreground steps,
+   such as the build and then the tests. The completion
+   notice does not wake an idle teammate: a reviewer
+   started its clean build and tests in the background,
+   ended its turn to wait, and stayed idle for 49 minutes
+   after they had passed, until the user asked. Of 44 such
+   runs in a prior project, not one woke its teammate.
+
 2. **Watch only what you did not start** — a CI pipeline, a
    deployment, a container becoming healthy. Such a loop
    must:
