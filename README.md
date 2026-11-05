@@ -102,7 +102,9 @@ All three run with Claude Code's auto memory off. Knowledge
 goes where a review or a later session finds it: process
 lessons into `.claude/`, project facts into `CLAUDE.md` or the
 docs, running state into the plan and Git, and open findings
-into a tracked `.ai/backlog.md`.
+into a tracked `.ai/backlog.md`. A defect a task introduces
+is fixed in that task, whatever its severity; it reaches the
+backlog only when the user accepts it.
 
 ### When to Use Which
 

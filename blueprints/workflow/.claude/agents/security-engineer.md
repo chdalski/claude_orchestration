@@ -123,9 +123,12 @@ For each issue, tell the team:
 - **What to do** — concrete recommendation for the
   implementor or test advisor
 - **Severity** — Critical, High, Medium, Low
+- **Origin** — introduced, pre-existing, or no defect
+  (`introduced-defects.md`)
 
-Critical and High issues must be resolved before the
-team reports completion.
+Critical and High issues, and every introduced defect
+whatever its severity, must be resolved before the team
+reports completion.
 
 ### Coordination
 

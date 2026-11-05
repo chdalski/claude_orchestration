@@ -55,6 +55,7 @@ uv run pytest blueprints/direct-review/tests/ -m static -v
 - Agent files define role only — no named teammates, no workflow names; use "the requester" / "the implementor"
 - Agent `name:` fields use lowercase hyphenated form
 - Auto memory is off (`autoMemoryEnabled: false`); `instruction-feedback.md` says where each kind of knowledge goes, and open findings go into `.ai/backlog.md`, created by `/ensure-ai-dirs` and owned by the lead
+- A defect the task itself introduces blocks the Reviewer and the Security Engineer at every severity: it is fixed in the task or the user accepts it, and only an accepted one goes into `.ai/backlog.md` (`introduced-defects.md`)
 - After approval a plan changes only through Task Notes (how an open task is implemented safely), a revision with a follow-up review and new approval (open tasks only, the Goal stands or gains something), a gate's demand on the running task (criteria adapted, Decisions entry, no new approval), or cancellation with the reason in Decisions (Goal no longer holds); a rebase that invalidates a checked task's text is the only reason to correct it
 - The plan file is created uncommitted at the user's first decision in planning; an untracked plan is not approved, and resuming starts from `git status` with fresh gates
 - The reviewer's follow-up pass after a rejection reviews only the diff between the recorded tree of its last pass and the resubmission; build and tests run only when a change can affect them, never for prose alone

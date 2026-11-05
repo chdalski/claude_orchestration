@@ -41,7 +41,7 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 - Agent files define role only — no named teammates, no workflow coordination, no workflow conditionals
 - Use "the requester" / "the implementor" in agent files — never role-specific names
 - Agent `name:` fields use lowercase hyphenated form: `developer`, `test-engineer`
-- Unconditional rules (no `paths:` frontmatter): `acceptance-criteria.md`, `advisor-gate-independence.md`, `claim-verification.md`, `code-navigation.md`, `communication-hygiene.md`, `instruction-feedback.md`, `no-silent-target-weakening.md`, `procedural-fidelity.md`, `risk-assessment.md`, `root-cause-discipline.md`, `safe-git.md`, `simplicity.md`, `verify-external-identifiers.md`, `waiting-on-commands.md`
+- Unconditional rules (no `paths:` frontmatter): `acceptance-criteria.md`, `advisor-gate-independence.md`, `claim-verification.md`, `code-navigation.md`, `communication-hygiene.md`, `instruction-feedback.md`, `introduced-defects.md`, `no-silent-target-weakening.md`, `procedural-fidelity.md`, `risk-assessment.md`, `root-cause-discipline.md`, `safe-git.md`, `simplicity.md`, `verify-external-identifiers.md`, `waiting-on-commands.md`
 - Conditional rules load automatically when agents touch matching file extensions
 - Universal principles stated once in unconditional rules — language rules extend without restating
 - Adding a new language: create `lang-<language>.md` with `paths:` frontmatter, update `functional-style.md`/`code-mass.md`/`code-principles.md` paths — no changes to CLAUDE.md or agents
@@ -62,6 +62,7 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 - Plans are committed only after user approval, not before; several plans from one request are approved one at a time, and approval covers the whole plan through closure
 - Lead verifies plan goal at completion — adds follow-up tasks if quantitative targets not met
 - Auto memory is off (`autoMemoryEnabled: false`); `instruction-feedback.md` says where each kind of knowledge goes, and open findings go into `.ai/backlog.md`, created by `/ensure-ai-dirs` and owned by the lead
+- A defect the task itself introduces blocks the reviewer and the security engineer at every severity: it is fixed in the task or the user accepts it, and only an accepted one goes into `.ai/backlog.md` (`introduced-defects.md`)
 - After approval a plan changes only through Task Notes (how an open task is implemented safely), a revision with a follow-up review and new approval (open tasks only, the Goal stands or gains something), a gate's demand on the running task (criteria adapted, Decisions entry, no new approval), or cancellation with the reason in Decisions (Goal no longer holds); a rebase that invalidates a checked task's text is the only reason to correct it
 - The plan file is created uncommitted at the user's first decision in planning; an untracked plan is not approved, and resuming starts from `git status` with fresh gates
 - The reviewer's follow-up pass after a rejection reviews only the diff between the recorded tree of its last pass and the resubmission; build and tests run only when a change can affect them, never for prose alone

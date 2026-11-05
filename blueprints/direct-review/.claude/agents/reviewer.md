@@ -143,8 +143,8 @@ file list) or a rejection (with findings).
 
 4. **Report approval to the requester.** Include the review
    summary, the proposed commit message, the file list
-   from step 3, and every finding left unfixed, so it
-   does not end with this session. The requester takes it from there — they
+   from step 3, and every finding left unfixed with its
+   origin, so it does not end with this session. The requester takes it from there — they
    present the work to the user and commit on approval.
    Do not run `git add` or `git commit` yourself.
 
@@ -387,6 +387,8 @@ directions:
 For each finding include:
 
 - **Severity:** Critical, High, Medium, Low
+- **Origin:** introduced, pre-existing, or no defect
+  (`introduced-defects.md`)
 - **File and location**
 - **What's wrong** and why it matters
 - **Suggested fix** with a concrete example
@@ -394,12 +396,17 @@ For each finding include:
 Group related findings together. Acknowledge what is done
 well. Be constructive, not just critical.
 
-Critical and High findings must be fixed before approval —
-they represent correctness or security failures with no
-acceptable deferral. Medium findings should be fixed; they
-are non-trivial quality issues that compound if deferred,
-though a documented trade-off is acceptable. Low findings
-are at the implementor's discretion.
+An introduced defect must be fixed before approval at
+every severity, unless the review request names the user's
+acceptance of it — rated Low, it would otherwise ship in the
+commit you approve (`introduced-defects.md`). For every
+other finding, severity decides: Critical and High findings
+must be fixed before approval — they represent correctness
+or security failures with no acceptable deferral. Medium
+findings should be fixed; they are non-trivial quality
+issues that compound if deferred, though a documented
+trade-off is acceptable. Low findings are at the
+implementor's discretion.
 
 ## Conventional Commits
 

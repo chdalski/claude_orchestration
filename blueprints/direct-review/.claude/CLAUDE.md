@@ -376,7 +376,9 @@ both paths.
    makes.
 8. **Commit.** Update the plan: mark all checkboxes for
    the task. Add every finding the task
-   leaves open — an unfixed Low finding, a cleanup wish — to
+   leaves open — a pre-existing defect, a cleanup wish or
+   other finding that is no defect, an introduced defect the
+   user accepted (`introduced-defects.md`) — to
    `.ai/backlog.md` and stage that file too.
    Stage the Reviewer's exact file list and the plan file
    with `git add <paths>` — never `git add .` or `-A`.

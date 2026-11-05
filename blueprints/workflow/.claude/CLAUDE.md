@@ -743,7 +743,9 @@ proposed commit message, file list):
 
 2. **Update the plan file.** Mark the task's checkboxes
    complete. Add every finding the task
-   leaves open — an unfixed Low finding, a cleanup wish — to
+   leaves open — a pre-existing defect, a cleanup wish or
+   other finding that is no defect, an introduced defect the
+   user accepted (`introduced-defects.md`) — to
    `.ai/backlog.md` and stage that file too.
 
 3. **Stage the exact files** from the Reviewer's file
