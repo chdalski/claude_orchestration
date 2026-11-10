@@ -105,7 +105,7 @@ async def test_reviewer_does_not_commit(fixture_project, tool_log):
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(90)
-async def test_advisory_te_denied_write(fixture_project, tool_log):
+async def test_advisory_te_does_not_write(fixture_project, tool_log):
     """Test Engineer should use Read but not Write/Edit (advisory role)."""
     prompt = (
         "Read src/lib.py and describe what tests you would write "
@@ -120,7 +120,7 @@ async def test_advisory_te_denied_write(fixture_project, tool_log):
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(90)
-async def test_advisory_se_denied_write(fixture_project, tool_log):
+async def test_advisory_se_does_not_write(fixture_project, tool_log):
     """Security Engineer should use Read but not Write/Edit (advisory role)."""
     prompt = (
         "Read src/lib.py and assess the security of the add function. "

@@ -130,7 +130,6 @@ Hooks can be defined in subagent definition files
 ---
 name: developer
 description: Implements all code
-tools: [Read, Write, Edit, Bash]
 hooks:
   PreToolUse:
     - matcher: "Bash"

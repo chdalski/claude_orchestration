@@ -63,11 +63,12 @@ def test_lead_instructions_launch_one_reviewer_per_focus(lead_instructions):
 
 
 def test_lead_instructions_pass_revision_diff_to_follow_up_pass(lead_instructions):
-    """Follow-up passes review the diff, which the reviewer cannot produce itself."""
+    """Follow-up passes review the diff of the revision."""
     assert "diff -u" in lead_instructions, (
         "CLAUDE.md must have the lead pass the revision's diff to the "
-        "follow-up pass — the plan-reviewer has no Bash, and without the "
-        "diff it cannot tell changed text from text earlier passes reviewed"
+        "follow-up pass — only the lead holds the pre-revision copy, and "
+        "without the diff the plan-reviewer cannot tell changed text from "
+        "text earlier passes reviewed"
     )
 
 

@@ -219,17 +219,19 @@ For each, verify:
 
 ## Check 5 — Agent Tool Coherence
 
+Agents carry no `tools:` or `disallowedTools:` frontmatter:
+each inherits the full tool set. An allowlist withheld the
+web tools a test designer needed to read a specification,
+and every new tool had to be added to each list by hand.
+
 For each agent in `.claude/agents/`:
 
-1. Read the frontmatter tool list
-2. Read the agent's instructions
-3. Check: does the agent's instructions reference tools
-   it doesn't have? (e.g., instructions say "use Bash"
-   but Bash isn't in the tool list)
-4. Check: does the agent have tools it never references
-   in its instructions? (not necessarily wrong — tools
-   may be used implicitly — but worth flagging as an
-   observation)
+1. Check: does the frontmatter restrict tools? Flag it.
+2. Check: does the agent's text still claim a restriction
+   it no longer has — "you do not have web access tools",
+   "it has no Bash"? Flag the stale claim. Role limits
+   stated as conduct ("you do not write code", "you are
+   read-only") are intended and stay.
 
 ---
 
@@ -597,7 +599,7 @@ Score: X/12 clean
  2. Cross-file consistency    [N findings]
  3. Rationale completeness    [N gaps]
  4. Documentation alignment   [N mismatches]
- 5. Agent tool coherence      [N mismatches]
+ 5. Agent tool coherence      [N findings]
  6. Workflow-agent alignment  [N mismatches]
  7. Instruction gap audit     [N gaps]
  8. Configuration coupling    [N violations]

@@ -45,6 +45,12 @@ Engineer's structured test design:
 - The task adds or modifies public API surface — API
   contracts need explicit coverage because callers depend
   on them
+- A specification named in the plan's Context or the
+  project's References defines behavior the task adds,
+  changes, or promises to keep unchanged — a protocol, a
+  file format, a standard. The Test Engineer derives the
+  tests from the specification; tests derived from the task
+  and the current code confirm the implementation instead
 
 ## Low-Risk Indicators (Direct-Review Eligible)
 
@@ -64,6 +70,14 @@ characteristics:
 - **Refactoring** — restructuring code without changing
   behavior or trust boundaries
 - **Documentation** — comments, README updates, plan files
+
+Pattern-following, refactoring and test-only changes do
+not make a task eligible when a specification defines the
+behavior it touches: the copied pattern, the preserved
+behavior or the asserted output can itself break the
+specification. In a prior project,
+retrofits that copied an established pattern carried its
+protocol violations into every feature, each one approved.
 
 ## Do Not Prescribe Security Mitigations
 

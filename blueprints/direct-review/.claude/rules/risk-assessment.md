@@ -19,6 +19,12 @@ and one of these applies:
 - The change is non-behavioral documentation, comment, or
   formatting work and needs no test.
 
+When a specification the plan's Context names defines the
+behavior, a test counts only if it asserts what the
+specification requires, or a deviation a Decisions entry
+keeps: a test built from the current code pins its
+deviations and makes the task look covered.
+
 The Reviewer is the only gate.
 
 ## Security-Hybrid

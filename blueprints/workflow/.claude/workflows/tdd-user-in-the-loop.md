@@ -362,7 +362,9 @@ one phase at a time.
     the task's Task Notes, so
     the Reviewer can verify scope completeness, and the
     plan's Decisions section so it does not flag a design
-    choice the user already made. Without
+    choice the user already made, and the specifications
+    the plan's Context names, so it checks the behavior and
+    the tests against them. Without
     the task context, the Reviewer can only evaluate code
     quality, not whether every requested feature was
     delivered. Pass through the advisor sign-off statuses
@@ -370,7 +372,9 @@ one phase at a time.
     `advisor consultation status:` line (e.g.,
     `test-engineer: signed off; security-engineer:
     signed off`) — the Reviewer rejects handoffs that
-    omit this field. Reviewer evaluates scope
+    omit this field. For a task that corrects a defect,
+    pass through its Cause and Same cause lines as well
+    (`root-cause-discipline.md`). Reviewer evaluates scope
     completeness, correctness, security, test coverage,
     design, and language idioms.
 

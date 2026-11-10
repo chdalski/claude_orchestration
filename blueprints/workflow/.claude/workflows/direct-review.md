@@ -34,7 +34,18 @@ miss.
 ## Flow
 
 1. Lead implements the plan directly — read the relevant
-   files first to ground the changes in current code.
+   files first to ground the changes in current code. When
+   the plan's Context names a specification for behavior
+   the plan adds, changes, or promises to keep unchanged,
+   read the sections that apply (WebFetch for a URL, Read
+   for a file) before you read or change the code, and take
+   each test's expected outcome from them, not from what the
+   code returns now: tests built from the current code
+   confirm it instead of checking it. Where the code departs
+   from them and no Decisions entry keeps the departure,
+   stop and put it to the user: fixing it is a plan
+   revision, keeping it a Decisions entry. A kept departure
+   is pinned with a test that names its entry.
 2. Lead runs tests and linters if applicable — catching
    regressions before presenting to the Reviewer avoids
    wasted review cycles.

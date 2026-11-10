@@ -217,7 +217,9 @@ After clarification is complete:
    before writing every input state in which the planned
    design computes something different from the current
    code — per changed path, including states only test
-   data reaches. Each is a behavior change the plan must
+   data reaches — and check what it keeps against each
+   specification Context names: a clause it breaks is a
+   Decisions entry (plan-format). Each is a behavior change the plan must
    settle: ask the user where _Ask about trade-offs_ says
    so, and record each outcome in Decisions. A prior plan
    promised identical results and left such states open;
@@ -281,10 +283,9 @@ After clarification is complete:
    c. **Follow-up pass: the revision only.** Launch one
       `plan-reviewer` with the Blocking findings of the
       previous pass and the output of
-      `diff -u <copy> <plan>` — it has no Bash to produce
-      the diff itself. It checks that the revision resolves
-      those findings and holds up against the rest of the
-      plan; it does not review unchanged text again. Repeat
+      `diff -u <copy> <plan>`. It checks that the revision
+      resolves those findings and holds up against the rest
+      of the plan; it does not review unchanged text again. Repeat
       b–c until a pass reports no Blocking findings other
       than trade-off findings you collected, or every
       remaining one is declined.
@@ -457,7 +458,10 @@ plan against the risk-assessment rule (loaded
 automatically). If any high-risk indicator matches, do not
 offer Direct-Review — the work needs the Security
 Engineer's independent assessment, which only
-Develop-Review provides. The Direct-Review workflow
+Develop-Review provides. If a high-uncertainty indicator
+matches, name it in Direct-Review's trade-offs and
+recommend Develop-Review: Direct-Review brings no Test
+Engineer, so spec-derived test design is the lead's alone. The Direct-Review workflow
 states the same criteria ("no security ramifications"),
 but the risk-assessment rule provides the structured
 checklist to evaluate that criterion reliably.
@@ -554,11 +558,6 @@ regressions.
 - Code review (Reviewer) — the Reviewer approves with a
   proposed commit message and file list; the lead
   commits per Committing Approved Work below
-
-In multi-agent workflows, route work to the specialized
-agents in the workflow team — they have domain-specific
-knowledge and tool restrictions that prevent mistakes a
-generalist would make.
 
 ## Monitoring Agents
 

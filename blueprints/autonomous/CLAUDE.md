@@ -41,6 +41,8 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 - Agent files define role only — no named teammates, no workflow coordination, no workflow conditionals
 - Use "the requester" / "the implementor" in agent files — never role-specific names
 - Agent `name:` fields use lowercase hyphenated form: `developer`, `test-engineer`
+- Agents set no `tools:` or `disallowedTools:` frontmatter — each inherits the full tool set (a static test checks it); role limits such as read-only, or the reviewer's "edit nothing under review", stand in the agent's text
+- A specification the project's References name that defines behavior a task adds, changes, or promises to keep unchanged goes into the plan's Context (the plan-reviewer blocks without it, and the Reviewer checks behavior and tests against it); such behavior triggers the test-engineer, which takes expected outcomes from the specification and cites the clause, and a known deviation the plan keeps is a Decisions entry
 - Unconditional rules (no `paths:` frontmatter): `acceptance-criteria.md`, `advisor-gate-independence.md`, `claim-verification.md`, `code-navigation.md`, `communication-hygiene.md`, `instruction-feedback.md`, `introduced-defects.md`, `no-silent-target-weakening.md`, `procedural-fidelity.md`, `risk-assessment.md`, `root-cause-discipline.md`, `safe-git.md`, `simplicity.md`, `verify-external-identifiers.md`, `waiting-on-commands.md`
 - Conditional rules load automatically when agents touch matching file extensions
 - Universal principles stated once in unconditional rules — language rules extend without restating
@@ -51,7 +53,7 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 - Lead owns plan progress — marks tasks done, commits code with plan updates in a single commit per task
 - Developer makes WIP commits during implementation — lead squashes at commit time via `git reset <baseline-sha>`
 - Lead's ad-hoc commits happen only in team-down windows — mid-task commits land in the squash reset range and are lost
-- Reviewer backstop: rejects if non-trivial behavioral changes lack tests and no advisor was consulted
+- Reviewer backstop: rejects if non-trivial behavioral changes lack tests and no advisor was consulted, and if Context names a specification for the task's behavior and no test-engineer signed off
 - Infeasibility claims require specific evidence (file, function, scope, own code vs dependency) per `claim-verification.md` — category labels are not sufficient
 - The design-advisor is a stateless subagent; every code-changing plan rests on its report, and before the plan is written the user decides its Shape proposals together as one design and every other proposal on its own
 - The lead collects its questions and asks them in one round once research and the design-advisor report are done: an overview first, then one question per dialog, each with a concrete example of what every option does (lead `Asking the User`)

@@ -47,6 +47,8 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 - Agent files define role only — no named teammates, no workflow coordination, no workflow conditionals
 - Use "the requester" / "the implementor" in agent files — never role-specific names
 - Agent `name:` fields use lowercase hyphenated form: `developer`, `test-engineer`
+- Agents set no `tools:` or `disallowedTools:` frontmatter — each inherits the full tool set (a static test checks it); role limits such as read-only, or the reviewer's "edit nothing under review", stand in the agent's text
+- A specification the project's References name that defines behavior a task adds, changes, or promises to keep unchanged goes into the plan's Context (the plan-reviewer blocks without it, and the Reviewer checks behavior and tests against it); such behavior is not Direct-Review eligible through pattern-following or refactoring, the Test Engineer takes expected outcomes from the specification and cites the clause, and a known deviation the plan keeps is a Decisions entry
 - Workflow files define team composition, coordination sequences, and sign-off requirements
 - Adding a new workflow: create a file in `.claude/workflows/` — no changes to CLAUDE.md, agents, or rules
 - Unconditional rules (no `paths:` frontmatter): `acceptance-criteria.md`, `advisor-gate-independence.md`, `claim-verification.md`, `code-navigation.md`, `communication-hygiene.md`, `instruction-feedback.md`, `introduced-defects.md`, `no-silent-target-weakening.md`, `procedural-fidelity.md`, `risk-assessment.md`, `root-cause-discipline.md`, `safe-git.md`, `simplicity.md`, `verify-external-identifiers.md`, `waiting-on-commands.md`

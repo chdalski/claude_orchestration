@@ -187,7 +187,10 @@ graph TD
 ```
 
 The Reviewer provides a backstop: non-trivial behavioral
-changes without tests or advisor consultation are rejected.
+changes without tests and without advisor consultation are
+rejected, and so is a task whose behavior a specification
+in the plan's Context defines when the Test Engineer did
+not sign off.
 The Developer-Reviewer rejection loop is opaque to the lead.
 
 ### workflow — Clarify-First
@@ -412,5 +415,7 @@ Agent teams are experimental. Be aware of:
   its lifetime.
 - **Permission mode inherits** — all teammates start with
   the lead's permission mode (e.g., whether tool use
-  prompts for approval). Agent `tools:` frontmatter
-  independently restricts which tools each agent can use.
+  prompts for approval). Blueprint agents set no `tools:`
+  frontmatter, so each inherits the full tool set; role
+  limits such as "read-only" are stated in the agent's
+  text.

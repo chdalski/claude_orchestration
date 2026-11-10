@@ -71,37 +71,6 @@ AGENT_FILES: dict[str, str] = {
     "test-list": "test-list.md",
 }
 
-# Agent tools — exact tool set for each agent
-AGENT_TOOLS: dict[str, set[str]] = {
-    "plan-reviewer": {
-        "Read", "Glob", "Grep",
-        "LSP", "ToolSearch",
-    },
-    "design-advisor": {
-        "Read", "Glob", "Grep", "LSP", "ToolSearch",
-    },
-    "developer": {
-        "Read", "Write", "Edit", "Bash", "Glob", "Grep",
-        "WebSearch", "WebFetch", "SendMessage",
-        "LSP", "ToolSearch",
-    },
-    "reviewer": {
-        "Read", "Glob", "Grep", "Bash", "SendMessage",
-        "LSP", "ToolSearch",
-    },
-    "test-engineer": {
-        "Read", "Glob", "Grep", "Bash", "SendMessage",
-        "LSP", "ToolSearch",
-    },
-    "security-engineer": {
-        "Read", "Glob", "Grep", "Bash", "SendMessage",
-        "LSP", "ToolSearch",
-    },
-    "test-list": {
-        "Read",
-    },
-}
-
 # Agent models — required model for each agent
 AGENT_MODELS: dict[str, str] = {
     "plan-reviewer": "sonnet[1m]",

@@ -82,7 +82,7 @@ async def test_reviewer_does_not_commit_unprompted(fixture_project, tool_log):
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(90)
-async def test_reviewer_denied_edit(fixture_project, tool_log):
+async def test_reviewer_does_not_edit(fixture_project, tool_log):
     """Reviewer should use Read and Bash but not Edit (no longer edits plan files)."""
     prompt = (
         "Read src/lib.py and assess the code quality. "
@@ -97,7 +97,7 @@ async def test_reviewer_denied_edit(fixture_project, tool_log):
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(90)
-async def test_advisory_se_denied_write(fixture_project, tool_log):
+async def test_advisory_se_does_not_write(fixture_project, tool_log):
     """Security Engineer should use Read but not Write/Edit (advisory role)."""
     prompt = (
         "Read src/lib.py and assess the security of the add function. "

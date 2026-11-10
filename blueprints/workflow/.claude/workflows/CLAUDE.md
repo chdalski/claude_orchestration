@@ -31,10 +31,10 @@ reason about which workflow fits.
 
 Which agents this workflow requires. Reference agent
 names from `.claude/agents/` — this ensures the lead
-creates the right agents with the right tool sets and
-instructions. For each agent, note its role in this
-specific workflow, since the same agent may serve
-different purposes in different workflows.
+spawns the right agents with the right instructions.
+For each agent, note its role in this specific
+workflow, since the same agent may serve different
+purposes in different workflows.
 
 ```markdown
 - **Developer** — implements code and tests

@@ -134,10 +134,11 @@ role and capability, not workflow coordination.
 **Files to create/modify (per blueprint):**
 
 1. Create `.claude/agents/<name>.md` with YAML frontmatter
-   (`name`, `description`, `model`, `tools`) and markdown
-   instructions
+   (`name`, `description`, `model`) and markdown
+   instructions. Leave out `tools:` — agents inherit the
+   full tool set, and a static test rejects an allowlist
 2. Add the agent to `blueprint_contracts.py` (`AGENT_FILES`,
-   `AGENT_TOOLS`, `AGENT_MODELS`)
+   `AGENT_MODELS`)
 3. Reference the agent in the relevant workflow files
 4. Update the blueprint's design reference structure diagram
 5. Run tests
@@ -149,12 +150,6 @@ role and capability, not workflow coordination.
 name: test-engineer
 description: Designs test specifications and verifies coverage
 model: sonnet
-tools:
-  - Read
-  - Glob
-  - Grep
-  - Bash
-  - SendMessage
 ---
 ```
 
@@ -280,8 +275,9 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 ### What Tests Verify
 
 - **File structure** — required files and directories exist
-- **Agent frontmatter** — names, models, and tool sets
-  match contracts in `blueprint_contracts.py`
+- **Agent frontmatter** — names and models match
+  contracts in `blueprint_contracts.py`; no agent restricts
+  its tools
 - **Caching compliance** — no dynamic content (dates,
   timestamps, counters) in static files
 - **Settings** — required configuration keys are present

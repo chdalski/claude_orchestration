@@ -80,25 +80,6 @@ AGENT_FILES: dict[str, str] = {
     "design-advisor": "design-advisor.md",
 }
 
-# Agent tools — exact tool set for each agent
-AGENT_TOOLS: dict[str, set[str]] = {
-    "reviewer": {
-        "Read", "Glob", "Grep", "Bash", "SendMessage",
-        "LSP", "ToolSearch",
-    },
-    "security-engineer": {
-        "Read", "Glob", "Grep", "Bash", "SendMessage",
-        "LSP", "ToolSearch",
-    },
-    "plan-reviewer": {
-        "Read", "Glob", "Grep",
-        "LSP", "ToolSearch",
-    },
-    "design-advisor": {
-        "Read", "Glob", "Grep", "LSP", "ToolSearch",
-    },
-}
-
 # Agent models — required model for each agent
 AGENT_MODELS: dict[str, str] = {
     "reviewer": "opus[1m]",

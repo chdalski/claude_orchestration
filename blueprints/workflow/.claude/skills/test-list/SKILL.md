@@ -85,8 +85,8 @@ acceptance criterion.
    markdown), **the target language and test framework**
    (required), and the remaining meta if known — feature
    name, target test file path, target implementation file
-   path. Transcribe rather than attach: the subagent has
-   `Read` only and cannot open in-chat attachments.
+   path. Transcribe rather than attach: the subagent cannot
+   see attachments pasted into this conversation.
 
 3. **Collect the subagent's output** per the agent's
    Output Format section — a framework-specific test case

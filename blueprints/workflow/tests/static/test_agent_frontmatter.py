@@ -2,7 +2,7 @@
 
 import pytest
 
-from blueprint_contracts import AGENT_FILES, AGENT_MODELS, AGENT_TOOLS
+from blueprint_contracts import AGENT_FILES, AGENT_MODELS
 from conftest import AGENTS_DIR, parse_frontmatter
 
 pytestmark = pytest.mark.static
@@ -54,11 +54,13 @@ def test_agent_model_matches(agent_name, filename):
     list(AGENT_FILES.items()),
     ids=list(AGENT_FILES.keys()),
 )
-def test_agent_tools_match_exactly(agent_name, filename):
-    """Frontmatter 'tools' must match the contract set exactly."""
+def test_agent_has_no_tool_restriction(agent_name, filename):
+    """Frontmatter names no 'tools' or 'disallowedTools': every agent
+    inherits the full tool set. An allowlist withheld the web tools a
+    test designer needed to read a specification, and every new tool
+    had to be added to each list by hand."""
     fm = parse_frontmatter(AGENTS_DIR / filename)
-    actual = set(fm.get("tools", []))
-    expected = AGENT_TOOLS[agent_name]
-    assert actual == expected, (
-        f"Agent {filename}: expected tools {sorted(expected)}, got {sorted(actual)}"
+    restricted = {"tools", "disallowedTools"} & fm.keys()
+    assert not restricted, (
+        f"Agent {filename}: remove {sorted(restricted)} from the frontmatter"
     )

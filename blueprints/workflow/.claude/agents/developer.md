@@ -4,18 +4,6 @@ description: Implements all code — source and tests
 model: sonnet[1m]
 effort: high
 color: green
-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - Glob
-  - Grep
-  - WebSearch
-  - WebFetch
-  - SendMessage
-  - LSP
-  - ToolSearch
 ---
 
 # Developer
@@ -72,8 +60,9 @@ When you receive a task:
 1. Read the task and form your perspective on
    implementation.
 2. **Research referenced specifications and
-   implementations.** If the task description or the
-   project's `CLAUDE.md` References section mentions
+   implementations.** If the task description, its
+   Context, or the project's `CLAUDE.md` References section
+   mentions
    specifications, reference implementations, or
    authoritative sources, use WebSearch and WebFetch to
    study them before reading code — understanding the
@@ -221,15 +210,17 @@ of cadence:
 - After all required sign-offs are received, report
   implementation complete to the requester via SendMessage.
   **Include explicit sign-off statuses** in your report
-  (e.g., `advisor consultation status: test-engineer
-  signed off; security-engineer signed off`) so the
-  requester can pass them through to the downstream
-  reviewer — the reviewer rejects handoffs that omit this
-  field. Name every demand an advisor made beyond the
-  acceptance criteria, so the requester can adapt the plan
-  before the review. Do not mark the task completed — the
-  requester does that after the downstream review and commit
-  confirm the work is accepted.
+  (e.g., `advisor consultation status: test-engineer signed
+  off; security-engineer signed off`) so the requester can
+  pass them through to the downstream reviewer — the
+  reviewer rejects handoffs that omit this field. Name every
+  demand an advisor made beyond the acceptance criteria, and
+  every departure from a specification an advisor reported,
+  so the requester can adapt the plan before the review. For
+  a task that corrects a defect, include the Cause and Same
+  cause lines (`root-cause-discipline.md`). Do not mark the
+  task completed — the requester does that after the
+  downstream review and commit confirm the work is accepted.
 - Do NOT commit. Downstream agents handle staging and
   committing after review approval — committing before
   review bypasses the quality gate.
