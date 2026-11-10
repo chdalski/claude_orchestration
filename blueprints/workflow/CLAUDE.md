@@ -54,7 +54,7 @@ uv run pytest blueprints/workflow/tests/ -m static -v
 - Universal principles stated once in unconditional rules — language rules extend without restating
 - Adding a new language: create `lang-<language>.md` with `paths:` frontmatter, update `functional-style.md`/`code-mass.md`/`code-principles.md` paths — no changes to CLAUDE.md, agents, or workflows
 - Risk assessment at workflow selection: high-risk indicators require Develop-Review, not Direct-Review
-- The design-advisor is a stateless subagent; every code-changing plan rests on its report, and the user decides each proposal before the plan is written
+- The design-advisor is a stateless subagent; every code-changing plan rests on its report, and before the plan is written the user decides its Shape proposals together as one design and every other proposal on its own
 - The lead collects its questions and asks them in one round once research and the design-advisor report are done: an overview first, then one question per dialog, each with a concrete example of what every option does (lead `Asking the User`)
 - An adopted preparatory refactor is its own task ahead of the feature work; when no test covers the behavior it preserves, a preceding task pins that behavior with tests
 - Duplication the change must edit in several places is removed before it (design-advisor: `do first` or `separate plan before`); a separate plan before is completed first and the change then gets a fresh design-advisor report, one after goes into the plan's Non-Goals as `(separate plan after this one)` and is offered at completion

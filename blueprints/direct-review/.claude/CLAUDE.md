@@ -224,24 +224,39 @@ When the user asks you to implement:
    declined. Do not skip it for a small change — whether
    the design matters depends on the code around the
    change, not on the change's size. Before writing the
-   plan, put to the user in the question round
-   (_Clarification_) every proposal they have not decided
-   yet; a proposal taken after
-   review adds tasks that need a follow-up pass (step
-   5b–d). As soon as the user
-   decides the first proposal, create the plan file with
-   its Goal and that decision in Decisions, and keep
-   adding to it: uncommitted on disk, it survives a crashed
-   session, which the conversation does not. It is neither
-   reviewed nor approved until step 6.
-   A proposal adopted as a separate plan before this change
-   gets its own plan, written and completed first, whose
-   Goal names the change it prepares; then plan this
-   change with a fresh `design-advisor` report, since the
-   first one judged the code before the refactor. One
-   adopted as a separate plan after goes into this plan's
-   Non-Goals, marked `(separate plan after this one)` —
-   planned now, it would judge code this plan changes.
+   plan, put the proposals the user has not decided yet to
+   them in the question round (_Clarification_); a
+   proposal taken after review adds tasks that need a
+   follow-up pass (step 5b–d):
+   - **The Shape proposals as one design.** Explain how
+     the change will be built on one example that runs
+     through all of it, and offer two options: build it
+     so, or change a part, which you then ask about on its
+     own. Shape proposals are parts of one design — asked
+     one by one, each costs the user a decision on a part
+     that makes sense only with the others. A design you
+     cannot explain on one example is too large for one
+     question: ask it part by part.
+   - **On its own** each preparatory refactor and larger
+     redesign, since it adds tasks or plans, and each Shape
+     proposal that competes with another proposal, carries
+     a cost or risk the user bears, or revises a decision
+     the user made.
+
+   As soon as the user decides the first proposal, create
+   the plan file with its Goal and that decision in
+   Decisions, and keep adding to it: uncommitted on disk,
+   it survives a crashed session, which the conversation
+   does not. It is neither reviewed nor approved until
+   step 6. A proposal adopted as a separate plan before
+   this change gets its own plan, written and completed
+   first, whose Goal names the change it prepares; then
+   plan this change with a fresh `design-advisor` report,
+   since the first one judged the code before the
+   refactor. One adopted as a separate plan after goes
+   into this plan's Non-Goals, marked `(separate plan
+   after this one)` — planned now, it would judge code
+   this plan changes.
 3. **Write the plan** to the plans directory following
    `<plansDirectory>/CLAUDE.md`. Decompose the work into
    vertical task slices, each independently committable —
