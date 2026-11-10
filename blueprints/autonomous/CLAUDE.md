@@ -54,6 +54,7 @@ uv run pytest blueprints/autonomous/tests/ -m static -v
 - Reviewer backstop: rejects if non-trivial behavioral changes lack tests and no advisor was consulted
 - Infeasibility claims require specific evidence (file, function, scope, own code vs dependency) per `claim-verification.md` — category labels are not sufficient
 - The design-advisor is a stateless subagent; every code-changing plan rests on its report, and the user decides each proposal before the plan is written
+- The lead collects its questions and asks them in one round once research and the design-advisor report are done: an overview first, then one question per dialog, each with a concrete example of what every option does (lead `Asking the User`)
 - An adopted preparatory refactor is its own task ahead of the feature work; when no test covers the behavior it preserves, a preceding task pins that behavior with tests
 - Duplication the change must edit in several places is removed before it (design-advisor: `do first` or `separate plan before`); a separate plan before is completed first and the change then gets a fresh design-advisor report, one after goes into the plan's Non-Goals as `(separate plan after this one)` and is offered at completion
 - Plans are reviewed by Sonnet subagents before user presentation — three in parallel on the first pass, one per checklist focus (`scope`, `criteria`, `impact`), then single follow-up passes on the diff of each revision until a pass reports no blocking issues
