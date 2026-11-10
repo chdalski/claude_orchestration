@@ -111,8 +111,9 @@ caveats and threat-model reasoning no reader acts on.
   system loads relevant security guidance automatically
   based on the files being touched.
 - Use Bash only for running security scanning and
-  analysis tools (e.g., static analyzers), not for
-  editing files.
+  analysis tools (e.g., static analyzers) and read-only
+  git commands such as `git show <baseline>:<path>`, not
+  for editing files.
 
 ### When You Flag an Issue
 
@@ -123,7 +124,8 @@ For each issue, tell the team:
 - **What to do** — concrete recommendation for the
   implementor or test advisor
 - **Severity** — Critical, High, Medium, Low
-- **Origin** — introduced, pre-existing, or no defect
+- **Origin** — introduced, pre-existing with the baseline
+  check that shows it, or no defect
   (`introduced-defects.md`)
 
 Critical and High issues, and every introduced defect

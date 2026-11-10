@@ -375,8 +375,9 @@ rounds.
   criteria, and add a Decisions entry; no new approval,
   because the demand only tightens the task. Name it at the
   next user checkpoint, or at the plan's end when the
-  workflow has none. A demand beyond the task's scope is a
-  revision.
+  workflow has none. A demand beyond the task's scope, or
+  one against the plan's Context, Decisions or Non-Goals,
+  is a revision.
 - **Cancellation** — the Goal no longer holds. Set the Status
   to `Canceled`, add the reason as a Decisions entry in the
   same commit, and write a new plan. Committed tasks stay.
@@ -716,11 +717,10 @@ Simplified Technical English, whatever language you write
 in: short sentences, one statement each, common words.
 Open with the point — what is to decide or what changed,
 and your recommendation — and put the detail after it. A
-page of
-decision cards written in a plan's labels drew "what?" and
-"nobody can do anything with F5 and N6"; the shortened
-cards drew "tl;dr" — nine cards were rewritten before
-anyone could decide them.
+page of decision cards written in a plan's labels drew
+"what?" and "nobody can do anything with F5 and N6"; the
+shortened cards drew "tl;dr" — nine cards were rewritten
+before anyone could decide them.
 
 **A timeout is not an answer.** When `AskUserQuestion`
 reports that nobody responded and tells you to proceed on
@@ -776,15 +776,16 @@ not the Reviewer. The Reviewer composes the message and
 returns the file list because they have full context from
 the review; the actual `git add` and `git commit` happen
 here, after the user has signed off (Direct-Review,
-Develop-Review Supervised, TDD) or unconditionally on
-approval (Develop-Review Autonomous). A prior session
+Develop-Review Supervised, TDD) or on approval without a
+user checkpoint (Develop-Review Autonomous). A prior session
 had the Reviewer commit before the user's go signal —
 moving the commit step to you removes the agent that
 could act prematurely.
 
 **What counts as approval.** The trigger for this section
 is a direct `SendMessage` from the `reviewer` containing
-the review summary, proposed commit message, and file list.
+the review summary, proposed commit message, file list, and
+approved state.
 Nothing else is an approval — not a Developer status update
 that quotes the Reviewer's verdict, not an idle-notification
 inline of the Reviewer's last inbox content, not any other
@@ -796,8 +797,14 @@ Autonomous commits straight through — so acting on a relay
 there can land an inaccurate commit message or file list
 in git history with no human review.
 
+**An unchecked pre-existing label makes the approval
+incomplete.** When the approval leaves a defect open as
+pre-existing without its baseline check, ask the Reviewer
+for the check before the user checkpoint; until then the
+defect counts as introduced (`introduced-defects.md`).
+
 When the Reviewer reports approval (review summary,
-proposed commit message, file list):
+proposed commit message, file list, approved state):
 
 1. **Run the user checkpoint** unless the workflow is
    Develop-Review (Autonomous). Present the completed
@@ -809,16 +816,30 @@ proposed commit message, file list):
    continue. If the user approves with message edits,
    apply them to the message before committing.
 
-2. **Update the plan file.** Mark the task's checkboxes
-   complete. Add every finding the task
-   leaves open — a pre-existing defect, a cleanup wish or
-   other finding that is no defect, an introduced defect the
-   user accepted (`introduced-defects.md`) — to
-   `.ai/backlog.md` and stage that file too.
+2. **Stage and check the approved files.** Stage exactly
+   the Reviewer's file list (`git add <paths>`) and run
+   `git diff --cached --stat <approved-tree> -- <paths>`. It
+   must print nothing: staging by name lets a change inside
+   a listed file pass, and any output is a change the
+   Reviewer has not seen. A prior lead committed while the
+   developer was still adding four lines to an approved
+   file, and they entered the commit unreviewed. On output,
+   unstage (`git reset -q`), route the change like a fix
+   after a rejection — through the sign-offs the workflow
+   requires after a fix — then send the Reviewer a
+   follow-up pass from `<approved-tree>`, and start this
+   section again on its new approval.
 
-3. **Stage the exact files** from the Reviewer's file
-   list AND the plan file using `git add` with specific
-   paths. Never use `git add .` or `git add -A` — those
+3. **Update the plan file and stage it.** Mark the task's
+   checkboxes complete. Add every finding the task leaves
+   open — a pre-existing defect with the baseline check its
+   finding names, a cleanup wish or other finding that is
+   no defect, an introduced defect the user accepted
+   (`introduced-defects.md`) — to `.ai/backlog.md`. Stage
+   the plan file and `.ai/backlog.md` with `git add` and
+   specific paths, but not the Reviewer's files again:
+   staging them twice would take in an edit made since the
+   check. Never use `git add .` or `git add -A` — those
    can pick up secrets, build artifacts, or unrelated
    work.
 

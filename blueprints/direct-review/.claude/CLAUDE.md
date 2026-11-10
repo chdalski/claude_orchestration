@@ -103,11 +103,10 @@ Simplified Technical English, whatever language you write
 in: short sentences, one statement each, common words.
 Open with the point — what is to decide or what changed,
 and your recommendation — and put the detail after it. A
-page of
-decision cards written in a plan's labels drew "what?" and
-"nobody can do anything with F5 and N6"; the shortened
-cards drew "tl;dr" — nine cards were rewritten before
-anyone could decide them.
+page of decision cards written in a plan's labels drew
+"what?" and "nobody can do anything with F5 and N6"; the
+shortened cards drew "tl;dr" — nine cards were rewritten
+before anyone could decide them.
 
 **A timeout is not an answer.** When `AskUserQuestion`
 reports that nobody responded and tells you to proceed on
@@ -377,8 +376,9 @@ rounds.
   of the task in progress. Implement it, adapt the task's
   criteria, and add a Decisions entry; no new approval,
   because the demand only tightens the task. Name it at the
-  task's user review. A demand beyond the task's scope is a
-  revision.
+  task's user review. A demand beyond the task's scope, or
+  one against the plan's Context, Decisions or Non-Goals,
+  is a revision.
 - **Cancellation** — the Goal no longer holds. Set the Status
   to `Canceled`, add the reason as a Decisions entry in the
   same commit, and write a new plan. Committed tasks stay.
@@ -443,15 +443,23 @@ both paths.
    sign-off. If the user requests changes, fix them
    and return to step 4. Apply any message edits the user
    makes.
-8. **Commit.** Update the plan: mark all checkboxes for
-   the task. Add every finding the task
-   leaves open — a pre-existing defect, a cleanup wish or
-   other finding that is no defect, an introduced defect the
-   user accepted (`introduced-defects.md`) — to
-   `.ai/backlog.md` and stage that file too.
-   Stage the Reviewer's exact file list and the plan file
-   with `git add <paths>` — never `git add .` or `-A`.
-   Commit with the approved message plus a final `Plan:`
+8. **Commit.** First stage exactly the Reviewer's file list
+   with `git add <paths>` — never `git add .` or `-A` — and
+   run `git diff --cached --stat <approved-tree> -- <paths>`.
+   It must print nothing. Run it even when you made no edit
+   since the approval: a change made at the user review,
+   yours or the user's, would otherwise reach the commit
+   unreviewed. On output, unstage (`git reset -q`), rerun
+   the checks, redo step 5 when it applies, resubmit as in
+   step 6, and continue from step 7. Then update the plan:
+   mark all checkboxes for the task, and add every finding
+   the task leaves open — a pre-existing defect with the
+   baseline check its finding names, a cleanup wish or
+   other finding that is no defect, an introduced defect
+   the user accepted (`introduced-defects.md`) — to
+   `.ai/backlog.md`. Stage the plan file and
+   `.ai/backlog.md`, not the Reviewer's files again, and
+   commit with the approved message plus a final `Plan:`
    trailer: the plan filename without `.md`.
 9. **Shut down the teammates** — send each the structured
    message `{"type": "shutdown_request", "reason": "..."}`
@@ -480,12 +488,17 @@ both paths.
 ### What Counts as Approval
 
 Only a direct `SendMessage` from the `reviewer` containing
-the review summary, proposed commit message, and file list.
+the review summary, proposed commit message, file list, and
+approved state.
 An idle notification that surfaces the Reviewer's last
 inbox content, or any other agent's relay, is not an
 approval — wait for the Reviewer's own message. A prior
 session acted on a relayed verdict and committed before the
-real approval arrived.
+real approval arrived. An approval or a security sign-off
+that leaves a defect open as pre-existing without its
+baseline check is incomplete: ask for the check before the
+user review; until then the defect counts as introduced
+(`introduced-defects.md`).
 
 ### Idle Notifications
 

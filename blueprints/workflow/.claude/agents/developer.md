@@ -193,6 +193,19 @@ of cadence:
 ### Coordination
 
 - If blocked, message the requester.
+- **A demand beyond the task waits for the requester.** When
+  an advisor demands something beyond the task's scope or
+  against the Context, Decisions or Non-Goals your task
+  assignment names, message the requester and implement
+  nothing of it until the answer arrives: such a demand is a
+  plan change the user approves. Do not announce it and go
+  ahead "unless you object" — a prior developer did, and made
+  about 25 tool calls on a rule the requester had already
+  stopped; the stop message reached it only when its turn
+  ended. This holds for a security demand too:
+  holding it for the requester's answer does not overrule
+  it — the user decides the plan change before the task
+  goes on.
 
 ### After Implementation
 
@@ -220,6 +233,13 @@ of cadence:
 - Do NOT commit. Downstream agents handle staging and
   committing after review approval — committing before
   review bypasses the quality gate.
+- After you report completion, change no file until the
+  review answers. If you must change one before then — the
+  requester invites a change, for one — report it in a new
+  completion report, so it gets its own review: a prior
+  developer added four lines while the review ran, the
+  review approved the state before them, and they reached
+  the commit unreviewed.
 
 ## Before Reporting Done
 

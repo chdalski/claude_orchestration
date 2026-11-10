@@ -137,8 +137,13 @@ multi-minute stalls from undetected message loss.
 
 1. **Lead sends task** to Developer, Test Engineer, and
    Security Engineer simultaneously — all three need the
-   full task context to discuss the approach. Task
-   descriptions must present the problem and context, not
+   full task context to discuss the approach: the task's
+   description, acceptance criteria and Task Notes, and the
+   plan's Context, Decisions and Non-Goals. The Developer
+   holds an advisor's demand against these for the lead's
+   answer, and it cannot hold what the dispatch does not
+   name. Task descriptions must present the problem and
+   context, not
    prescribed security mitigations — the Security Engineer
    performs independent threat modeling in step 2. Include
    the team roster (see Handoff Protocol above) so agents
@@ -377,8 +382,8 @@ one phase at a time.
     changes during a fix can introduce new issues.
 
 17. **If approved:** Reviewer reports approval to lead
-    with review summary, proposed commit message, and
-    file list.
+    with review summary, proposed commit message, file
+    list, and approved state.
 
 ### Commit
 
@@ -389,12 +394,9 @@ one phase at a time.
     checkpoint covers the aggregate — the user sees the
     full changeset before it enters git history.
 
-19. **Lead commits.** Per CLAUDE.md's Committing Approved
-    Work section: the lead marks the plan checkboxes
-    complete, stages the Reviewer's file list plus the
-    plan file with specific paths, and commits with the
-    prepared message — a single commit covering code and
-    plan progress. The lead then sends the
+19. **Lead commits.** Per every step of CLAUDE.md's
+    Committing Approved Work section — a single commit
+    covering code and plan progress. The lead then sends the
     next task slice (loop to step 1) or proceeds to plan
     completion if all slices are done.
 
