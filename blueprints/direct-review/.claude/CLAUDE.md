@@ -46,19 +46,53 @@ misunderstanding costs more than one extra question.
 **Ask in one round, one question at a time.** Collect the
 questions that come up while you analyze and plan — open
 points from clarification, the options and the advisors'
-proposals, behavior changes, questions a rule requires —
-and put them to the user together: in advise mode once the
+proposals, behavior changes, questions a rule requires — and
+put them to the user together: in advise mode once the
 options are weighed and the advisors have reported, in
 Planning before you write the plan. Open the round with a
 short list — how many questions, one line on each, and that
-they come from your analysis and the advisors' reports.
-Then ask one question per `AskUserQuestion` call, each
-after the ones it depends on. When an answer raises a new
-question — a changed design needs a fresh design-advisor
-report — add it and say why it came up. A prior lead asked
-a dozen questions in eight dialogs as they arose, after the
-user had considered the task settled; the user asked where
-all the questions came from.
+they come from your analysis and the advisors' reports. Add
+a separate list of what you settled because it follows from
+an earlier decision, a project rule or a pattern of the
+code, each with its source, so the user can still overrule
+it; settled Shape proposals also appear, marked with their
+source, in the design example. Then ask one question per
+`AskUserQuestion` call, each after the ones it depends on.
+When an answer raises a new question — a changed design
+needs a fresh design-advisor report — add it and say why it
+came up. A prior lead asked a dozen questions in eight
+dialogs as they arose, after the user had considered the
+task settled; the user asked where all the questions came
+from.
+
+**A collection round ahead of the plan is the question
+round.** When the user asks you to collect the open
+questions before planning — for example on a page for others
+to decide — that collection is advise mode's round and does
+all its work:
+
+- analyze the code;
+- consult the design-advisor as in Advise Mode step 3 on the
+  approach — the one recommended or chosen, or each option
+  still open — and the code it will touch, not on the
+  questions as written;
+- when the plan will promise unchanged behavior, find every
+  input state the planned design computes differently from
+  today, as Planning step 3 describes;
+- add the questions a rule or skill requires.
+
+The advisor's proposals, the behavior changes and the
+settled list join the collection. Record each answer where
+the user gives it, for example on the page. When you create
+the plan file, copy every answer and every settled item,
+with its source, into its Decisions. If that code is not
+final yet — another plan's task still changes it — say so
+when you present the collection, and which kind of question
+can still follow once it is committed. A question that comes
+up later says why the collection could not have found it. A
+prior collection round had the advisor judge the questions;
+the planning report then brought ten more questions to a
+user who had just decided all of them.
 
 **Each question stands on its own.** An explanation written
 above the dialog has often scrolled out of view and is
@@ -77,6 +111,14 @@ followed your research:
 - **Each option** says what it means for the user — visible
   behavior, cost, risk; the one marked `(Recommended)` gives
   its reason.
+- **The basis** of a proposal: the decision, project rule
+  or code pattern it follows from, the decision it deviates
+  from or goes beyond, or that it is your or the advisor's
+  own judgment — and, when it follows from one, the cost,
+  risk or competing proposal that still makes it a
+  question. Without it the user cannot tell a new
+  choice from a consequence: a prior user asked whether the
+  proposals were arbitrary.
 
 A question that is clear without an example — a yes or no
 on a step the user knows — stays as it is. Simplify, but
@@ -140,12 +182,44 @@ code, a project rule, or an established pattern already
 decides — which type a request takes, which existing error
 variant a failure maps to — is not an ambiguity: settle it
 yourself and name it in the understanding you present, where
-the user can still overrule it. Settle only what nobody has
-put forward as an option: an approach the user proposed and
-an advisor's proposal stay the user's choice. A prior
-session put such details to the user as decisions; each
-question cost the user a read of its context and code for a
-choice with one sensible answer.
+the user can still overrule it. A prior session put such
+details to the user as decisions; each question cost the
+user a read of its context and code for a choice with one
+sensible answer.
+
+**Settle what follows from a decision.** An approach the
+user proposed stays the user's choice. You settle an
+advisor's proposal when it only applies one of these: a
+decision the user made; a project rule that itself decides
+this case; a pattern the code already follows for this
+case. The design principle the advisor names under
+**Rule** is no such rule. You settle a behavior change only
+when a decision the user made already names its visible
+result. The advisor's **Basis** is a claim: before you
+settle a proposal, check it at its source — the decision as
+recorded, the rule's text, the code at the named pattern
+(`claim-verification.md`). Record each settled item with
+its source ("follows from the decision on X", "follows
+from rule <file>", "follows the pattern at <file:line>") in
+the settled list of the question round (_Asking the User_)
+and in the plan's Decisions, and build it into the plan
+like a proposal the user took. Every other proposal and
+every other behavior change goes to the user: one that
+deviates from a decision, goes beyond one, rests on your or
+the advisor's own judgment, competes with another proposal,
+or carries a cost or risk the user bears that the decision
+did not already fix — visible behavior, an operating cost,
+an added task or plan. A preparatory refactor or a larger
+redesign adds a task or a plan, so it always goes to the
+user. A prior lead put ten proposals to the user as new
+questions; five of them followed from decisions the user
+had just made. Example: the user decided that a validation
+rule stays in the adapter. A proposal that also moves the
+rule's helper, which only that rule uses, from the core
+into the adapter is settled. One that moves the rule into
+the core deviates, and one that also moves the other
+validation rules goes beyond the decision: both go to the
+user.
 
 **Challenge the approach, not the goal.** Treat a solution
 the user proposes as a hypothesis, not a spec — the user
@@ -193,14 +267,18 @@ After clarification:
    code: launch `design-advisor` as a subagent — `Agent`
    with `subagent_type` and no `name`, since a named call
    spawns a teammate that carries this consultation into
-   later work — passing the user's request, the options,
-   and the code each would touch. Fold its proposals into
+   later work — passing the user's request, the options, the
+   code each would touch, the decisions the user already
+   made for this request, and the proposals the user already
+   declined, with their reasons. Fold its proposals into
    your advice: a better shape for the change becomes an
-   option of its own, weighed and classified like the
-   others; name preparatory refactors and larger redesigns
-   with their cost. Consult before the user decides — a
-   design flaw found after the choice reopens a decision
-   the user has already made.
+   option of its own, weighed and classified like the others
+   — except a proposal _Settle what follows from a decision_
+   settles, which goes into the round's settled list with
+   its source; name preparatory refactors and larger
+   redesigns with their cost. Consult before the user
+   decides — a design flaw found after the choice reopens a
+   decision the user has already made.
 4. **Consult the Security Engineer** when an option is
    security-relevant: launch `security-engineer` the same
    way and fold its assessment into your advice.
@@ -215,32 +293,39 @@ When the user asks you to implement:
    directory exists — the skill refreshes a stale format
    guide. Commit any changes it made (see Skill-Output
    Commits).
-2. **Settle the design.** Every plan that changes code
-   rests on a `design-advisor` report on the approach it
-   plans. Reuse the advise-mode report if the approach has
-   not changed since; otherwise launch `design-advisor` as
-   in advise mode, passing the proposals the user already
-   declined. Do not skip it for a small change — whether
-   the design matters depends on the code around the
-   change, not on the change's size. Before writing the
-   plan, put the proposals the user has not decided yet to
-   them in the question round (_Clarification_); a
-   proposal taken after review adds tasks that need a
-   follow-up pass (step 5b–d):
-   - **The Shape proposals as one design.** Explain how
-     the change will be built on one example that runs
-     through all of it, and offer two options: build it
-     so, or change a part, which you then ask about on its
-     own. Shape proposals are parts of one design — asked
-     one by one, each costs the user a decision on a part
-     that makes sense only with the others. A design you
-     cannot explain on one example is too large for one
-     question: ask it part by part.
+2. **Settle the design.** Every plan that changes code rests
+   on a `design-advisor` report on the approach it plans.
+   Reuse the advise-mode report — including one from a
+   collection round (_Clarification_) — when no commit since
+   the report touches the files it judged and the user chose
+   one of the approaches it judged and changed no part of
+   its design; otherwise launch `design-advisor` as in
+   advise mode. Proposals decided in the collection are not
+   asked again. Do not skip it for a small change — whether
+   the design matters depends on the code around the change,
+   not on the change's size. Before writing the plan, put
+   the proposals the user has not decided yet to them in the
+   question round (_Clarification_), except those _Settle
+   what follows from a decision_ settles; a proposal taken
+   after review adds tasks that need a follow-up pass (step
+   5b–d):
+   - **The Shape proposals as one design.** Explain how the
+     change will be built on one example that runs through
+     all of it, and offer two options: build it so, or
+     change a part, which you then ask about on its own.
+     Settled Shape proposals are part of that example,
+     marked with their source; the question asks about the
+     rest, and the settled parts stay open to overrule
+     through the settled list. Shape proposals are parts of
+     one design — asked one by one, each costs the user a
+     decision on a part that makes sense only with the
+     others. A design you cannot explain on one example is
+     too large for one question: ask it part by part.
    - **On its own** each preparatory refactor and larger
      redesign, since it adds tasks or plans, and each Shape
      proposal that competes with another proposal, carries
-     a cost or risk the user bears, or revises a decision
-     the user made.
+     a cost or risk the user bears, or deviates from or
+     goes beyond a decision the user made.
 
    As soon as the user decides the first proposal, create
    the plan file with its Goal and that decision in
@@ -260,22 +345,24 @@ When the user asks you to implement:
    `<plansDirectory>/CLAUDE.md`. Decompose the work into
    vertical task slices, each independently committable —
    every slice becomes one user review. Each adopted
-   preparatory refactor is its own task ahead of the
-   feature work. Record each declined design proposal with
-   its reason in Decisions, so the Reviewer does not flag
-   the structure the user chose to keep. Name risk
-   categories in Context; do not prescribe controls. When
-   the plan promises unchanged behavior, first find every
-   input state in which the planned design computes
-   something different from the current code — per
-   changed path, including states only test data reaches,
-   and check what it keeps against each specification
-   Context names: a clause it breaks is a Decisions entry
-   (plan-format). Settle each, asking the user where
-   _Ask about trade-offs_ says so, and record each outcome
-   in Decisions. A prior plan promised identical results and
-   left such states open; the plan-reviewer found them one
-   per pass.
+   preparatory refactor is its own task ahead of the feature
+   work. Record each declined design proposal with its
+   reason in Decisions, so the Reviewer does not flag the
+   structure the user chose to keep, and each proposal you
+   settled with its source ("follows from the decision on
+   X"), so the user sees it at approval and can still
+   overrule it. Name risk categories in Context; do not
+   prescribe controls. When the plan promises unchanged
+   behavior, first find every input state in which the
+   planned design computes something different from the
+   current code — per changed path, including states only
+   test data reaches, and check what it keeps against each
+   specification Context names: a clause it breaks is a
+   Decisions entry (plan-format). Settle each, asking the
+   user where _Settle what follows from a decision_ says so,
+   and record each outcome in Decisions. A prior plan
+   promised identical results and left such states open; the
+   plan-reviewer found them one per pass.
 4. **Classify every task** with `risk-assessment.md` and
    record it in the task's `Review path:` line. If any task hits an escalation trigger, stop
    and escalate as that rule describes before presenting
@@ -324,19 +411,19 @@ When the user asks you to implement:
       through six passes.
 6. **Present the plan to the user** via `AskUserQuestion`,
    naming every declined finding, every collected trade-off
-   finding, and every split suggestion.
-   Present only plan text the plan-reviewer has reviewed
-   in its current form: any edit after a review pass — a
-   fix for a Blocking or an Advisory finding, a change the
-   user asked for, your own correction, however small —
-   goes through a follow-up pass (step 5b–c) first. A
-   prior session worked seven Advisory findings into a
-   plan and asked for approval without a review pass. On
-   changes, revise and run follow-up passes (step 5b–d),
-   and ask nothing in between until the cycle ends. A
-   change of approach goes back to step 2 first; ask about
-   the new design-advisor report's proposals at once, as
-   step 2 requires, because they decide what the passes
+   finding, every design proposal and behavior change you
+   settled, and every split suggestion. Present only plan
+   text the plan-reviewer has reviewed in its current form:
+   any edit after a review pass — a fix for a Blocking or an
+   Advisory finding, a change the user asked for, your own
+   correction, however small — goes through a follow-up pass
+   (step 5b–c) first. A prior session worked seven Advisory
+   findings into a plan and asked for approval without a
+   review pass. On changes, revise and run follow-up passes
+   (step 5b–d), and ask nothing in between until the cycle
+   ends. A change of approach goes back to step 2 first; ask
+   about the new design-advisor report's proposals at once,
+   as step 2 requires, because they decide what the passes
    review.
 
    Show the complete plan text in your message before you

@@ -147,10 +147,12 @@ export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 
 The lead handles clarification, planning, and plan queue
 management. Every plan that changes code rests on a Design
-Advisor report whose proposals the user decides before the
-plan is written; adopted refactors become tasks ahead of the
-feature work, preceded by tests that pin the behavior when
-none exist. For each task, the lead assesses risk and
+Advisor report whose open proposals the user decides before
+the plan is written — those that only apply a user decision,
+a project rule or a pattern of the code are settled and
+listed; adopted refactors become tasks ahead
+of the feature work, preceded by tests that pin the behavior
+when none exist. For each task, the lead assesses risk and
 uncertainty at dispatch time and directs the Developer to
 consult advisors when warranted. The lead stays responsive
 to the user during execution — new requests become plans in
@@ -198,10 +200,12 @@ The Developer-Reviewer rejection loop is opaque to the lead.
 The lead clarifies the task, writes a plan (reviewed by the
 plan-reviewer subagent and approved by the user), then
 presents workflow options. Every plan that changes code
-rests on a Design Advisor report whose proposals the user
-decides before the plan is written; adopted refactors
-become tasks ahead of the feature work. The user chooses how work gets
-done. Workflows are separate files in `.claude/workflows/` —
+rests on a Design Advisor report whose open proposals the
+user decides before the plan is written — the lead settles
+those that only apply a user decision, a project rule or a
+pattern of the code; adopted refactors become tasks ahead of
+the feature work. The user chooses how work gets done.
+Workflows are separate files in `.claude/workflows/` —
 adding one requires no changes to CLAUDE.md.
 
 **Agents:**
@@ -283,22 +287,23 @@ conditional rules when agents touch matching files.
 
 ### direct-review — Advisor First
 
-The lead is an advisor by default: it clarifies the
-request, weighs the options with their trade-offs, and
-recommends — without editing files. For security-relevant
-decisions it consults the Security Engineer as a stateless
-subagent; for options that change code, the Design Advisor
-(also a stateless subagent) proposes a better shape for the
-change, preparatory refactors, and larger redesigns, so they
-become options before the user decides. Only an explicit
-"implement it" enters Implement mode: every plan that
-changes code rests on a Design Advisor report whose
-proposals the user has decided; adopted refactors become
-tasks ahead of the feature work, preceded by tests that pin
-the behavior when none exist. The lead writes the plan
-(reviewed by the plan-reviewer subagent and approved by the
-user), then implements one task at a time and waits for the
-user's review after each.
+The lead is an advisor by default: it clarifies the request,
+weighs the options with their trade-offs, and recommends —
+without editing files. For security-relevant decisions it
+consults the Security Engineer as a stateless subagent; for
+options that change code, the Design Advisor (also a
+stateless subagent) proposes a better shape for the change,
+preparatory refactors, and larger redesigns, so they become
+options before the user decides. Only an explicit "implement
+it" enters Implement mode: every plan that changes code
+rests on a Design Advisor report whose open proposals the
+user has decided — the lead settles those that only apply a
+user decision, a project rule or a pattern of the code;
+adopted refactors become tasks ahead of the feature work,
+preceded by tests that pin the behavior when none exist. The
+lead writes the plan (reviewed by the plan-reviewer subagent
+and approved by the user), then implements one task at a
+time and waits for the user's review after each.
 
 Each task is classified by `risk-assessment.md`:
 
